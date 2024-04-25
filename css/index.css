@@ -1,0 +1,193 @@
+*{margin:0px;padding:0px;}
+a{text-decoration: none;display:block;color:#fff;}
+li{list-style: none;}
+
+
+body,html{    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+}
+/* width:100%;height:100%; body,html에 넣어야됨*/ 
+
+
+/* #main{width:100%;height:100%;overflow: hidden;position:relative;}
+#bg{width:200%;height:200%;position:absolute;left:50%;top:50%;transform: translate(-50%,-50%) rotate(-7deg);z-index:-99;;}
+.bg-white{width:100%;height:30%;background:white;}
+.bg-black{width:100%;height:40%;background:black;}
+.bg-red{width:100%;height:30%;background:red;} */
+
+
+/* 메인 warp이 여기서 부터임 */
+#movie{width:1420px;margin:40px auto;background:#2f2f2f;border-radius:25px;position:relative;overflow: hidden;}
+
+/* 헤더는 여기서 부터임 */
+header{width:100%;display:flex;justify-content: space-between;align-items: center;position:absolute;padding:35px 40px;box-sizing: border-box;left:0px;top:0px;border-radius:25px 25px 0px 0px;z-index:99;}
+
+/* 헤더 가장왼쪽에 있는 로고 부분임 */
+#logo a{display:block;}
+#logo img{display:block}
+
+/* 헤더 가운데 위치한 네비게이션바임 */
+#movie header nav {width:650px;}
+#movie header nav ul{display:flex;justify-content: space-between;font-size:20px;font-weight:bold}
+#movie header nav ul a{display:block;transition:0.25s}
+#movie header nav ul a:hover{color:rgb(128, 4, 4)}
+
+/* 헤더 가장 오른쪽에 위치한 메뉴버튼임 */
+#menu{width:40px;height:25px;cursor: pointer;}
+
+#menu ul{width:100%;height:100%;position:relative;}
+#menu ul li:nth-of-type(1){width:100%;height:5px;background:#fff;transition:0.3s;position:absolute;right:0px;top:0px;transition:1s;}
+#menu ul li:nth-of-type(2){width:100%;height:5px;background:#fff;transition:0.3s;position:absolute;right:0px;bottom:0px;}
+
+/* 메뉴버튼 호버 시 발생하는 애니메이션 */
+#menu:hover ul{width:100%;height:100%;position:relative;}
+#menu:hover ul li:nth-of-type(1){position:absolute;right:0%;top:0%;animation: action1 1s ease-in-out forwards;width:40px;transition:1s;}
+#menu:hover ul li:nth-of-type(2){position:absolute;right:0%;bottom:0%;animation: action2 0.6s ease-in-out forwards;width:40px;transition:1s;}
+@keyframes action1 {
+    0%{width:40px;}
+    25%{width:70px;}
+    50%{width:55px;}
+    100%{width:70px;}
+}
+@keyframes action2 {
+    0%{width:40px;}
+    25%{width:80px;}
+    50%{width:65px;}
+    100%{width:80px;}
+}
+
+/* 메뉴 버튼 클릭 시 나타나는 모달 */
+#menu-modal{width:350px;height:100%;background:#000;position:fixed;right:-350px;top:0px;z-index:100;transition:0.5s}
+#close-modal {width:90%;margin:50px auto;display:flex;justify-content: center;color:#fff;font-size:30px;align-items: center;border-radius:25px;padding:10px 0px;box-sizing: border-box;cursor: pointer;}
+#close-modal h3{margin-top:5px;}
+#close-modal span{font-size:40px;}
+
+#menu-modal .menu-modal-nav{width:90%;margin:0px auto;}
+#menu-modal .menu-modal-nav h3{text-align: center;color:#fff;font-size:50px;;}
+#menu-modal .menu-modal-nav ul{width:100%;display:flex;justify-content: space-between;flex-direction: column;text-align: center;margin-top:50px;}
+#menu-modal .menu-modal-nav ul li{width:100%;height:100px;line-height:100px;font-size:40px;}
+#menu-modal .menu-modal-nav ul li a:hover{text-decoration: underline;}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+/* 여기서 부터 비쥬얼임 */
+#visual{width:100%;height:750px;border-radius:25px 25px 0px 0px;background:url(../img/서울의봄_반전.jpg) no-repeat;background-size:cover;background-position:left top;position:relative;z-index:1;transition:0.5s}
+
+/* 트레일러 영상종료버튼 */
+#videoContainer {width:1420px;height:850px;}
+#videoContainer .closevideo{width:200px;display:flex;justify-content: center;color:#fff;font-size:30px;align-items: center;border-radius:15px;padding:10px 0px;box-sizing: border-box;cursor: pointer;background:#000;}
+#videoContainer h3{margin-top:5px;}
+#videoContainer span{font-size:40px;}
+#videoContainer ul{width:100%;position:relative;}
+#videoContainer ul li{position:absolute;left:0px;top:0px;display:none;}
+
+
+
+/* 비쥬얼 내부에 있는 내용들임 */
+#visual .content{position:absolute;right:40px;bottom:40px;display:flex;justify-content: space-between;width:900px;align-items: center;}
+
+/* 비쥬얼 내부 영화소개 부분임 */
+#visual .content .intro{width:480px;height:450px;display:flex;justify-content: space-between;flex-direction: column;}
+
+/* 비쥬얼 내부 영화소개중 영화 제목부분임 */
+#visual .content .intro .title{text-align:center;font-size:28px;font-weight:bold;color:#fff;}
+#visual .content .intro .movie-content{text-align:right;color:#fff;font-size:18px;font-weight:500;}
+
+/* 비쥬얼 내부 영화소개 부분중 트레일러 보기 버튼임 */
+#visual .content .intro .traller-btn{width:300px;height:60px;margin:0px auto;display:flex;justify-content: center;align-items: center;background:red;border-radius:100px;cursor: pointer;}
+#visual .content .intro .traller-btn .play-icon{width:22px;height:22px;margin-right:20px;}
+#visual .content .intro .traller-btn .play-icon img{display:block;width:100%;height:100%;}
+#visual .content .intro .traller-btn p{font-size:22px;font-weight:bold;font-family: "Luckiest Guy", cursive;
+    font-weight: 100;
+    font-style: normal;color:#fff;text-align: center;}
+    #visual .content .intro .traller-btn .btn-content{width:160px;height:15px;}
+
+/* 비쥬얼 내부 영화소개 부분 포스터영역임 */
+#visual .content .poster{width:400px;height:550px;}
+#visual .content .poster>img{width:400px;height:550px;display:block;border-radius:25px;box-shadow: 0px 0px 10px rgba(97, 1, 1, 0.328);transition:0.5s}
+
+/* 영화 트레일러 */
+
+#videoContainer{position:fixed;left:50%;top:50%;transform: translate(-50%,-50%);z-index:100}
+
+/* 블랙커버부분 */
+#black-cover{width:100%;height:100%;border-radius: 25px 25px 0px 0px;background:rgba(0, 0, 0, 0.5)}
+
+
+/* 카테고리 부분임 */
+#category {width:1340px;height:66px;margin:60px auto;display:flex;justify-content: space-between;align-items: center;position:relative;}
+
+#category nav{width:300px;}
+#category nav ul {width:100%;display:flex;justify-content: space-around;font-size:22px;font-weight:bold;color:#fff;}
+#category nav ul li {width:16.65%;transition: 0.25s;display:block;cursor: pointer;text-align: center;}
+#category nav ul li:hover{color:rgb(128, 4, 4)}
+
+#category .search{width:300px;display:flex;justify-content: space-between;align-items:center}
+#category .search input{background:none;outline:none;border:none;color:#fff;font-size:18px;width:85%}
+#category .search input::placeholder{font-size:18px;color:#828282}
+
+#category .search .search-icon{width:30px;height:30px;}
+#category .search .search-icon img{width:100%;height:100%;display:block;cursor: pointer;}
+
+
+/* 카테고리 밑에 있는 줄 부분 */
+
+#category .red-line{width:100%;height:5px;position:absolute;background:#c4c4c4;left:0px;bottom:0px;border-radius: 10px;;display:flex;justify-content: space-between;align-items: center;}
+
+#category .red-line ul {width:300px;height:5px;display:flex;justify-content: space-between;}
+#category .red-line ul li{width:16.65%;height:5px;border-radius: 10px;transition:0.5s;}
+#category .red-line ul li.on{background:red;}
+
+#category .red-line .search-line{width:320px;height:5px;border-radius: 10px;position:relative;}
+#category .red-line .search-line .red-line{background:red;transition:0.5s;width:0px;position:absolute;left:0px;top:0px;}
+#category .red-line .search-line.on .red-line{width:320px;background:red}
+
+
+/* 여기서부터 영화 포스터 배열임 */
+#movie-array{width:1340px;margin:0px auto;}
+#movie-array ul{width:100%;display:flex;align-items:center;flex-wrap: wrap;}
+#movie-array ul li{width:320px;margin-right:20px;box-sizing: border-box;margin-bottom:20px;border-radius:25px;cursor: pointer;}
+#movie-array ul li:nth-of-type(4){margin-right:0px;}
+#movie-array ul li:nth-of-type(8){margin-right:0px;}
+
+#movie-array ul li .movie-poster{width:320px;height:450px;border-radius:25px;}
+#movie-array ul li .movie-poster img{width:100%;height:100%;display:block;border-radius:25px;}
+#movie-array ul li .title{width:100%;height:60px;margin-top:20px;text-align: center;color:#fff;font-size:22px;font-weight:bold;}
+
+
+/* 여기서부터 영화 모달임 */
+#movie-modal{width:1420px;height:800px;background:#fff;position:fixed;left:50%;top:-800px;transform: translateX(-50%);z-index:100;padding:50px;box-sizing: border-box;display:flex;justify-content: space-around;box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);border-radius:0px 0px 25px 25px;transition:0.5s}
+#movie-modal>.movie-poster{width:35%;height:100%;}
+#movie-modal>.movie-poster img{width:100%;height:100%;display:block;border-radius:25px;}
+
+#movie-modal .title{width:60%;padding:30px 0px;box-sizing: border-box;}
+#movie-modal .title p:nth-of-type(1){font-size:28px;margin-bottom:40px;font-weight:bold;}
+#movie-modal .title p:nth-of-type(2){font-size:22px;margin-bottom:40px;}
+#movie-modal .title p:nth-of-type(3){font-size:18px;}
+#movie-modal .movie-modal-close {display:flex;justify-content: space-around;position:absolute;right:50px;bottom:50px;border-radius: 25px;align-items: center;cursor: pointer;}
+
+
+/* 언더라인 & show-more */
+.underline-box{width:1340px;height:60px;margin:20px auto 50px;display:flex;justify-content: space-between;align-items: center;}
+.underline-box .underline{width:1000px;height:5px;border-radius: 10px;background:#c4c4c4;}
+
+.underline-box .show-more-box{width:340px;height:100%;position:relative;}
+.underline-box .show-more-box .show-more{width:200px;height:100%;background:red;position:absolute;left:50%;top:50%;transform: translate(-50%,-50%);border-radius: 100px;cursor: pointer;;}
+
+.underline-box .show-more-box .show-more p{
+    font-size:22px;font-weight:bold;font-family: "Luckiest Guy", cursive;
+    font-weight: 100;
+    font-style: normal;color:#fff;text-align: center;line-height:60px;margin-top:3px}
+
+#sns{width:300px;margin:0px auto;margin-bottom:80px;}
+#sns ul{width:100%;height:50px;display:flex;justify-content: space-around;}
+#sns ul li{width:50px;height:50px;cursor: pointer;}
+#sns ul li img{width:100%;height:100%;display:block;}
+
+
