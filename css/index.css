@@ -6,7 +6,6 @@ li{list-style: none;}
 body,html{    font-family: "Roboto Flex", sans-serif;
     font-optical-sizing: auto;
 }
-/* width:100%;height:100%; body,html에 넣어야됨*/ 
 
 
 #main{width:100%;height:100%;overflow: hidden;position:relative;padding:40px 0px;box-sizing: border-box;}
