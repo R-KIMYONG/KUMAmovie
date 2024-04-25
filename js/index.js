@@ -44,11 +44,10 @@ const options = {
 
 document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받아온다.
 
+    let serchInput = document.querySelector('#search-movie') //검색 인풋을 찾아
+    serchInput.focus() //페이지 로딩되면 검색란에 포커스되게 하기
 
     let cardUi = function (data) {
-
-        // console.log(data.sort())
-
         //menu 모달 in out
         function menuModal() {
             let modal = document.querySelector('#menu-modal')//모달을 찾음
@@ -66,9 +65,10 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
 
         menuModal()
 
+        //visual에 트레일러버튼 클릭 시 나타나는 모달기능과 각API정보를 UI에 할당함
         let visual = () => {
             // 평점 기준으로 영화 데이터 정렬
-            data.sort((a, b) => b.vote_average - a.vote_average);
+            // console.log(data.sort((a, b) => b.vote_average - a.vote_average))
             // 평점이 가장 높은 영화 선택
 
             let topMovie = data[0];
@@ -87,18 +87,18 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                     document.querySelector('.traller-btn').addEventListener('click', () => {
                         videoContainer.style.display = "block";
 
-                        videoList.forEach((item) => {
+                        videoList.forEach((item) => { //트레일러 영상list전부 숨김
                             item.style.display = "none"
                         })
 
-                        videoList[index].style.display = 'block'
+                        videoList[index].style.display = 'block' //내가 클릭한것만 보여주기~
 
                     })
-                    //트레일러 종료
+                    //트레일러 영상 끄기 버튼
                     videoContainer.addEventListener('click', () => {
 
-                        videoContainer.style.display = "none";
-                        videoList.forEach((item) => {
+                        videoContainer.style.display = "none"; //영상을 감싼 div숨기기
+                        videoList.forEach((item) => { //영상들을 모두 숨기기
                             item.style.display = "none"
                         })
 
@@ -120,41 +120,48 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
         }
         visual()
 
+        //show more버튼 클릭하면 .slice(0,4씩올라가야한다
 
-
-
-        //show more버튼 클릭하면 .slice(0,4씩올라가야한다)
         let showMore = () => {
-            let num = 4
-            let showmoreBtn = document.querySelector('.show-more')
-            let showCard = () => {
-                if (num < data.length) { //4개씩 보여달라!
-                    num += 4
-                    // data = response.results.slice(0, num)
-                    rerenderCardui(data.slice(0, num));
-                    if (num === data.length) {
-                        showmoreBtn.removeEventListener("click", showCard)
-                        document.querySelector('.show-more p').textContent = "NO MORE"
-                    }
-                }
-                return data
-            }
-            showmoreBtn.addEventListener('click', showCard)
-        }
-        showMore()
+            let showmoreBtn = document.querySelector('.show-more');
+        
+            showmoreBtn.addEventListener('click', ()=>{
+                rerenderCardui(data)
+            });
+        };
+        showMore();
+
 
         let searchMovie = function () {
-            let searchIcon = document.querySelector('.search-icon')
-            let searchInput = document.querySelector('#search-movie')
+            let searchIcon = document.querySelector('.search-icon')//검색 버튼임
+            let searchInput = document.querySelector('#search-movie')//검색창을 선택한거임
+            const searchOption = document.getElementById('search-option');//검색옵션 선택임
+
+            function searchKeyword(item) {
+                let myselect = searchOption.value;
+                if (myselect === '제목') {
+                    return String(item).toLowerCase();
+                } else if (myselect === '평점') {
+                    return parseFloat(item);
+                }
+            }
             searchIcon.addEventListener('click', () => {
-                let searchKeyword = searchInput.value.toLowerCase();
+
+                let keyWord = searchKeyword(searchInput.value)
+                // console.log(typeof keyWord)
+
+
                 let newarr = []
                 for (let i = 0; i < data.length; i++) {
-                    let movieTitle = data[i].original_title.toLowerCase()
-
+                    let movieTitle = data[i].original_title.toLowerCase() //하나하나의 영화제목들
+                    let movieGPA = data[i].vote_average //영화 평점들만 하니씩임
                     //만약에 영화제목이 검색키워드랑 같기도하고 검색키워드가 빈칸아니기도하고 검색키워드가 문자열이면 참이다.
                     //&& searchKeyword != '' && typeof searchKeyword === 'string'
-                    if (movieTitle.includes(searchKeyword)) {
+                    if (typeof keyWord === 'string') {
+                        if (movieTitle.includes(keyWord) && keyWord !== '') {
+                            newarr.push(data[i])
+                        }
+                    } else if (typeof keyWord === 'number' && movieGPA > keyWord && movieGPA < keyWord + 1 && keyWord !== '') {
                         newarr.push(data[i])
                     }
                 }
@@ -162,6 +169,11 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                     rerenderCardui(newarr)
                 } else {
                     rerenderCardui('검색결과가 없습니다.')
+                }
+            })
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.keyCode === 13) {
+                    searchIcon.click()
                 }
             })
 
@@ -219,14 +231,14 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                     </span>
                 </div>`;
                 document.getElementById('movie-modal').innerHTML = templet; // 기존 내용 제거 후 새로운 내용 삽입
-                document.querySelector('.movie-modal-close').addEventListener('click',()=>{
-                    document.getElementById('movie-modal').style.top='-850px'
+                document.querySelector('.movie-modal-close').addEventListener('click', () => {
+                    document.getElementById('movie-modal').style.top = '-850px'
                 })
             }
-            
-            document.querySelectorAll('#movie-array ul li').forEach((item,index) => {
+
+            document.querySelectorAll('#movie-array ul li').forEach((item, index) => {
                 item.addEventListener("click", (e) => {
-                    document.getElementById('movie-modal').style.top='0px'
+                    document.getElementById('movie-modal').style.top = '0px'
                     // 클릭된 li 요소의 데이터를 얻기 위해 클릭 이벤트 리스너에서 cardModal() 함수 호출
                     cardModal(movieData[index]); // 클릭된 요소의 데이터를 전달하여 모달에 보여주기
                 });
@@ -254,35 +266,35 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             .then(response => response.json())
             .then(response => {
                 // 받아온 데이터를 Map에 페이지 번호를 키로 사용하여 저장
-                let sortData = response.results.sort((a, b) => { return a.id - b.id })
-                pageDataMap.set(page, sortData);
+                pageDataMap.set(page, response.results);
             })
             .catch(error => console.error('Error:', error));
 
-        // 생성된 프로미스를 배열에 추가
+        // 총 5페이지의 영화 데이터이니까 하나하나 로드완료되면 promise로 던짐
         allPromises.push(promise);
     }
 
     // 모든 페이지의 데이터를 받아온 후에 실행되는 코드 (allPromises는 기다릴데이터임 5페이지니 다완료되면 밑에 코드 실행해줌)
     Promise.all(allPromises).then(() => {
         // 페이지 데이터를 활용하여 원하는 작업 수행
-        let page = Object.fromEntries(pageDataMap.entries());
-        let totalPage = Object.keys(page).length
+        let page = Object.fromEntries(pageDataMap.entries());//각페이지를 하나의 객체에 저장함(순환하기위해)
+        let totalPage = Object.keys(page).length//페이지수를 얻을려고(코드 확장성위해)
         // console.log(page[1])//각 페이지의 데이터 나옴
-        let allMovie = [] //전체 영화의 데이터임
-        for (let i = 1; i <= totalPage; i++) {
-            allMovie.push(...page[`${i}`])
-        }
-        cardUi(allMovie)
-        let category = document.querySelectorAll('#category>nav>ul>li')
+        let allMovie = [] //전체 영화의 데이터임 
+        for (let i = 1; i <= totalPage; i++) { //전체 영화 페이지위해 1~5페이지의 영화를 하나의 array에 저장함
 
-        for (let i = 0; i < category.length; i++) {
+            allMovie.push(...page[`${i}`].sort((a, b) => { return b.vote_average - a.vote_average })) //인기 영화순으로 배열에 저장함
+
+        }
+        cardUi(allMovie) //첫페이지 로드 시 전체 영화를 로드함
+        let category = document.querySelectorAll('#category>nav>ul>li')
+        for (let i = 0; i < category.length; i++) { //페이지 수를 순환함
             category[i].addEventListener("click", (e) => {
                 if (i == 0) {
-                    cardUi(allMovie)
+                    cardUi(allMovie) //All클릭하면 다시 전체 영화 로드함
                     // console.log(1)//test
                 } else {
-                    cardUi(page[i])
+                    cardUi(page[i]) //다른페이지를 클릭하면 해당 페이지의 데이터만 출력
                     // console.log(2)//test
                 }
             });
