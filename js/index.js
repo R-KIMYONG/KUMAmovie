@@ -16,15 +16,16 @@ function category() {
 
     // 영화 검색창 포커스하면 빨간색 밑줄 생김 아닐때 없어짐
     let searchInput = document.getElementById('search-movie');
-
+    //마우스커서가 검색창 포커스되면~
     searchInput.addEventListener('focus', () => {
         document.querySelector('.search-line').classList.add('on')
     })
+    //마우스커서가 검색창 포커스안되면~
     searchInput.addEventListener('blur', () => {
         document.querySelector('.search-line').classList.remove('on')
     })
-}
-category()
+};
+category();
 
 // 영화정보 API
 
@@ -38,13 +39,13 @@ const options = {
 
 document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받아온다.
 
-    let serchInput = document.querySelector('#search-movie') //검색 인풋을 찾아
-    serchInput.focus() //페이지 로딩되면 검색란에 포커스되게 하기
+    let serchInput = document.querySelector('#search-movie'); //검색 인풋을 찾아
+    serchInput.focus(); //페이지 로딩되면 검색란에 포커스되게 하기
 
     let cardUi = function (data) {
 
         //menu 모달 in out
-        function menuModal() {
+        let menuModal = () => {
             let modal = document.querySelector('#menu-modal')//모달을 찾음
             let menuBtn = document.querySelector('#menu') //메뉴버튼을 찾음
             let closeBtn = document.querySelector('#close-modal')//닫기 버튼을 찾음
@@ -56,8 +57,8 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             })
 
 
-        }
-        menuModal()
+        };
+        menuModal();
 
         //visual에 트레일러버튼 클릭 시 나타나는 모달기능과 각API정보를 UI에 할당함
         let visual = () => {
@@ -67,42 +68,41 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
 
             let topMovie = data[0];
             //비쥬얼에 나오는 영화의 제목 위치
-            let visualTitle = document.querySelector('#visual .content .intro .title')
+            let visualTitle = document.querySelector('#visual .content .intro .title');
             //비쥬얼에 나오는 영화의 소개 위치
-            let movieContent = document.querySelector('#visual .content .intro .movie-content')
+            let movieContent = document.querySelector('#visual .content .intro .movie-content');
             //비쥬얼에 나오는 영화의 포스터 위치
-            let poster = document.querySelector('#visual .content .poster') //평점높은 영화를 비주얼에 배치
+            let poster = document.querySelector('#visual .content .poster'); //평점높은 영화를 비주얼에 배치
             let visual = document.querySelector('#visual')//비쥬얼 배경화면을 변경하기위해 찾음
             let videoContainer = document.getElementById("videoContainer");//여기는 트레일러영상을 담은 박스임
-            let videoList = document.querySelectorAll('#videoContainer ul li')//각 트레일러영상을 의미함
-            let page = document.querySelectorAll('.red-line ul li')//page수를 다 찾음
+            let videoList = document.querySelectorAll('#videoContainer ul li');//각 트레일러영상을 의미함
+            let page = document.querySelectorAll('.red-line ul li');//page수를 다 찾음
             page.forEach((item, index) => {
                 if (item.classList.contains('on')) {
                     document.querySelector('.traller-btn').addEventListener('click', () => {
                         videoContainer.style.display = "block";
 
                         videoList.forEach((item) => { //트레일러 영상list전부 숨김
-                            item.style.display = "none"
-                        })
+                            item.style.display = "none";
+                        });
                         videoList[index].style.display = 'block' //내가 클릭한것만 보여주기~
-                    })
+                    });
                     //트레일러 영상 끄기 버튼
                     videoContainer.addEventListener('click', () => {
-
                         videoContainer.style.display = "none"; //영상을 감싼 div숨기기
                         videoList.forEach((item) => { //영상들을 모두 숨기기
-                            item.style.display = "none"
-                        })
-                    })
-                }
-            })
-            visualTitle.textContent = topMovie.original_title //비주얼 영화제목을 평점높은영화거로
-            movieContent.textContent = topMovie.overview //위에 하는 작업과 동일한데 영화 줄거리가져옴
+                            item.style.display = "none";
+                        });
+                    });
+                };
+            });
+            visualTitle.textContent = topMovie.original_title; //비주얼 영화제목을 평점높은영화거로
+            movieContent.textContent = topMovie.overview; //위에 하는 작업과 동일한데 영화 줄거리가져옴
             // poster.innerHTML=''
             poster.innerHTML = `<img src="https://image.tmdb.org/t/p/w500${topMovie.poster_path}" alt="${topMovie.id}">` //비쥬얼 포스트를 평점높은 영화걸로 바꿈
-            visual.style.backgroundImage = `url('https://image.tmdb.org/t/p/w500${topMovie.backdrop_path}')` //여기는 배경화면을 바꿈
+            visual.style.backgroundImage = `url('https://image.tmdb.org/t/p/w500${topMovie.backdrop_path}')`; //여기는 배경화면을 바꿈
 
-        }
+        };
         visual();
 
         //show more버튼 클릭하면 .slice(0,4씩올라가야한다
@@ -118,9 +118,9 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
         showMore();
 
         //영화검색기능 추가히기
-        let searchMovie = function () {
-            let searchIcon = document.querySelector('.search-icon')//검색 버튼임
-            let searchInput = document.querySelector('#search-movie')//검색창을 선택한거임
+        let searchMovie = () => {
+            let searchIcon = document.querySelector('.search-icon');//검색 버튼임
+            let searchInput = document.querySelector('#search-movie');//검색창을 선택한거임
             const searchOption = document.getElementById('search-option');//검색옵션 선택임
 
             function searchKeyword(item) {
@@ -129,13 +129,13 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                     return String(item).toLowerCase();
                 } else if (myselect === '평점') {
                     return parseFloat(item);
-                }
-            }
+                };
+            };
             searchIcon.addEventListener('click', () => {
 
-                let keyWord = searchKeyword(searchInput.value)
+                let keyWord = searchKeyword(searchInput.value);
                 // console.log(typeof keyWord)
-                let newarr = []
+                let newarr = [];
                 for (let i = 0; i < data.length; i++) {
                     let movieTitle = data[i].original_title.toLowerCase() //하나하나의 영화제목들
                     let movieGPA = data[i].vote_average //영화 평점들만 하니씩임
@@ -143,26 +143,26 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                     //&& searchKeyword != '' && typeof searchKeyword === 'string'
                     if (typeof keyWord === 'string') {
                         if (movieTitle.includes(keyWord) && keyWord !== '') {
-                            newarr.push(data[i])
-                        }
+                            newarr.push(data[i]);
+                        };
                     } else if (typeof keyWord === 'number' && movieGPA > keyWord && movieGPA < keyWord + 1 && keyWord !== '') {
-                        newarr.push(data[i])
+                        newarr.push(data[i]);
                     }
                 }
                 if (newarr.length !== 0) {
-                    rerenderCardui(newarr)
+                    rerenderCardui(newarr);
                 } else {
                     rerenderCardui(`${searchOption.value} ${searchInput.value}에 대한 검색결과가 없습니다.😅`)
                 }
             })
             searchInput.addEventListener('keypress', (e) => {
                 if (e.keyCode === 13) {
-                    searchIcon.click()
-                }
-            })
+                    searchIcon.click();
+                };
+            });
 
-        }
-        searchMovie()
+        };
+        searchMovie();
 
         //페이지마다 다른 영화내용을 추가함
         function rerenderCardui(movieData) { // 카드UI를 다시 불러와라!
@@ -196,15 +196,15 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
 
 
 
-            function cardModal(item) {
+            let cardModal = (item) => {
                 let templet = `<div class="movie-poster">
                     <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.id}">
                 </div>
                 <div class="title">
                     <p>영화 id : ${item.id}</p>
                     <p>${item.original_title}</p>
-                    <p>평점 : ${item.vote_average}</p>
-                    <p>줄거리 : ${item.overview}</p>
+                    <p>평점 : ${item.vote_average}점</p>
+                    <p>요약 : ${item.overview}</p>
                 </div>
                 <div class='movie-modal-close'>
                     <h3>닫기</h3>
@@ -215,8 +215,8 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                 document.getElementById('movie-modal').innerHTML = templet; // 기존 내용 제거 후 새로운 내용 삽입
                 document.querySelector('.movie-modal-close').addEventListener('click', () => {
                     document.getElementById('movie-modal').style.top = '-850px'
-                })
-            }
+                });
+            };
 
             document.querySelectorAll('#movie-array ul li').forEach((item, index) => {
                 item.addEventListener("click", (e) => {
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                 });
             });
 
-        }
+        };
         rerenderCardui(data.slice(0, 4));
     }
     //===========================
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
 
         // 총 5페이지의 영화 데이터이니까 하나하나 로드완료되면 promise로 던짐
         allPromises.push(promise);
-    }
+    };
 
     // 모든 페이지의 데이터를 받아온 후에 실행되는 코드 (allPromises는 기다릴데이터임 5페이지니 다완료되면 밑에 코드 실행해줌)
     Promise.all(allPromises).then(() => {
