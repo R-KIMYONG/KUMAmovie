@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             let videoList = document.querySelectorAll('#videoContainer ul li');//각 트레일러영상을 의미함
             let page = document.querySelectorAll('.red-line ul li');//page수를 다 찾음
 
-            let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn','https://www.youtube.com/embed/L4DvL0UBZPQ?si=qg6Id5dQpIhOmFDo','https://www.youtube.com/embed/GTjfXPANIXY?si=XG0KhqvnvzimNXWb','https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk','https://www.youtube.com/embed/yjEyIHVNd-A?si=YLcuDTOklwhV_Uht','https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];
+            let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn', 'https://www.youtube.com/embed/L4DvL0UBZPQ?si=qg6Id5dQpIhOmFDo', 'https://www.youtube.com/embed/GTjfXPANIXY?si=XG0KhqvnvzimNXWb', 'https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk', 'https://www.youtube.com/embed/yjEyIHVNd-A?si=YLcuDTOklwhV_Uht', 'https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];
             let iframe = document.querySelectorAll('iframe')
             console.log(iframe[0].src)
 
@@ -92,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                             item.style.display = "none";
                         });
                         videoList[index].style.display = 'block' //내가 클릭한것만 보여주기~
-                        if(videoList[index].style.display==='block'){
-                            iframe[index].src=videoSrc[index] //iframe의 src를 돌려줌
+                        if (videoList[index].style.display === 'block') {
+                            iframe[index].src = videoSrc[index] //iframe의 src를 돌려줌
                         }
                         console.log(index)
                     });
@@ -137,28 +137,18 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             function searchKeyword(item) {
                 let myselect = searchOption.value;
                 if (myselect === '제목') {
-                    return String(item).toLowerCase();
+                    return item.toString().toLowerCase();
                 } else if (myselect === '평점') {
                     return parseFloat(item);
                 };
             };
             searchIcon.addEventListener('click', () => {
-
-                let keyWord = searchKeyword(searchInput.value);
-                // console.log(typeof keyWord)
+                let keyWord = searchKeyword(searchInput.value);//유저가 검색창에 입력한 검색어 (만약에 검색어 앞 또는 뒤에 빈칸이 있으면 없앤다)
                 let newarr = [];
-                for (let i = 0; i < data.length; i++) {
-                    let movieTitle = data[i].original_title.toLowerCase() //하나하나의 영화제목들
-                    let movieGPA = data[i].vote_average //영화 평점들만 하니씩임
-                    //만약에 영화제목이 검색키워드랑 같기도하고 검색키워드가 빈칸아니기도하고 검색키워드가 문자열이면 참이다.
-                    //&& searchKeyword != '' && typeof searchKeyword === 'string'
-                    if (typeof keyWord === 'string') {
-                        if (movieTitle.includes(keyWord) && keyWord !== '') {
-                            newarr.push(data[i]);
-                        };
-                    } else if (typeof keyWord === 'number' && movieGPA > keyWord && movieGPA < keyWord + 1 && keyWord !== '') {
-                        newarr.push(data[i]);
-                    }
+                if (typeof keyWord === 'string' && keyWord !== '') {
+                    newarr = [...data].filter((item) => item.original_title.toLowerCase().includes(keyWord.trim()));
+                } else if (typeof keyWord === 'number' && keyWord !== '') {
+                    newarr = [...data].filter((item) => parseInt(item.vote_average) === keyWord );
                 }
                 if (newarr.length !== 0) {
                     rerenderCardui(newarr);
