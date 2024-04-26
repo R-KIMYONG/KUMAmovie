@@ -106,12 +106,15 @@ header {
     font-weight: bold
 }
 
-#movie header nav ul a {
+#movie header nav ul li {
     display: block;
-    transition: 0.25s
+    transition: 0.25s;
+    cursor: pointer;
+    color: #fff;
+    font-size: 22px;
 }
 
-#movie header nav ul a:hover {
+#movie header nav ul li:hover {
     color: rgb(128, 4, 4)
 }
 

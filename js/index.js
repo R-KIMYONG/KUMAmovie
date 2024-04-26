@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
 
             showmoreBtn.addEventListener('click', () => {
                 rerenderCardui(data)
+                serchInput.focus();
             });
         };
         showMore();
@@ -151,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                 if (newarr.length !== 0) {
                     rerenderCardui(newarr)
                 } else {
-                    rerenderCardui('검색결과가 없습니다.')
+                    rerenderCardui(`${searchOption.value} ${searchInput.value}에 대한 검색결과가 없습니다.😅`)
                 }
             })
             searchInput.addEventListener('keypress', (e) => {
@@ -259,15 +260,16 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             allMovie.push(...page[`${i}`].sort((a, b) => { return b.vote_average - a.vote_average })) //인기 영화순으로 배열에 저장함
 
         }
-        cardUi(allMovie) //첫페이지 로드 시 전체 영화를 로드함
+        cardUi(allMovie.slice(0, 20)) //첫페이지 로드 시 전체 영화를 로드함
+        console.log()
         let category = document.querySelectorAll('#category>nav>ul>li')
         for (let i = 0; i < category.length; i++) { //페이지 수를 순환함
             category[i].addEventListener("click", (e) => {
-                if (i == 0) {
+                serchInput.focus()
+                if (i === category.length - 1) {
                     cardUi(allMovie) //All클릭하면 다시 전체 영화 로드함
-                    // console.log(1)//test
                 } else {
-                    cardUi(page[i]) //다른페이지를 클릭하면 해당 페이지의 데이터만 출력
+                    cardUi(page[i + 1]) //다른페이지를 클릭하면 해당 페이지의 데이터만 출력
                     // console.log(2)//test
                 }
             });
