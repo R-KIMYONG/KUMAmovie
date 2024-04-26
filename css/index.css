@@ -248,9 +248,12 @@ header {
 
 #close-modal span {
     font-size: 40px;
-    transition:0.5s;
+    transition: 0.5s;
 }
-#close-modal:hover span{transform: rotate(180deg);}
+
+#close-modal:hover span {
+    transform: rotate(180deg);
+}
 
 #menu-modal .menu-modal-nav {
     width: 90%;
@@ -331,10 +334,12 @@ header {
 
 #videoContainer span {
     font-size: 40px;
-    transition:0.5s;
+    transition: 0.5s;
 }
 
-#videoContainer .closevideo:hover span{transform: rotate(180deg);}
+#videoContainer .closevideo:hover span {
+    transform: rotate(180deg);
+}
 
 #videoContainer ul {
     width: 100%;
@@ -718,8 +723,14 @@ header {
     align-items: center;
     cursor: pointer;
 }
-#movie-modal .movie-modal-close span{transition:0.5s;}
-#movie-modal .movie-modal-close:hover span{transform: rotate(180deg);}
+
+#movie-modal .movie-modal-close span {
+    transition: 0.5s;
+}
+
+#movie-modal .movie-modal-close:hover span {
+    transform: rotate(180deg);
+}
 
 /* 언더라인 & show-more */
 .underline-box {
