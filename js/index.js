@@ -77,6 +77,12 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             let videoContainer = document.getElementById("videoContainer");//여기는 트레일러영상을 담은 박스임
             let videoList = document.querySelectorAll('#videoContainer ul li');//각 트레일러영상을 의미함
             let page = document.querySelectorAll('.red-line ul li');//page수를 다 찾음
+
+            let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn','https://www.youtube.com/embed/L4DvL0UBZPQ?si=qg6Id5dQpIhOmFDo','https://www.youtube.com/embed/GTjfXPANIXY?si=XG0KhqvnvzimNXWb','https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk','https://www.youtube.com/embed/yjEyIHVNd-A?si=YLcuDTOklwhV_Uht','https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];
+            let iframe = document.querySelectorAll('iframe')
+            console.log(iframe[0].src)
+
+
             page.forEach((item, index) => {
                 if (item.classList.contains('on')) {
                     document.querySelector('.traller-btn').addEventListener('click', () => {
@@ -86,12 +92,17 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                             item.style.display = "none";
                         });
                         videoList[index].style.display = 'block' //내가 클릭한것만 보여주기~
+                        if(videoList[index].style.display==='block'){
+                            iframe[index].src=videoSrc[index] //iframe의 src를 돌려줌
+                        }
+                        console.log(index)
                     });
                     //트레일러 영상 끄기 버튼
                     videoContainer.addEventListener('click', () => {
                         videoContainer.style.display = "none"; //영상을 감싼 div숨기기
                         videoList.forEach((item) => { //영상들을 모두 숨기기
                             item.style.display = "none";
+                            iframe[index].src = '' //닫기 클릭했으니 영상도 없어져야함 안하면 닫기 클릭했는데 영상 소리 계속 재생됨
                         });
                     });
                 };
