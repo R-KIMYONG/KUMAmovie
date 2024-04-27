@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
 
             let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn', //1번영상
                 'https://www.youtube.com/embed/L4DvL0UBZPQ?si=qg6Id5dQpIhOmFDo',//2번영상
-                'https://www.youtube.com/embed/5UBl0rLEl0w?si=OTsy8E9c11WBn0qq',//3번영상
+                'https://www.youtube.com/embed/8cQH4CELCSw?si=y1o3IkhMhK10VkVl',//3번영상
                 'https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk',//4번영상
                 'https://www.youtube.com/embed/z_tgY9Nmo18?si=wBFNMYrdRMISgKfC',//5번영상
                 'https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];//6번영상
