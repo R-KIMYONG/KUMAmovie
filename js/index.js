@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             // 평점 기준으로 영화 데이터 정렬
             // console.log(data.sort((a, b) => b.vote_average - a.vote_average))
             // 평점이 가장 높은 영화 선택
-
             let topMovie = data[0];
             //비쥬얼에 나오는 영화의 제목 위치
             let visualTitle = document.querySelector('#visual .content .intro .title');
@@ -75,35 +74,26 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             let poster = document.querySelector('#visual .content .poster'); //평점높은 영화를 비주얼에 배치
             let visual = document.querySelector('#visual')//비쥬얼 배경화면을 변경하기위해 찾음
             let videoContainer = document.getElementById("videoContainer");//여기는 트레일러영상을 담은 박스임
-            let videoList = document.querySelectorAll('#videoContainer ul li');//각 트레일러영상을 의미함
             let page = document.querySelectorAll('.red-line ul li');//page수를 다 찾음
 
-            let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn', 'https://www.youtube.com/embed/L4DvL0UBZPQ?si=qg6Id5dQpIhOmFDo', 'https://www.youtube.com/embed/GTjfXPANIXY?si=XG0KhqvnvzimNXWb', 'https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk', 'https://www.youtube.com/embed/yjEyIHVNd-A?si=YLcuDTOklwhV_Uht', 'https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];
-            let iframe = document.querySelectorAll('iframe')
-            console.log(iframe[0].src)
-
+            let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn', //1번영상
+                'https://www.youtube.com/embed/L4DvL0UBZPQ?si=qg6Id5dQpIhOmFDo',//2번영상
+                'https://www.youtube.com/embed/5UBl0rLEl0w?si=OTsy8E9c11WBn0qq',//3번영상
+                'https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk',//4번영상
+                'https://www.youtube.com/embed/z_tgY9Nmo18?si=wBFNMYrdRMISgKfC',//5번영상
+                'https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];//6번영상
+            let iframe = document.querySelector('iframe')
 
             page.forEach((item, index) => {
                 if (item.classList.contains('on')) {
                     document.querySelector('.traller-btn').addEventListener('click', () => {
                         videoContainer.style.display = "block";
-
-                        videoList.forEach((item) => { //트레일러 영상list전부 숨김
-                            item.style.display = "none";
-                        });
-                        videoList[index].style.display = 'block' //내가 클릭한것만 보여주기~
-                        if (videoList[index].style.display === 'block') {
-                            iframe[index].src = videoSrc[index] //iframe의 src를 돌려줌
-                        }
-                        console.log(index)
+                        iframe.src = videoSrc[index]
                     });
                     //트레일러 영상 끄기 버튼
-                    videoContainer.addEventListener('click', () => {
+                    document.querySelector('.closevideo').addEventListener('click', () => {
                         videoContainer.style.display = "none"; //영상을 감싼 div숨기기
-                        videoList.forEach((item) => { //영상들을 모두 숨기기
-                            item.style.display = "none";
-                            iframe[index].src = '' //닫기 클릭했으니 영상도 없어져야함 안하면 닫기 클릭했는데 영상 소리 계속 재생됨
-                        });
+                        iframe.src = ''
                     });
                 };
             });
@@ -148,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
                 if (typeof keyWord === 'string' && keyWord !== '') {
                     newarr = [...data].filter((item) => item.original_title.toLowerCase().includes(keyWord.trim()));
                 } else if (typeof keyWord === 'number' && keyWord !== '') {
-                    newarr = [...data].filter((item) => parseInt(item.vote_average) === keyWord );
+                    newarr = [...data].filter((item) => parseInt(item.vote_average) === keyWord);
                 }
                 if (newarr.length !== 0) {
                     rerenderCardui(newarr);
