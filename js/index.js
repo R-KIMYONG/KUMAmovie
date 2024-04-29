@@ -76,20 +76,21 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
             let videoContainer = document.getElementById("videoContainer");//여기는 트레일러영상을 담은 박스임
             let page = document.querySelectorAll('.red-line ul li');//page수를 다 찾음
 
-            // let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn', //1번영상
-            //     'https://www.youtube.com/embed/L4DvL0UBZPQ?si=qg6Id5dQpIhOmFDo',//2번영상
-            //     'https://www.youtube.com/embed/8cQH4CELCSw?si=y1o3IkhMhK10VkVl',//3번영상
-            //     'https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk',//4번영상
-            //     'https://www.youtube.com/embed/z_tgY9Nmo18?si=wBFNMYrdRMISgKfC',//5번영상
-            //     'https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];//6번영상
+            let videoSrc = ['https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn', //1번영상
+                'https://www.youtube.com/embed/R8KZ9WOTU78?si=NIczp7MdTaEzFYAa',//2번영상
+                'https://www.youtube.com/embed/KudedLV0tP0?si=F5iM5PTGhi3158gz',//3번영상
+                'https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk',//4번영상
+                'https://www.youtube.com/embed/sw07I2OH4Ho?si=i219LhEgp47J531H`',//5번영상
+                'https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn'];//6번영상
             let iframe = document.querySelector('iframe')
 
             page.forEach((item, index) => {
                 if (item.classList.contains('on')) {
                     document.querySelector('.traller-btn').addEventListener('click', () => {
                         videoContainer.style.display = "block";
-                        // iframe.src = videoSrc[index]
-                        searchTrailer();
+                        iframe.src = ''
+                         iframe.src = videoSrc[index]
+                        // searchTrailer();
                     });
                     //트레일러 영상 끄기 버튼
                     document.querySelector('.closevideo').addEventListener('click', () => {
@@ -106,36 +107,35 @@ document.addEventListener('DOMContentLoaded', () => { //HTML 로딩되면 API받
 
 
 
-            const apiKey = 'AIzaSyCedUvtVcmBnLuEPua10hM9bCrlRp2Pkhg'
-            const movieTitle = topMovie.original_title
-            const query = encodeURIComponent(movieTitle + ' official trailer');
+            // const apiKey = 'AIzaSyCedUvtVcmBnLuEPua10hM9bCrlRp2Pkhg'
+            // const query = encodeURIComponent(visualTitle.textContent + ' trailer');
 
-            // 검색 요청을 보내고 트레일러 영상을 가져오는 함수
-            let searchTrailer = async () => {
-                // 검색 API 엔드포인트
-                const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&q=${query}`;
+            // // 검색 요청을 보내고 트레일러 영상을 가져오는 함수
+            // let searchTrailer = async () => {
+            //     // 검색 API 엔드포인트
+            //     const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&q=${query}`;
 
-                // API 요청 보내기
-                fetch(apiUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        // 검색 결과에서 첫 번째 영상의 ID 추출
-                        const videoId = data.items[0].id.videoId;
-                        // iframe을 생성하여 해당 영상을 재생
-                        playTrailer(videoId);
-                    })
-                    .catch(error => {
-                        console.error('유튜브 검색 요청 실패:', error);
-                    });
-            }
+            //     // API 요청 보내기
+            //     fetch(apiUrl)
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             // 검색 결과에서 첫 번째 영상의 ID 추출
+            //             const videoId = data.items[0].id.videoId;
+            //             // iframe을 생성하여 해당 영상을 재생
+            //             playTrailer(videoId);
+            //         })
+            //         .catch(error => {
+            //             console.error('유튜브 검색 요청 실패:', error);
+            //         });
+            // }
 
-            // 트레일러 영상을 재생하는 함수
-            function playTrailer(videoId) {
-                const iframe = document.querySelector('iframe');
-                iframe.src = `https://www.youtube.com/embed/${videoId}`;
-                iframe.title = 'YouTube video player';
-                iframe.allowFullscreen = true;
-            }
+            // // 트레일러 영상을 재생하는 함수
+            // function playTrailer(videoId) {
+            //     const iframe = document.querySelector('iframe');
+            //     iframe.src = `https://www.youtube.com/embed/${videoId}`;
+            //     iframe.title = 'YouTube video player';
+            //     iframe.allowFullscreen = true;
+            // }
 
             // 검색어를 이용하여 트레일러 검색 실행
             
