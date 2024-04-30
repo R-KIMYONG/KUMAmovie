@@ -51,27 +51,51 @@ document.addEventListener("DOMContentLoaded", () => {
 				"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn", //1번영상
 				"https://www.youtube.com/embed/R8KZ9WOTU78?si=NIczp7MdTaEzFYAa", //2번영상
 				"https://www.youtube.com/embed/KudedLV0tP0?si=F5iM5PTGhi3158gz", //3번영상
-				"https://www.youtube.com/embed/ye4KFyWu2do?si=jSXdLrCKgU2sffZk", //4번영상
+				"https://www.youtube.com/embed/_dY0SVxnHjQ?si=gZGj8Gb4I4FmIoNb", //4번영상
 				"https://www.youtube.com/embed/sw07I2OH4Ho?si=i219LhEgp47J531H`", //5번영상
 				"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn" //6번영상
 			];
 			let iframe = document.querySelector("iframe");
 
-			page.forEach((item, index) => {
-				if (item.classList.contains("on")) {
-					document.querySelector(".traller-btn").addEventListener("click", () => {
+			// page.forEach((item, index) => {
+			// 	if (item.classList.contains("on")) {
+			// 		document.querySelector(".traller-btn").addEventListener("click", (event) => {
+			// 			videoContainer.style.display = "block";
+			// 			iframe.src = "";
+			// 			iframe.src = videoSrc[index];
+			// 			// searchTrailer();
+			// 		});
+			// 		//트레일러 영상 끄기 버튼
+			// 		document.querySelector(".closevideo").addEventListener("click", () => {
+			// 			videoContainer.style.display = "none"; //영상을 감싼 div숨기기
+			// 			iframe.src = "";
+			// 		});
+			// 	}
+			// });
+
+			//위에 있는 이벤트와 동일한 기능이나 위방법엔 메모리할당량 초과 발생우려로 하기 이벤트로 업데이트함
+			let showTrailer = () => {
+				document.querySelector(".btn-content").addEventListener("click", (event) => {
+					//.red-line ul 하위요소중 제일 가까운 li를 찾아
+					// class on이 붙어있는 li를 또 찾아 그의 id를반환한다.
+					let closestLiWithClassOn = document.querySelector(".red-line ul .on");
+					// console.log(closestLiWithClassOn)
+					if (closestLiWithClassOn) {
+						let id = closestLiWithClassOn.id;
 						videoContainer.style.display = "block";
 						iframe.src = "";
-						iframe.src = videoSrc[index];
-						// searchTrailer();
-					});
-					//트레일러 영상 끄기 버튼
+						iframe.src = videoSrc[id - 1];
+					} else {
+						alert("영상을 찾아볼 수 없습니다.");
+					}
+
 					document.querySelector(".closevideo").addEventListener("click", () => {
 						videoContainer.style.display = "none"; //영상을 감싼 div숨기기
 						iframe.src = "";
 					});
-				}
-			});
+				});
+			};
+			showTrailer();
 			visualTitle.textContent = topMovie.original_title; //비주얼 영화제목을 평점높은영화거로
 			movieContent.textContent = topMovie.overview; //위에 하는 작업과 동일한데 영화 줄거리가져옴
 			// poster.innerHTML=''
@@ -220,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			// 	});
 			// });
 
-            //위코드에서는 이벤트 버블링문제와 모든 li에 eventlistener를 부여해서 메모리 과부하문제로 아래 코드로 업데이트함
+			//위코드에서는 이벤트 버블링문제와 모든 li에 eventlistener를 부여해서 메모리 과부하문제로 아래 코드로 업데이트함
 			document.querySelector("#movie-array ul").addEventListener("click", (e) => {
 				let clickedCard = e.target;
 				if (e.target.matches("#movie-array ul")) {
@@ -278,14 +302,19 @@ document.addEventListener("DOMContentLoaded", () => {
 			let pageLi = `
       <li>${totalPage + 1 - key}</li>
       `;
-			let redLine = `<li></li>`;
+			let redLine = `<li id='${totalPage + 1 - key}'></li>`;
 			let pageUl = document.querySelector("#category>nav>ul");
 			let underRedLine = document.querySelector(".red-line>ul");
+
 			pageUl.insertAdjacentHTML("afterbegin", pageLi);
 			underRedLine.insertAdjacentHTML("afterbegin", redLine);
 		}
 		let firstRedLine = document.querySelectorAll(".red-line>ul>li");
 		firstRedLine[0].classList.add("on");
+
+		// 마지막 페이지수를 만듬
+		let lastRedLine = document.querySelectorAll(".red-line>ul>li");
+		lastRedLine[lastRedLine.length - 1].id = `${lastRedLine.length}`;
 
 		//각페이지 빨간색 밑줄효과와 페이지 로드되거나 전환될때 검색창에 포커스
 		let category = () => {
@@ -323,18 +352,30 @@ document.addEventListener("DOMContentLoaded", () => {
 		//allMovie.slice(0, 20) 성능개선하기위해 page['1']을 택함 slice는 새로운배열생성하니까 메모리 더 많이 차지함
 		cardUi(page["1"]);
 
-		let categoryPage = document.querySelectorAll("#category>nav>ul>li");
-		for (let i = 0; i < categoryPage.length; i++) {
-			//페이지 수를 순환함
-			categoryPage[i].addEventListener("click", (e) => {
-				serchInput.focus();
-				if (i === categoryPage.length - 1) {
-					cardUi(allMovie); //All클릭하면 다시 전체 영화 로드함
-				} else {
-					cardUi(page[i + 1]); //다른페이지를 클릭하면 해당 페이지의 데이터만 출력
-					// console.log(2)//test
-				}
-			});
-		}
+		// let categoryPage = document.querySelectorAll("#category>nav>ul>li");
+		// for (let i = 0; i < categoryPage.length; i++) {
+		// 	//페이지 수를 순환함
+		// 	categoryPage[i].addEventListener("click", (e) => {
+		// 		serchInput.focus();
+		// 		if (i === categoryPage.length - 1) {
+		// 			cardUi(allMovie); //All클릭하면 다시 전체 영화 로드함
+		// 		} else {
+		// 			cardUi(page[i + 1]); //다른페이지를 클릭하면 해당 페이지의 데이터만 출력
+		// 			// console.log(2)//test
+		// 		}
+		// 	});
+		// }
+
+        //불필요하게 메모리점용으로 위 코드를 아래코드로 업데이트함
+		document.querySelector("#category>nav ul").addEventListener("click", (event) => {
+			if (event.target.matches("#category>nav ul")) return;
+			let pageNum = document.querySelector(".red-line ul .on");
+
+			if (pageNum.id == 6) {
+				cardUi(allMovie);
+			} else {
+				cardUi(page[`${pageNum.id}`]);
+			}
+		});
 	});
 });
