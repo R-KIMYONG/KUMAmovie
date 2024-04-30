@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		//로드된 API의 페이지수만큼 페이지 생김
 		for (let key in page) {
 			let pageLi = `
-      <li>${totalPage + 1 - key}</li>
+      <li class='${totalPage + 1 - key}'>${totalPage + 1 - key}</li>
       `;
 			let redLine = `<li id='${totalPage + 1 - key}'></li>`;
 			let pageUl = document.querySelector("#category>nav>ul");
@@ -320,19 +320,36 @@ document.addEventListener("DOMContentLoaded", () => {
 		let category = () => {
 			//1. #category>nav>ul>li를 호버하면
 			//2. .red-line>ul>li가 100px로된다.
-			let categoryList = document.querySelectorAll("#category nav ul li");
-			let categoryUnderline = document.querySelectorAll(".red-line ul li");
+			// let categoryList = document.querySelectorAll("#category nav ul li");
+			// let categoryUnderline = document.querySelectorAll(".red-line ul li");
 
-			categoryList.forEach((item, index) => {
-				item.addEventListener("click", () => {
-					let under = document.querySelectorAll(".red-line ul li")[index];
-					// let firstRedLine = document.querySelectorAll(".red-line ul li")[0];
-					// firstRedLine.classList.add('on');
-					categoryUnderline.forEach((el) => {
-						el.classList.remove("on");
-						under.classList.add("on");
-					});
+			// categoryList.forEach((item, index) => {
+			// 	item.addEventListener("click", () => {
+			// 		let under = document.querySelectorAll(".red-line ul li")[index];
+			// 		// let firstRedLine = document.querySelectorAll(".red-line ul li")[0];
+			// 		// firstRedLine.classList.add('on');
+			// 		categoryUnderline.forEach((el) => {
+			// 			el.classList.remove("on");
+			// 			under.classList.add("on");
+			// 		});
+			// 	});
+			// });
+
+			//메모리 과부하 방지차원에서 위코드를 아래코드로 업데이트함
+			document.querySelector("#category>nav ul").addEventListener("click", (event) => {
+				if (event.target.matches("#category nav ul")) return;
+				let allRedLineLi = document.querySelectorAll(".red-line ul li");
+				// console.log(allRedLineLi)
+				let test = [...allRedLineLi].find((li) => {
+					return li.id == event.target.classList.value;
 				});
+				console.log(event.target.classList.value);
+				allRedLineLi.forEach((item) => {
+					item.classList.remove("on");
+				});
+				test.classList.add("on");
+				// console.log(...test);
+				// console.log(event.target.classList.vlaue);
 			});
 
 			// 영화 검색창 포커스하면 빨간색 밑줄 생김 아닐때 없어짐
@@ -366,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		// 	});
 		// }
 
-        //불필요하게 메모리점용으로 위 코드를 아래코드로 업데이트함
+		//불필요하게 메모리점용으로 위 코드를 아래코드로 업데이트함
 		document.querySelector("#category>nav ul").addEventListener("click", (event) => {
 			if (event.target.matches("#category>nav ul")) return;
 			let pageNum = document.querySelector(".red-line ul .on");
