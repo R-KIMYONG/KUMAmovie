@@ -1,6 +1,6 @@
-// 영화정보 API
 "use strict";
 
+// 영화정보 API
 const options = {
 	method: "GET",
 	headers: {
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				document.querySelector("#movie-array ul").innerHTML = "";
 				movieData.forEach((item, i) => {
 					//순서대로 하나하나씩 배치해라!
-					let templet = `<li>
+					let templet = `<li class='${movieData[i].id}'>
                     <div class="movie-poster">
                         <img src="https://image.tmdb.org/t/p/w500${movieData[i].poster_path}" alt="${movieData[i].id}">
                     </div>
@@ -212,13 +212,25 @@ document.addEventListener("DOMContentLoaded", () => {
 					cardModalBox.style.top = "-850px";
 				});
 			};
+			// document.querySelectorAll("#movie-array ul li").forEach((item, index) => {
+			// 	item.addEventListener("click", (e) => {
+			// 		document.getElementById("movie-modal").style.top = "0px";
+			// 		// 클릭된 li 요소의 데이터를 얻기 위해 클릭 이벤트 리스너에서 cardModal() 함수 호출
+			// 		cardModal(movieData[index]); // 클릭된 요소의 데이터를 전달하여 모달에 보여주기
+			// 	});
+			// });
 
-			document.querySelectorAll("#movie-array ul li").forEach((item, index) => {
-				item.addEventListener("click", (e) => {
-					document.getElementById("movie-modal").style.top = "0px";
-					// 클릭된 li 요소의 데이터를 얻기 위해 클릭 이벤트 리스너에서 cardModal() 함수 호출
-					cardModal(movieData[index]); // 클릭된 요소의 데이터를 전달하여 모달에 보여주기
+            //위코드에서는 이벤트 버블링문제와 모든 li에 eventlistener를 부여해서 메모리 과부하문제로 아래 코드로 업데이트함
+			document.querySelector("#movie-array ul").addEventListener("click", (e) => {
+				let clickedCard = e.target;
+				if (e.target.matches("#movie-array ul")) {
+					return;
+				}
+				let movieModalData = movieData.filter((item) => {
+					return item.id == clickedCard.closest("li").classList.value;
 				});
+				cardModal(...movieModalData);
+				document.getElementById("movie-modal").style.top = "0px";
 			});
 		};
 
