@@ -236,13 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
 					cardModalBox.style.top = "-850px";
 				});
 			};
-			// document.querySelectorAll("#movie-array ul li").forEach((item, index) => {
-			// 	item.addEventListener("click", (e) => {
-			// 		document.getElementById("movie-modal").style.top = "0px";
-			// 		// 클릭된 li 요소의 데이터를 얻기 위해 클릭 이벤트 리스너에서 cardModal() 함수 호출
-			// 		cardModal(movieData[index]); // 클릭된 요소의 데이터를 전달하여 모달에 보여주기
-			// 	});
-			// });
 
 			//위코드에서는 이벤트 버블링문제와 모든 li에 eventlistener를 부여해서 메모리 과부하문제로 아래 코드로 업데이트함
 			document.querySelector("#movie-array ul").addEventListener("click", (e) => {
