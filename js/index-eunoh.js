@@ -1,3 +1,5 @@
+import { options } from "./options.js";
+
 //비쥬얼에 나오는 영화의 제목 위치
 const visualTitle = document.querySelector("#visual .content .intro .title");
 //비쥬얼에 나오는 영화의 소개 위치
@@ -13,6 +15,8 @@ const searchInput = document.querySelector("#search-movie"); //검색창을 선�
 const searchOption = document.getElementById("search-option"); //검색옵션 선택임
 const showMoreBtn = document.querySelector(".show-more");
 const pageUl = document.querySelector("#category>nav>ul");
+const carouselBefore = document.querySelector('#carousel-before');
+const carouselNext = document.querySelector('#carousel-next');
 let selectedPageNum = 0;
 let cumulativeNum = 1;
 let total_pages = 0;
@@ -20,16 +24,7 @@ let total_results = 0;
 let accMovies = [];
 let pagination = [];
 let beforeNextFlag = '';
-
-// fetch options
-const options = {
-	method: "GET",
-	headers: {
-		accept: "application/json",
-		Authorization:
-			"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmN2Q0ZmVkNjFhOWJlYzIwMzMzOGM4ZDQ0YjI4N2Q4OSIsInN1YiI6IjY2Mjg3NTc2MTc2YTk0MDE2NjgyMDlkMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.o_kqyGpLPOWQA3Ye2wXP63XwItH3ceGKBySBV7CtrRs"
-	}
-};
+let currCarouselIndex = 0;
 
 const videoSrc = [
 	"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn", //1번영상
@@ -154,7 +149,7 @@ const renderCardUi = (movieData) => {
 };
 
 // 페이지네이션 바뀔 때마다 상단부분(비쥬얼부분) 바꾸고(평점높은 영화로), 파라미터로 받은 데이터 배열 그대로 반환
-const cardUi = (data) => {
+const changeTopVisual = (data) => {
 	// 평점이 가장 높은 영화 선택
 	const topMovie = data[0];
 
@@ -262,14 +257,70 @@ const redLineControl = (number = null) => {
 	}
 }
 
+const handlePagination = async (event) => {
+	if(event.target.tagName === "DIV" || event.target.tagName === "UL") return;
+
+	const currSelectedClassList = event.target.classList.value;
+	const redLineId = event.target.id;
+
+	if(currSelectedClassList === 'before'){
+		const dataSet = Number(event.target.dataset.pointer);
+		if(dataSet === -1){
+			return;
+		}else{
+			makePagination(pagination[dataSet], dataSet)
+		}
+		redLineControl();
+		beforeNextFlag = 'before';
+	}else if(currSelectedClassList === 'next'){
+		const dataSet = Number(event.target.dataset.pointer);
+
+		if(dataSet > pagination.length){
+			return;
+		}else if(beforeNextFlag === 'before'){
+			makePagination(pagination[dataSet], dataSet);
+		}else {
+			await fetchNextPages();
+			makePagination(pagination[dataSet], dataSet);
+		}
+		redLineControl();
+		beforeNextFlag = 'next';
+	}else{			
+		selectedPageNum = currSelectedClassList - 1;
+
+		const currPageData = changeTopVisual(accMovies[selectedPageNum]);
+		renderCardUi(currPageData);
+		redLineControl(redLineId);
+	}
+}
+
+const handleCarousel = (e) => {
+	const to = e.target.innerText;
+	
+	if(to === 'navigate_before'){
+		if(currCarouselIndex > 0){
+			currCarouselIndex --;
+			changeTopVisual(accMovies[currCarouselIndex]);
+		}
+	}else if(to === 'navigate_next'){
+		if(currCarouselIndex < 5){
+			if(currCarouselIndex < 4) currCarouselIndex ++;
+			changeTopVisual(accMovies[currCarouselIndex]);
+		}
+	}
+}
+
 
 /** ========================== init ============================== */
-
 const init = async () => {
 	searchInput.focus(); //페이지 로딩되면 검색란에 포커스되게 하기
 
 	// youtube 버튼 핸들링
 	btnContent.addEventListener("click", handleYoutubeClick);
+
+	// carousel 버튼 핸들링
+	carouselBefore.addEventListener('click', handleCarousel);
+	carouselNext.addEventListener('click', handleCarousel);
 
 	// 우측 메뉴 모달 부착
 	menuModal();
@@ -285,52 +336,11 @@ const init = async () => {
 	}
 
 	redLineControl(0);
-	
 
 	//첫화면 로드 시 보이는 영화카드들
 	//allMovie.slice(0, 20) 성능개선하기위해 page['1']을 택함 slice는 새로운배열생성하니까 메모리 더 많이 차지함
-	cardUi(accMovies[0]);
+	changeTopVisual(accMovies[0]);
 	renderCardUi(accMovies[0].slice(0, 4));
-
-	// 페이지네이션 클릭하면
-	pageUl.addEventListener("click", async (event) => {
-
-		if(event.target.tagName === "DIV" || event.target.tagName === "UL") return;
-
-		const currSelectedClassList = event.target.classList.value;
-		const redLineId = event.target.id;
-
-		if(currSelectedClassList === 'before'){
-			const dataSet = Number(event.target.dataset.pointer);
-			if(dataSet === -1){
-				return;
-			}else{
-				makePagination(pagination[dataSet], dataSet)
-			}
-			redLineControl();
-			beforeNextFlag = 'before';
-		}else if(currSelectedClassList === 'next'){
-			const dataSet = Number(event.target.dataset.pointer);
-
-			if(dataSet > pagination.length){
-				return;
-			}else if(beforeNextFlag === 'before'){
-				makePagination(pagination[dataSet], dataSet);
-			}else {
-				await fetchNextPages();
-				makePagination(pagination[dataSet], dataSet);
-			}
-			redLineControl();
-			beforeNextFlag = 'next';
-		}else{			
-			selectedPageNum = currSelectedClassList - 1;
-
-			const currPageData = cardUi(accMovies[selectedPageNum]);
-			renderCardUi(currPageData);
-			redLineControl(redLineId);
-		}
-	});
-
 
 	// 영화 검색창 포커스하면 빨간색 밑줄 생김 아닐때 없어짐
 	// 마우스커서가 검색창 포커스되면~
@@ -340,14 +350,12 @@ const init = async () => {
 	searchInput.addEventListener("blur", () => document.querySelector(".search-line").classList.remove("on"));
 		
 	//불필요하게 메모리점용으로 위 코드를 아래코드로 업데이트함
-	pageUl.addEventListener("click", (event) => {
-		
-	});
+	pageUl.addEventListener("click", handlePagination);
 
 	// 더보기 버튼 클릭시
 	showMoreBtn.addEventListener("click", () => {
 		searchInput.focus();
-		const data = cardUi(accMovies[selectedPageNum]);
+		const data = changeTopVisual(accMovies[selectedPageNum]);
 		renderCardUi(data);
 	});
 

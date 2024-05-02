@@ -3,10 +3,20 @@
 	padding: 0px;
 }
 
+.material-symbols-outlined {
+	font-variation-settings:
+	'FILL' 0,
+	'wght' 400,
+	'GRAD' 0,
+	'opsz' 24;
+	color: white;
+	font-size: 60px;
+	cursor: pointer;
+}
+
 a {
 	text-decoration: none;
 	display: block;
-	color: #fff;
 }
 
 li {
@@ -268,6 +278,10 @@ header {
 	position: relative;
 	z-index: 1;
 	transition: 0.5s;
+	/* eunoh 추가 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 /* 트레일러 영상종료버튼 */
@@ -317,13 +331,20 @@ header {
 
 /* 비쥬얼 내부에 있는 내용들임 */
 #visual .content {
-	position: absolute;
-	right: 40px;
-	bottom: 40px;
+	/* eunoh 수정 */
+	position: relative;
+	bottom: -40px;
 	display: flex;
-	justify-content: space-between;
-	width: 900px;
+	justify-content: center;
 	align-items: center;
+	z-index: 1;
+	gap: 1rem;
+	width: 1100px;
+	/* position: absolute; */
+	/* right: 40px; */
+	/* bottom: 40px; */
+	/* justify-content: space-between; */
+	/* width: 900px; */
 }
 
 /* 비쥬얼 내부 영화소개 부분임 */
@@ -417,6 +438,8 @@ header {
 
 /* 블랙커버부분 */
 #black-cover {
+	/* eunoh 수정 */
+	position: absolute;
 	width: 100%;
 	height: 100%;
 	border-radius: 25px 25px 0px 0px;
