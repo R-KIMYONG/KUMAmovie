@@ -435,7 +435,10 @@ header {
 }
 
 #category nav {
-	width: 300px;
+	/* width: 300px; */
+	/* eunoh 수정 */
+	width: 400px;
+
 }
 
 #category nav ul {
@@ -448,7 +451,9 @@ header {
 }
 
 #category nav ul li {
-	width: 16.65%;
+	/* width: 16.65%; */
+	/* eunoh 추가 */
+	width: 1.7rem;
 	transition: 0.25s;
 	display: block;
 	cursor: pointer;
@@ -518,17 +523,25 @@ header {
 }
 
 #category .red-line ul {
-	width: 300px;
+	/* width: 300px; */
 	height: 5px;
 	display: flex;
-	justify-content: space-between;
+	/* justify-content: space-between; */
+	/* eunoh 추가 */
+	justify-content: center;
+	gap: 1.3rem;
+	margin: 0 80px;
+	width: 243px;
 }
 
 #category .red-line ul li {
-	width: 16.65%;
+	/* width: 16.65%; */
 	height: 5px;
 	border-radius: 10px;
 	transition: 0.5s;
+	/* eunoh 추가 */
+	width: 13%;
+
 }
 
 #category .red-line ul li.on {
