@@ -251,7 +251,7 @@ const redLineControl = (number = null) => {
 	const redLine = document.querySelectorAll(".red-line>ul>li");
 	// 그냥 on 을 모두 제거하고
 	redLine.forEach(e => e.classList.remove('on'));
-	// 최초일 경우
+	// 최초혹은 페이지네이션 넘겼을 경우
 	if(number === 0){
 		redLine[0].classList.add("on");
 	// 파라미터가 없지 않다면 on을 부여합니다. 
@@ -295,13 +295,21 @@ const handlePagination = async (event) => {
 			clearInterval(intervalNum);
 			makePagination(pagination[dataSet], dataSet);
 		}else {
+			const data = await fetchNextPages();
 			// 6번이상으로 넘어가면 일단 정지 타이머도 적용 안합니다..
+			// 그리고 캐러셀 <> 버튼과 유튜브 버튼도 일단 숨깁니다.
+			carouselBefore.style.visibility = "hidden";
+			carouselNext.style.visibility = "hidden";
+			btnContent.parentElement.style.visibility = "hidden";
+
+			redLineControl(0);
+			const currPageData = changeTopVisual(accMovies[accMovies.length - data.length]);
+			renderCardUi(currPageData);
 			clearInterval(intervalNum);
 			// next > 클릭 일때만 fetch 를 수행합니다.
-			await fetchNextPages();
+			
 			makePagination(pagination[dataSet], dataSet);
 		}
-		redLineControl();
 		// 다음을 클릭했으므로 
 		beforeNextFlag = 'next';
 	// 페이지네이션 번호 클릭시 
