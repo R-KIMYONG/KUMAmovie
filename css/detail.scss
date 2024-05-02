@@ -1,0 +1,49 @@
+.recommendations {
+
+    >.header {
+        font-size  : 1.4rem;
+        font-weight: bold;
+        padding    : 10px;
+    }
+
+    >.content {
+        display: flex;
+        width  : 100%;
+
+        >.recommend-movie {
+            // width     : 100%;
+            overflow  : hidden;
+            text-align: center;
+            box-sizing: border-box;
+            margin    : auto;
+
+            >.poster {
+                // width       : 100%;
+                max-width: 300px;
+
+                >img {
+                    width: 100%;
+                }
+            }
+
+            >.info {
+                >.title {
+                    text-overflow: ellipsis;
+                }
+
+                >.vote {
+                    >.avg {
+                        &:before {
+                            content: '★';
+                        }
+                    }
+
+                    >.cnt {
+                        color    : grey;
+                        font-size: 0.7rem;
+                    }
+                }
+            }
+        }
+    }
+}
