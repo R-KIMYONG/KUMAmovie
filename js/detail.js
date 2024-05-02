@@ -1,15 +1,13 @@
 const movieId = 278; // 일단 고정값, 추후 받아올 것
 
-(function () {
-	getRecommandMovieList(movieId).then((list) => {
-		console.log(list);
-		const html = list.results
-			.slice(0, 5)
-			.map((movie) => makeMovieHtml(movie))
-			.join("");
-		document.querySelector(".recommendations > .content").innerHTML = html;
-	});
-})();
+getRecommandMovieList(movieId).then((list) => {
+	console.log(list);
+	const html = list.results
+		.slice(0, 5)
+		.map((movie) => makeMovieHtml(movie))
+		.join("");
+	document.querySelector(".recommendations > .content").innerHTML = html;
+});
 
 async function getRecommandMovieList(movieId) {
 	return fetch(`https://api.themoviedb.org/3/movie/${movieId}/recommendations`, {
