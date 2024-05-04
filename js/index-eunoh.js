@@ -16,7 +16,8 @@ const searchOption = document.getElementById("search-option"); //검색옵션 �
 const showMoreBtn = document.querySelector(".show-more"); // 더보기 버튼
 const pageUl = document.querySelector("#category>nav>ul"); // 페이지네이션 담을 ul
 const carouselBefore = document.querySelector('#carousel-before'); // 캐러셀 이전버튼
-const carouselNext = document.querySelector('#carousel-next'); // 캐러셀 이후버튼
+const carouselNext = document.querySelector('#carousel-next'); // 캐러셀 이후버튼'
+const searchLine = document.querySelector(".search-line");
 // 페이지네이션에서 선택된 페이지 넘버
 let selectedPageNum = 0;
 // 페이지네이션 무한 증가를 위해 누적되는 넘버(1부터 시작해야합니다)
@@ -471,10 +472,10 @@ const init = async () => {
 
 	// 영화 검색창 포커스하면 빨간색 밑줄 생김 아닐때 없어짐
 	// 마우스커서가 검색창 포커스되면~
-	searchInput.addEventListener("focus", () => document.querySelector(".search-line").classList.add("on"));
+	searchInput.addEventListener("focus", () => searchLine.classList.add("on"));
 
 	// 마우스커서가 검색창 포커스안되면~
-	searchInput.addEventListener("blur", () => document.querySelector(".search-line").classList.remove("on"));
+	searchInput.addEventListener("blur", () => searchLine.classList.remove("on"));
 		
 	//불필요하게 메모리점용으로 위 코드를 아래코드로 업데이트함
 	pageUl.addEventListener("click", handlePagination);
@@ -486,9 +487,7 @@ const init = async () => {
 	searchIcon.addEventListener("click", handleSearch);
 	
 	// 엔터키로 검색할 떄
-	searchInput.addEventListener("keypress", (e) => {
-		if (e.keyCode === 13) searchIcon.click();
-	});
+	searchInput.addEventListener("keypress", (e) => e.keyCode === 13 && searchIcon.click());
 }
 
 // init!
