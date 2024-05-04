@@ -264,9 +264,9 @@ header {
 	text-decoration: underline;
 }
 
-.material-symbols-outlined {
+/* .material-symbols-outlined {
 	font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
-}
+} */
 
 /* 여기서 부터 비쥬얼임 */
 #visual {
@@ -643,6 +643,34 @@ header {
 	color: #fff;
 	font-size: 22px;
 	font-weight: bold;
+}
+
+.start-wrapper{
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+}
+.star{
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 16px;
+	height: 16px;
+	font-size: 24px;
+	padding-top: 12px;
+	box-sizing: border-box;
+}
+
+.star.material-symbols-outlined {
+	font-variation-settings:
+		'FILL' 1,
+		'wght' 400,
+		'GRAD' 0,
+		'opsz' 48;
 }
 
 /* 여기서부터 영화 모달임 */

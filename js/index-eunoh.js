@@ -57,7 +57,7 @@ const menuModal = () => {
 	});
 };
 
-// 영화 개별 카드 생성용
+// 영화 모달 생성용
 const cardModal = (item) => {
 	const cardModalBox = document.getElementById("movie-modal");
 	const template = `
@@ -92,21 +92,31 @@ const searchKeyword = (item) => {
 	}
 }
 
-//페이지마다 다른 영화내용을 추가함
+// 영화 카드 생성
 const renderCardUi = (movieData) => {
 	const movieArrUL = document.querySelector("#movie-array ul");
 	if (typeof movieData === "object") {
+
 		movieArrUL.innerHTML = "";
 		movieData.forEach((item, i) => {
-			//순서대로 하나하나씩 배치해라!
+
+			const rating = Math.round(item.vote_average);
+
 			let template = `
-				<li class='${movieData[i].id}'>
+				<li class='${item.id}'>
 					<div class="movie-poster">
-						<img src="https://image.tmdb.org/t/p/w500${movieData[i].poster_path}" alt="${movieData[i].id}">
+						<img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.id}">
 					</div>
 					<div class="title">
-						<p>${movieData[i].original_title}</p>
-						<p>평점 : ${movieData[i].vote_average}</p>
+						<p>${item.original_title}</p>
+						<div class="start-wrapper">
+							<div class="star material-symbols-outlined">${rating < 2 ? 'star_half' : 'star'}</div>
+							<div class="star material-symbols-outlined">${rating < 4 ? 'star_half' : 'star'}</div>
+							<div class="star material-symbols-outlined">${rating < 6 ? 'star_half' : 'star'}</div>
+							<div class="star material-symbols-outlined">${rating < 8 ? 'star_half' : 'star'}</div>
+							<div class="star material-symbols-outlined">${rating < 10 ? 'star_half' : 'star'}</div>
+							<!-- <p>평점 : ${rating}</p> -->
+						</div>
 					</div>
 				</li>`;
 				movieArrUL.insertAdjacentHTML("beforeend", template);
@@ -147,6 +157,31 @@ const changeTopVisual = (data) => {
 
 	return data;
 };
+
+// 더보기 버튼 핸들러
+const handleShowMore = () => {
+	searchInput.focus();
+	const data = changeTopVisual(accMovies[selectedPageNum]);
+	renderCardUi(data);
+}
+
+// 검색버튼 핸들러
+const handleSearch = () => {
+	const Keyword = searchKeyword(searchInput.value); //유저가 검색창에 입력한 검색어 (만약에 검색어 앞 또는 뒤에 빈칸이 있으면 없앤다)
+
+	let newArr = [];
+	if (typeof Keyword === "string" && Keyword !== "") {
+		newArr = accMovies[selectedPageNum].filter((item) => item.original_title.toLowerCase().includes(Keyword.trim()));
+	} else if (typeof Keyword === "number" && Keyword !== "") {
+		newArr = accMovies[selectedPageNum].filter((item) => parseInt(item.vote_average) === Keyword);
+	}
+
+	if (newArr.length !== 0) {
+		renderCardUi(newArr);
+	} else {
+		renderCardUi(`${searchOption.value} ${searchInput.value}에 대한 검색결과가 없습니다.😅`);
+	}
+}
 
 // 페이지네이션, 처음에 한번 호출되고 < > 클릭으로 페이지네이션 바뀔때마다 호출
 const makePagination = (paginationArr, pageNum) => {
@@ -344,7 +379,7 @@ const carouselInterval = (curr = null) => {
 
 }
 
-// 상단 캐러셀 좌우 변경시
+// 상단 캐러셀 좌우 버튼 클릭시
 const handleCarousel = (e) => {
 	const to = e.target.innerText;
 	
@@ -445,35 +480,14 @@ const init = async () => {
 	pageUl.addEventListener("click", handlePagination);
 
 	// 더보기 버튼 클릭시
-	showMoreBtn.addEventListener("click", () => {
-		searchInput.focus();
-		const data = changeTopVisual(accMovies[selectedPageNum]);
-		renderCardUi(data);
-	});
+	showMoreBtn.addEventListener("click", handleShowMore);
 
 	// 아이콘 눌러서 검색할 때
-	searchIcon.addEventListener("click", () => {
-		const Keyword = searchKeyword(searchInput.value); //유저가 검색창에 입력한 검색어 (만약에 검색어 앞 또는 뒤에 빈칸이 있으면 없앤다)
-
-		let newArr = [];
-		if (typeof Keyword === "string" && Keyword !== "") {
-			newArr = accMovies[selectedPageNum].filter((item) => item.original_title.toLowerCase().includes(Keyword.trim()));
-		} else if (typeof Keyword === "number" && Keyword !== "") {
-			newArr = accMovies[selectedPageNum].filter((item) => parseInt(item.vote_average) === Keyword);
-		}
-
-		if (newArr.length !== 0) {
-			renderCardUi(newArr);
-		} else {
-			renderCardUi(`${searchOption.value} ${searchInput.value}에 대한 검색결과가 없습니다.😅`);
-		}
-	});
+	searchIcon.addEventListener("click", handleSearch);
 	
 	// 엔터키로 검색할 떄
 	searchInput.addEventListener("keypress", (e) => {
-		if (e.keyCode === 13) {
-			searchIcon.click();
-		}
+		if (e.keyCode === 13) searchIcon.click();
 	});
 }
 
