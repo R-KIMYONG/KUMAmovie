@@ -18,6 +18,7 @@ const pageUl = document.querySelector("#category>nav>ul"); // 페이지네이션
 const carouselBefore = document.querySelector('#carousel-before'); // 캐러셀 이전버튼
 const carouselNext = document.querySelector('#carousel-next'); // 캐러셀 이후버튼'
 const searchLine = document.querySelector(".search-line");
+const movieArrUL = document.querySelector("#movie-array ul");
 // 페이지네이션에서 선택된 페이지 넘버
 let selectedPageNum = 0;
 // 페이지네이션 무한 증가를 위해 누적되는 넘버(1부터 시작해야합니다)
@@ -44,6 +45,15 @@ const videoSrc = [
 	"https://www.youtube.com/embed/sw07I2OH4Ho?si=i219LhEgp47J531H`", //5번영상
 	// "https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn" //6번영상
 ];
+
+// detail 페이지로 이동시 실행
+const setSearchParams = (id) => {
+	const url = new URL(window.location.href);
+	url.pathname = 'detail.html';
+	url.searchParams.set("id", id);
+
+	return url.href;
+}
 
 //menu 모달 in out
 const menuModal = () => {
@@ -95,16 +105,10 @@ const searchKeyword = (item) => {
 
 // 영화 카드 생성
 const renderCardUi = (movieData) => {
-	const movieArrUL = document.querySelector("#movie-array ul");
 	if (typeof movieData === "object") {
-
 		movieArrUL.innerHTML = "";
 		movieData.forEach((item, i) => {
-
 			const rating = Math.round(item.vote_average);
-
-			console.log(rating)
-
 			let template = `
 				<li class='${item.id}'>
 					<div class="movie-poster">
@@ -131,22 +135,29 @@ const renderCardUi = (movieData) => {
 				liList[i].style.marginRight = "0px";
 			}
 		});
+
+		return movieData;
 	} else {
 		movieArrUL.innerHTML = "";
 		movieArrUL.innerHTML = `<h3 style="color:#fff;font-size:40px;">${movieData}</h3>`;
 	}
-
-	movieArrUL.addEventListener("click", (e) => {
-		const clickedCard = e.target;
-		if (e.target.matches("#movie-array ul")) return;
-
-		const movieModalData = movieData.filter((item) => {
-			return item.id == clickedCard.closest("li").classList.value;
-		});
-		cardModal(...movieModalData);
-		document.getElementById("movie-modal").style.top = "0px";
-	});
 };
+
+// 카드 클릭 시 실행
+const handleCardClick = (e) => {
+	const clickedCard = e.target;
+	if (e.target.matches("#movie-array ul")) return;
+
+	const clickedCardId = accMovies[selectedPageNum].filter((item) => {
+		return item.id == clickedCard.closest("li").classList.value;
+	});
+
+	const a = setSearchParams(clickedCardId[0].id);
+
+	window.location.href = a;
+	// cardModal(...movieModalData);
+	// document.getElementById("movie-modal").style.top = "0px";
+}
 
 // 페이지네이션 바뀔 때마다 상단부분(비쥬얼부분) 바꾸고(평점높은 영화로), 파라미터로 받은 데이터 배열 그대로 반환
 const changeTopVisual = (data) => {
@@ -464,6 +475,9 @@ const init = async () => {
 	
 	// 카드 부착
 	renderCardUi(accMovies[0].slice(0, 4));
+
+	// 카드 클릭시 디테일로 이동
+	movieArrUL.addEventListener("click", handleCardClick);
 
 	// youtube 버튼 핸들링
 	btnContent.addEventListener("click", (e) => handleYoutubeClick(e, intervalNum));

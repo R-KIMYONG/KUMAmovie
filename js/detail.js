@@ -98,16 +98,7 @@ async function fetchMovieDetails(movieId) {
     }
 }
 
-const movieId = 278; // 일단 고정값, 추후 받아올 것
-
-getRecommandMovieList(movieId).then((list) => {
-	console.log(list);
-	const html = list.results
-		.slice(0, 5)
-		.map((movie) => makeMovieHtml(movie))
-		.join("");
-	document.querySelector(".recommendations > .content").innerHTML = html;
-});
+// const movieId = 278; // 일단 고정값, 추후 받아올 것
 
 async function getRecommandMovieList(movieId) {
 	return fetch(`https://api.themoviedb.org/3/movie/${movieId}/recommendations`, {
@@ -140,4 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const MOVIE_ID = getMovieId();
     fetchCast(MOVIE_ID);
     fetchMovieDetails(MOVIE_ID);
+
+    getRecommandMovieList(MOVIE_ID).then((list) => {
+        console.log(list);
+        const html = list.results
+            .slice(0, 5)
+            .map((movie) => makeMovieHtml(movie))
+            .join("");
+        document.querySelector(".recommendations > .content").innerHTML = html;
+    });
 });
