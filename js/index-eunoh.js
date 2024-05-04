@@ -103,6 +103,8 @@ const renderCardUi = (movieData) => {
 
 			const rating = Math.round(item.vote_average);
 
+			console.log(rating)
+
 			let template = `
 				<li class='${item.id}'>
 					<div class="movie-poster">
@@ -111,11 +113,11 @@ const renderCardUi = (movieData) => {
 					<div class="title">
 						<p>${item.original_title}</p>
 						<div class="start-wrapper">
-							<div class="star material-symbols-outlined">${rating < 2 ? 'star_half' : 'star'}</div>
-							<div class="star material-symbols-outlined">${rating < 4 ? 'star_half' : 'star'}</div>
-							<div class="star material-symbols-outlined">${rating < 6 ? 'star_half' : 'star'}</div>
-							<div class="star material-symbols-outlined">${rating < 8 ? 'star_half' : 'star'}</div>
-							<div class="star material-symbols-outlined">${rating < 10 ? 'star_half' : 'star'}</div>
+							<div class="star material-symbols-outlined">${rating === 1 ? 'star_half' : rating >= 2 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 3 ? 'star_half' : rating >= 4 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 5 ? 'star_half' : rating >= 6 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 7 ? 'star_half' : rating >= 8 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 9 ? 'star_half' : rating >= 10 ? 'star' : ''}</div>
 							<!-- <p>평점 : ${rating}</p> -->
 						</div>
 					</div>
