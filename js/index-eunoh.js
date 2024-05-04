@@ -1,4 +1,5 @@
 import { options } from "./options.js";
+import { setSearchParams } from "./setSearchParams.js";
 
 //비쥬얼에 나오는 영화의 제목 위치
 const visualTitle = document.querySelector("#visual .content .intro .title");
@@ -45,15 +46,6 @@ const videoSrc = [
 	"https://www.youtube.com/embed/sw07I2OH4Ho?si=i219LhEgp47J531H`", //5번영상
 	// "https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn" //6번영상
 ];
-
-// detail 페이지로 이동시 실행
-const setSearchParams = (id) => {
-	const url = new URL(window.location.href);
-	url.pathname = 'detail.html';
-	url.searchParams.set("id", id);
-
-	return url.href;
-}
 
 //menu 모달 in out
 const menuModal = () => {

@@ -118,7 +118,20 @@
 		<h2 class="header">비슷한 영화 추천</h2>
 		<div class="content"></div>
 	</div>
-	<script src="./js/detail.js"></script>
+
+	<div class="review-wrapper">
+		<h3>리뷰 기능 자리</h3>	
+		<div class="reviews"></div>
+		<p class="guide">로그인이 필요합니다</p>
+		<button class="loginout">로그인</button>
+		<button class="join">회원가입</button>
+		<form class="review-form">
+			<label for="name">영화평</label>
+			<input type="text" class="user-review" placeholder="한줄평을 입력하세요" required />
+			<button>제출하기</button>
+		</form>
+	</div>
+	<script src="./js/detail.js" type="module"></script>
 </body>
 
 </html>

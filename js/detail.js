@@ -1,21 +1,16 @@
+import { setLocalStorage, getLocalStorage } from "./localstorageGetSet.js";
+
 const API_KEY = 'e4a84d9378c3db262d591cbe6cd51d64'; // 여기에 TMDB API 키를 입력하세요.
 // const MOVIE_ID = '372754'; // 원하는 영화의 ID 입력 필요.
 const baseURL = 'https://api.themoviedb.org/3';
 const imageURL = 'https://image.tmdb.org/t/p/original';
 
-// const init = async () => {
-// 	const url = new URL(window.location.href);
-	
-// 	const id = Number(url.searchParams.get("id"));
-	
-// 	const baseUrl = `https://api.themoviedb.org/3/movie/${id}?language=en-US?api_key=${API_KEY}`;
-	
-// 	const result = await fetch(baseUrl);
-	
-// 	const data = await result.json();
-	
-// 	console.log(data)
-// }
+const loginBtn = document.querySelector('.loginout');
+const joinBtn = document.querySelector('.join');
+const reviewWrap = document.querySelector('.review-wrapper');
+const reviewArea = document.querySelector('.reviews');
+const reviewForm = document.querySelector('.review-form');
+const userReview = document.querySelector('.user-review');
 
 function getMovieId () {
     const url = new URL(window.location.href);
@@ -125,10 +120,90 @@ function makeMovieHtml(movie) {
         </div>`;
 }
 
+const drawReviews = (reviews) => {
+    if(!reviews) return;
+    const mapped = reviews.map(e => {
+        return `
+            <p>${e.review}</p>
+        `;
+    }).join('');
+
+    reviewArea.innerHTML = '';
+    reviewArea.insertAdjacentHTML('beforeend', mapped);
+}
+
+const drawLoginState = (isLogin) => {
+    const children = reviewWrap.children
+
+    if(isLogin !== null && isLogin.isLogin){
+        children[2].innerText = `${isLogin.id}님 환영합니다.`;
+        children[3].innerText = 'logout';
+        children[4].style.visibility = 'hidden';
+        children[5].style.display = 'block';
+    }else{
+        children[2].innerText = '로그인이 필요합니다';
+        children[3].innerText = 'login';
+        children[4].style.visibility = 'visible';
+    }
+}
+
+const handleLoginLogout = (_, isLogin) => {
+    if(isLogin !== null && isLogin.isLogin){
+        const loginInfo = { isLogin : false, id : null }
+        setLocalStorage('islogin', JSON.stringify(loginInfo));
+        const isLogin = getLocalStorage('islogin');
+        drawLoginState(isLogin);
+    }else{
+        window.location.href = '/login.html'
+    }
+}
+
+const handleJoin = () => {
+    window.location.href = '/join.html'
+}
+
+const handleReviewSubmit = (e, isLogIn) => {
+    e.preventDefault();
+    if(!isLogIn) return;
+
+    const review = userReview.value; 
+
+    const prevReviews = getLocalStorage('reviews');
+
+    let reviewObj = [];
+
+    if(prevReviews){
+        reviewObj = [...prevReviews, {
+            id : isLogIn.isLogin,
+            review : review
+        }]
+    }else{
+        reviewObj = [{
+            id : isLogIn.isLogin,
+            review : review
+        }]
+    }
+
+    setLocalStorage('reviews', JSON.stringify(reviewObj));
+    const reviews = getLocalStorage('reviews');
+    drawReviews(reviews);
+}
+
 
 // 페이지 로드 시 실행되는 함수들
 document.addEventListener('DOMContentLoaded', () => {
+    const isLogIn = getLocalStorage('islogin');
+    const reviews = getLocalStorage('reviews');
+
+    loginBtn.addEventListener('click', (e) => handleLoginLogout(e, isLogIn));
+    joinBtn.addEventListener('click', handleJoin);
+    reviewForm.addEventListener('submit', (e) => handleReviewSubmit(e, isLogIn));
+
+    drawLoginState(isLogIn);
+    drawReviews(reviews)
+
     const MOVIE_ID = getMovieId();
+    setLocalStorage('movieid', MOVIE_ID);
     fetchCast(MOVIE_ID);
     fetchMovieDetails(MOVIE_ID);
 
