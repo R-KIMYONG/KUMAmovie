@@ -435,13 +435,6 @@ const handleYoutubeClick = (_, intervalNum) => {
 const init = async () => {
 	searchInput.focus(); //페이지 로딩되면 검색란에 포커스되게 하기
 
-	// youtube 버튼 핸들링
-	btnContent.addEventListener("click", (e) => handleYoutubeClick(e, intervalNum));
-
-	// carousel 버튼 핸들링
-	carouselBefore.addEventListener('click', handleCarousel);
-	carouselNext.addEventListener('click', handleCarousel);
-
 	// 우측 메뉴 모달 부착
 	menuModal();
 	
@@ -469,6 +462,13 @@ const init = async () => {
 	
 	// 카드 부착
 	renderCardUi(accMovies[0].slice(0, 4));
+
+	// youtube 버튼 핸들링
+	btnContent.addEventListener("click", (e) => handleYoutubeClick(e, intervalNum));
+
+	// carousel 버튼 핸들링
+	carouselBefore.addEventListener('click', handleCarousel);
+	carouselNext.addEventListener('click', handleCarousel);
 
 	// 영화 검색창 포커스하면 빨간색 밑줄 생김 아닐때 없어짐
 	// 마우스커서가 검색창 포커스되면~
