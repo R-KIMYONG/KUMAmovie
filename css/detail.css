@@ -113,6 +113,78 @@
     color: #ffffff;
 }
 
+.review-wrapper{
+    position: relative;
+}
+
+.review-wrapper h2{
+    position: relative;
+    font-size: 2rem;
+    padding : 10px 0;
+    box-sizing: border-box;
+}
+.reviews{
+    position: relative;
+    display: flex;
+    width: 600px;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
+
+.guide{
+    position: relative;
+    display: inline;
+}
+
+.loginout{
+    position: relative;
+    display: inline;
+}
+
+.join{
+    position: relative;
+    display: inline;
+}
+
 .review-form{
+    position: relative;
     display: none;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+.review_box{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.review_text{
+    display: inline;
+    width: calc(100% / 3);
+}
+
+.update_box{
+    display: none;
+    width: calc(100% / 3);
+}
+
+.update_input{
+    display: inline;
+}
+
+.del_up_box{
+    display: inline-flex;
+    justify-content: center;
+    gap: 0.6rem;
+    width: calc(100% / 3);
+}
+
+.del{
+    cursor: pointer;
+}
+
+.update{
+    cursor: pointer;
 }

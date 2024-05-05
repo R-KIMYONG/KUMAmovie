@@ -5,13 +5,14 @@ const API_KEY = 'e4a84d9378c3db262d591cbe6cd51d64'; // 여기에 TMDB API 키를
 const baseURL = 'https://api.themoviedb.org/3';
 const imageURL = 'https://image.tmdb.org/t/p/original';
 
-const loginBtn = document.querySelector('.loginout');
-const joinBtn = document.querySelector('.join');
-const reviewWrap = document.querySelector('.review-wrapper');
-const reviewArea = document.querySelector('.reviews');
-const reviewForm = document.querySelector('.review-form');
-const userReview = document.querySelector('.user-review');
+const loginBtn = document.querySelector('.loginout'); // 로그인 버튼
+const joinBtn = document.querySelector('.join'); // 회원가입 버튼
+const reviewWrap = document.querySelector('.review-wrapper'); // 리뷰부분 래퍼
+const reviewArea = document.querySelector('.reviews'); // 개별 리뷰들이 부착될 div
+const reviewForm = document.querySelector('.review-form'); // 리뷰 작성 form
+const userReview = document.querySelector('.user-review'); // 리뷰 input
 
+// 쿼리스트링에서 영화 id 값 찾아오는 함수
 function getMovieId () {
     const url = new URL(window.location.href);
     const MOVIE_ID = Number(url.searchParams.get("id"));
@@ -120,11 +121,18 @@ function makeMovieHtml(movie) {
         </div>`;
 }
 
-const drawReviews = (reviews) => {
+// 리뷰 html 만들어서 렌더링
+const drawReviews = (reviews, id = null) => {
     if(!reviews) return;
     const mapped = reviews.map(e => {
         return `
-            <p>${e.review}</p>
+            <div class="review_box">
+                <p class="review_text">${e.review}</p>${id === e.id ? '<p class="del_up_box"><span class="del">글삭제</span><span class="update">글수정</span></p>' : ''}
+                <div class="update_box">
+                    <input type='text' class='update_input'></input>
+                    <button class="update_button">수정하기</button>
+                </div>
+            </div>
         `;
     }).join('');
 
@@ -132,6 +140,7 @@ const drawReviews = (reviews) => {
     reviewArea.insertAdjacentHTML('beforeend', mapped);
 }
 
+// 로그인 중인지 아닌지에 따라 화면에 보이는 텍스트 변경하는 함수
 const drawLoginState = (isLogin) => {
     const children = reviewWrap.children
 
@@ -147,51 +156,101 @@ const drawLoginState = (isLogin) => {
     }
 }
 
+// 로그인 로그아웃 버튼 핸들러
 const handleLoginLogout = (_, isLogin) => {
     if(isLogin !== null && isLogin.isLogin){
         const loginInfo = { isLogin : false, id : null }
         setLocalStorage('islogin', JSON.stringify(loginInfo));
         const isLogin = getLocalStorage('islogin');
+        const reviews = getLocalStorage('reviews');
         drawLoginState(isLogin);
+        drawReviews(reviews);
     }else{
         window.location.href = '/login.html'
     }
 }
 
-const handleJoin = () => {
-    window.location.href = '/join.html'
-}
+// 회원가입 버튼 핸들러
+const handleJoin = () => window.location.href = '/join.html';
 
+// 리뷰 제출 form 핸들러
 const handleReviewSubmit = (e, isLogIn) => {
     e.preventDefault();
     if(!isLogIn) return;
 
     const review = userReview.value; 
-
     const prevReviews = getLocalStorage('reviews');
 
     let reviewObj = [];
 
     if(prevReviews){
         reviewObj = [...prevReviews, {
-            id : isLogIn.isLogin,
+            id : isLogIn.id,
             review : review
         }]
     }else{
         reviewObj = [{
-            id : isLogIn.isLogin,
+            id : isLogIn.id,
             review : review
         }]
     }
 
     setLocalStorage('reviews', JSON.stringify(reviewObj));
     const reviews = getLocalStorage('reviews');
-    drawReviews(reviews);
+    drawReviews(reviews, isLogIn.id);
 }
 
+// 리뷰 수정, 삭제 핸들러
+const handleReviewDelUpdate = (e) => {
+    const user = getLocalStorage('islogin');
+    const curr = e.currentTarget.children[0].textContent.replace(' 글삭제 글수정', '');
+    const value = e.target.classList.value;
+    const reviews = getLocalStorage('reviews');
 
-// 페이지 로드 시 실행되는 함수들
-document.addEventListener('DOMContentLoaded', () => {
+    if(value && value === 'del'){
+        const filtered = reviews.filter((e) => e.review !== curr);
+        setLocalStorage('reviews', JSON.stringify(filtered));
+        drawReviews(filtered, user.id);
+    }else if(value && value === 'update'){
+        const updateBox = e.currentTarget.children[2];
+        const updateInput = e.currentTarget.children[2].children[0];
+        const updateButton = e.currentTarget.children[2].children[1];
+        updateBox.style.display = 'inline';
+        updateButton.addEventListener('click', () => {
+            const updateText = updateInput.value;
+            const mapped = reviews.map((e) => {
+                if(e.review === curr){
+                    return {
+                        id : e.id,
+                        review : updateText
+                    }
+                }else{
+                    return e
+                }
+            });
+            setLocalStorage('reviews', JSON.stringify(mapped));
+            drawReviews(mapped, user.id);
+        })
+    }
+}
+
+// mutation Observer 로 리뷰 추가될때마다 감시하려고 합니다. 아래는 옵션 객체 입니다.
+const config = { attributes: true, childList: true, subtree: true };
+
+// mutation Observer 의 콜백
+const mutationObserverCallback = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+        if (mutation.type === "childList") {
+            // 변경시 === 리뷰 삭제 혹은 추가시 마다 이벤트리스너 재부착
+            mutation.addedNodes.forEach(e => e.addEventListener('click', handleReviewDelUpdate));
+        } else if (mutation.type === "attributes") {
+            console.log(`${mutation.attributeName} 특성이 변경됐습니다.`);
+        }
+    }
+};
+
+// init 함수
+const init = () => {
     const isLogIn = getLocalStorage('islogin');
     const reviews = getLocalStorage('reviews');
 
@@ -200,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     reviewForm.addEventListener('submit', (e) => handleReviewSubmit(e, isLogIn));
 
     drawLoginState(isLogIn);
-    drawReviews(reviews)
+    isLogIn ? drawReviews(reviews, isLogIn.id) : drawReviews(reviews);
 
     const MOVIE_ID = getMovieId();
     setLocalStorage('movieid', MOVIE_ID);
@@ -215,4 +274,14 @@ document.addEventListener('DOMContentLoaded', () => {
             .join("");
         document.querySelector(".recommendations > .content").innerHTML = html;
     });
-});
+
+    const reviewsBox = document.querySelectorAll('.review_box');
+    if(reviewsBox) reviewsBox.forEach(e => e.addEventListener('click', handleReviewDelUpdate))
+
+    // 콜백 함수에 연결된 감지기 인스턴스 생성
+    const observer = new MutationObserver(mutationObserverCallback);
+    observer.observe(reviewArea, config);
+}
+
+// init
+document.addEventListener('DOMContentLoaded', init);
