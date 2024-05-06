@@ -158,6 +158,8 @@
 .review_box{
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+    height: 20px;
 }
 
 .review_text{

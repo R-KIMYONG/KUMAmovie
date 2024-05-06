@@ -1,4 +1,5 @@
 import { setLocalStorage, getLocalStorage } from "./localstorageGetSet.js";
+import { basicReviews, basicUsers } from "./basicData.js";
 
 const API_KEY = 'e4a84d9378c3db262d591cbe6cd51d64'; // 여기에 TMDB API 키를 입력하세요.
 // const MOVIE_ID = '372754'; // 원하는 영화의 ID 입력 필요.
@@ -18,6 +19,21 @@ function getMovieId () {
     const MOVIE_ID = Number(url.searchParams.get("id"));
 
     return MOVIE_ID;
+}
+
+// 발표를 위해 기본적으로 데이터가 있는 것처럼 해주는 로컬스토리지 set 함수
+const setFirstLocalStorage = () => {
+    const reviews = getLocalStorage('reviews');
+    const users = getLocalStorage('users');
+
+    // 처음 접속해도 기본적인 데이터가 있는 것처럼  
+    if(reviews && users && reviews === basicReviews && users === basicUsers) {
+        localStorage.setItem('reviews', JSON.stringify(reviews));
+        localStorage.setItem('users', JSON.stringify(users));
+    }else if(!reviews && !users && reviews !== basicReviews && users !== basicUsers){
+        localStorage.setItem('reviews', JSON.stringify(basicReviews));
+        localStorage.setItem('users', JSON.stringify(basicUsers));
+    }
 }
 
 // 출연진 표시
@@ -79,8 +95,6 @@ async function fetchMovieDetails(movieId) {
         console.log('적합한 포스터 이미지를 찾을 수 없습니다.');
     }
 
-
-
     // 배경 이미지 설정
     if (data.backdrops && data.backdrops.length > 1) {
         const secondImage = data.backdrops[1]; // 두 번째 이미지
@@ -122,14 +136,16 @@ function makeMovieHtml(movie) {
 }
 
 // 리뷰 html 만들어서 렌더링
-const drawReviews = (reviews, id = null) => {
+const drawReviews = (reviews, MOVIE_ID, id = null) => {
     if(!reviews) return;
-    const mapped = reviews.map(e => {
+    const filtered = reviews.filter(e => e.movieId === MOVIE_ID);
+
+    const mapped = filtered.map(e => {
         return `
             <div class="review_box">
-                <p class="review_text">${e.review}</p>${id === e.id ? '<p class="del_up_box"><span class="del">글삭제</span><span class="update">글수정</span></p>' : ''}
+                <p class="review_text">${e.reviews}</p>${id === e.id ? '<p class="del_up_box"><span class="del">글삭제</span><span class="update">글수정</span></p>' : ''}
                 <div class="update_box">
-                    <input type='text' class='update_input'></input>
+                    <input type='text' class='update_input' placeholder='${e.reviews}'></input>
                     <button class="update_button">수정하기</button>
                 </div>
             </div>
@@ -157,14 +173,15 @@ const drawLoginState = (isLogin) => {
 }
 
 // 로그인 로그아웃 버튼 핸들러
-const handleLoginLogout = (_, isLogin) => {
-    if(isLogin !== null && isLogin.isLogin){
+const handleLoginLogout = (_, MOVIE_ID) => {
+    const isLogin = getLocalStorage('islogin');
+    if(isLogin.isLogin){
         const loginInfo = { isLogin : false, id : null }
         setLocalStorage('islogin', JSON.stringify(loginInfo));
         const isLogin = getLocalStorage('islogin');
         const reviews = getLocalStorage('reviews');
         drawLoginState(isLogin);
-        drawReviews(reviews);
+        drawReviews(reviews, MOVIE_ID);
     }else{
         window.location.href = '/login.html'
     }
@@ -174,7 +191,7 @@ const handleLoginLogout = (_, isLogin) => {
 const handleJoin = () => window.location.href = '/join.html';
 
 // 리뷰 제출 form 핸들러
-const handleReviewSubmit = (e, isLogIn) => {
+const handleReviewSubmit = (e, isLogIn, MOVIE_ID) => {
     e.preventDefault();
     if(!isLogIn) return;
 
@@ -186,22 +203,24 @@ const handleReviewSubmit = (e, isLogIn) => {
     if(prevReviews){
         reviewObj = [...prevReviews, {
             id : isLogIn.id,
-            review : review
+            movieId : MOVIE_ID,
+            reviews : review
         }]
     }else{
         reviewObj = [{
             id : isLogIn.id,
-            review : review
+            movieId : MOVIE_ID,
+            reviews : review
         }]
     }
 
     setLocalStorage('reviews', JSON.stringify(reviewObj));
     const reviews = getLocalStorage('reviews');
-    drawReviews(reviews, isLogIn.id);
+    drawReviews(reviews, MOVIE_ID, isLogIn.id);
 }
 
 // 리뷰 수정, 삭제 핸들러
-const handleReviewDelUpdate = (e) => {
+const handleReviewDelUpdate = (MOVIE_ID) => (e) => {
     const user = getLocalStorage('islogin');
     const curr = e.currentTarget.children[0].textContent.replace(' 글삭제 글수정', '');
     const value = e.target.classList.value;
@@ -210,7 +229,7 @@ const handleReviewDelUpdate = (e) => {
     if(value && value === 'del'){
         const filtered = reviews.filter((e) => e.review !== curr);
         setLocalStorage('reviews', JSON.stringify(filtered));
-        drawReviews(filtered, user.id);
+        drawReviews(filtered, MOVIE_ID, user.id);
     }else if(value && value === 'update'){
         const updateBox = e.currentTarget.children[2];
         const updateInput = e.currentTarget.children[2].children[0];
@@ -219,17 +238,18 @@ const handleReviewDelUpdate = (e) => {
         updateButton.addEventListener('click', () => {
             const updateText = updateInput.value;
             const mapped = reviews.map((e) => {
-                if(e.review === curr){
+                if(e.reviews === curr){
                     return {
                         id : e.id,
-                        review : updateText
+                        movieId : MOVIE_ID,
+                        reviews : updateText
                     }
                 }else{
                     return e
                 }
             });
             setLocalStorage('reviews', JSON.stringify(mapped));
-            drawReviews(mapped, user.id);
+            drawReviews(mapped, MOVIE_ID, user.id);
         })
     }
 }
@@ -238,11 +258,11 @@ const handleReviewDelUpdate = (e) => {
 const config = { attributes: true, childList: true, subtree: true };
 
 // mutation Observer 의 콜백
-const mutationObserverCallback = (mutationList, observer) => {
+const mutationObserverCallback = (MOVIE_ID) => (mutationList, observer) => {
     for (const mutation of mutationList) {
         if (mutation.type === "childList") {
             // 변경시 === 리뷰 삭제 혹은 추가시 마다 이벤트리스너 재부착
-            mutation.addedNodes.forEach(e => e.addEventListener('click', handleReviewDelUpdate));
+            mutation.addedNodes.forEach(e => e.addEventListener('click', handleReviewDelUpdate(MOVIE_ID)));
         } else if (mutation.type === "attributes") {
             console.log(`${mutation.attributeName} 특성이 변경됐습니다.`);
         }
@@ -254,17 +274,19 @@ const init = () => {
     const isLogIn = getLocalStorage('islogin');
     const reviews = getLocalStorage('reviews');
 
-    loginBtn.addEventListener('click', (e) => handleLoginLogout(e, isLogIn));
-    joinBtn.addEventListener('click', handleJoin);
-    reviewForm.addEventListener('submit', (e) => handleReviewSubmit(e, isLogIn));
-
-    drawLoginState(isLogIn);
-    isLogIn ? drawReviews(reviews, isLogIn.id) : drawReviews(reviews);
+    setFirstLocalStorage();
 
     const MOVIE_ID = getMovieId();
     setLocalStorage('movieid', MOVIE_ID);
     fetchCast(MOVIE_ID);
     fetchMovieDetails(MOVIE_ID);
+
+    loginBtn.addEventListener('click', (e) => handleLoginLogout(e, MOVIE_ID));
+    joinBtn.addEventListener('click', handleJoin);
+    reviewForm.addEventListener('submit', (e) => handleReviewSubmit(e, isLogIn, MOVIE_ID));
+
+    drawLoginState(isLogIn);
+    isLogIn ? drawReviews(reviews, MOVIE_ID, isLogIn.id) : drawReviews(reviews, MOVIE_ID);
 
     getRecommandMovieList(MOVIE_ID).then((list) => {
         console.log(list);
@@ -276,10 +298,10 @@ const init = () => {
     });
 
     const reviewsBox = document.querySelectorAll('.review_box');
-    if(reviewsBox) reviewsBox.forEach(e => e.addEventListener('click', handleReviewDelUpdate))
+    if(reviewsBox) reviewsBox.forEach(e => e.addEventListener('click', handleReviewDelUpdate(MOVIE_ID)))
 
     // 콜백 함수에 연결된 감지기 인스턴스 생성
-    const observer = new MutationObserver(mutationObserverCallback);
+    const observer = new MutationObserver(mutationObserverCallback(MOVIE_ID));
     observer.observe(reviewArea, config);
 }
 
