@@ -107,6 +107,10 @@
     color: #ffffff;
 }
 
+.recommendations {
+  margin: 0px 40px;
+  color: white;
+}
 .recommendations > .header {
   font-size: 1.4rem;
   font-weight: bold;
@@ -120,13 +124,18 @@
   overflow: hidden;
   text-align: center;
   box-sizing: border-box;
-  margin: auto;
+  margin: 0 3px;
 }
 .recommendations > .content > .recommend-movie > .poster {
   max-width: 300px;
 }
 .recommendations > .content > .recommend-movie > .poster > img {
   width: 100%;
+}
+
+.recommendations > .content > .recommend-movie > .info,
+.recommendations > .content > .recommend-movie > .info > div {
+  padding: 5px 0;
 }
 .recommendations > .content > .recommend-movie > .info > .title {
   text-overflow: ellipsis;
@@ -137,4 +146,4 @@
 .recommendations > .content > .recommend-movie > .info > .vote > .cnt {
   color: grey;
   font-size: 0.7rem;
-}/*# sourceMappingURL=detail.css.map */
+}
