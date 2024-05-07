@@ -34,6 +34,7 @@ function join() {
 
 		// 정보저장
 		localStorage.setItem(newKey, JSON.stringify(newUser));
+		alert("회원가입이 완료되었습니다.");
 
 		console.log(`새 사용자 정보가 ${newKey}에 저장되었습니다.`);
 
@@ -54,10 +55,12 @@ function join() {
 				if (user.id === quitId) {
 					localStorage.removeItem(key);
 					console.log(`사용자 ${key}가 탈퇴되었습니다`);
+					alert(`${user.id}가 탈퇴되었습니다`);
 					location.reload();
 				}
 			} else {
 				console.log("해당 ID의 사용자를 찾을 수 없습니다");
+				alert("해당 ID의 사용자를 찾을 수 없습니다");
 			}
 		}
 	});

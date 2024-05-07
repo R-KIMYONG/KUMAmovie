@@ -82,8 +82,9 @@ body {
 .quit-form {
 	margin-top: 20px;
 	border-top: 1px solid #ccc;
-	padding-top: 20px;
+	padding-top: 15px;
 	text-align: center;
+	padding-bottom: 15px;
 }
 
 .quit-form h3 {
@@ -91,7 +92,7 @@ body {
 }
 
 .quit-form p {
-	color: #fff; /* 일반 텍스트 색상 */
+	color: #fff;
 }
 
 .quit-form input {
@@ -110,8 +111,8 @@ body {
 	font-weight: bold;
 	cursor: pointer;
 	transition: background-color 0.3s;
+	margin-left: 10px;
 }
 
 .quit-form button:hover {
-	background-color: #cc0000;
-}
+	background-color:  #45a049;

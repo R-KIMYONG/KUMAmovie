@@ -1,18 +1,20 @@
 .modal {
 	display: none;
 	position: fixed;
-	top: 75%;
+	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 1;
 	width: 80%;
-	background: white;
+	background: #2f2f2f;
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 	padding: 20px;
+	border-radius: 10px;
 }
 
 .modal-content {
 	position: relative;
+	color: #fff;
 }
 
 .close {
@@ -20,4 +22,5 @@
 	top: 10px;
 	right: 10px;
 	cursor: pointer;
+	font-size: 2em;
 }
