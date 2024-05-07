@@ -187,58 +187,49 @@ myCommentStar.addEventListener("mouseenter", (event) => {
 //좋아요 버튼 제어하는 부분임 이미 한번 눌렀으면 +1하고 다시 눌렀을경우 -1이 됨 한명이 본인을 포함해 다른사람의 댓글에도 좋아요를 1회한정 할수 있음
 const goodBtn = () => {
 	let commentList = document.querySelector("#comments-list"); //댓글리스트를 가리킴
-	//댓글리스트를 클릭하면
+	//   //댓글리스트를 클릭하면
 	commentList.addEventListener("click", async (event) => {
-		let target = event.target.closest(".comments-good");
-		if (event.target == commentList) return; //부모요소를 클릭했다면 이벤트 종료
-		if (target) {
-			//그 event.target이 .comments-good일경우
-			let liClass = target.closest("li").classList.value; //클릭한 댓글리스트내에서 제일 가까운li의 클래스명을 가져온다.
-			let isClick = false; //클릭했는지 안했는지 판별하는 변수
-			let querySnapshot = await getDocs(query(collection(db, "userComments"))); //여기도 영화id로 바꿔
-			//   console.log(liClass);
-			querySnapshot.forEach(async (doc) => {
-				//영화id로 저장된 댓글DB정보를 가져와서 나열한다.
-				try {
-					let data = doc.data(); //데이터정보를 모두 가져온다.
-					let uniqueId = doc.id; //컬렉션의 문서id를 가져온다.
-
-					if (uniqueId === liClass && !isClick) {
-						//문서아이디가 li클래스명과 동일하거나 isClick가 true이면 통과
-						let likedUsers = data.likes || {}; // 좋아요를 클릭한 사용자 목록을 가져옵니다.없으면 {}객체로 할당함
-						//   console.log(liClass)
-						let alreadyLiked = likedUsers[userId]; // 이미 좋아요를 클릭했는지 확인합니다.
-
-						//회원가입 시 아이디에 . 있으면 절대안됨
-						// console.log(data.likes);
-						if (alreadyLiked) {
-							//이미 좋아요를 클릭했다면 -1만하고~ DB를 업데이트 한다. 그리고 .on 클래스도 제거한다.
-							// 이미 좋아요를 클릭한 경우, 좋아요를 취소합니다.
-							await updateDoc(doc.ref, {
-								good: data.good - 1,
-								[`likes.${userId}`]: false // 사용자의 좋아요를 취소합니다.
-							});
-							document.querySelector("#good-plus").classList.remove("on");
-						} else {
-							// 좋아요를 클릭하지 않은 경우, 좋아요수를 +1합니다.
-							await updateDoc(doc.ref, {
-								good: data.good + 1,
-								[`likes.${userId}`]: true // 사용자의 좋아요를 추가합니다.
-							});
-							//   console.log(document.querySelector("#good-plus"));
-							//   document.querySelector("#good-plus").classList.remove("on");
-							document.querySelector("#good-plus").classList.add("on");
-						}
-						isClick = true;
-					}
-				} catch (error) {
-					console.error("데이터 수정 중 오류가 발생했습니다:", error);
-				}
+	  if (event.target == commentList) return;
+	  let target = event.target;
+	  if (
+		target.closest(".comments-good") ||
+		target.classList.contains("comments-good")
+	  ) {
+		// 그 event.target이 .comments-good일경우
+		let liClass = target.closest("li").classList.value; //클릭한 댓글리스트내에서 제일 가까운li의 클래스명을 가져온다.
+		//   let querySnapshot = await getDocs(query(collection(db, "userComments"))); //여기도 영화id로 바꿔
+  
+		const userDocRef = doc(db, "userComments", `${liClass}`); //영화 ID로 바꿔야됨 userComments를
+		const userDocSnapshot = await getDoc(userDocRef);
+		//   console.log(userDocSnapshot);
+		if (userDocSnapshot.exists()) {
+		  // 사용자의 문서가 존재할 때만 업데이트를 진행합니다.
+		  const userData = userDocSnapshot.data();
+		  const currentGood = userData.good || 0; // 좋아요 수를 가져옵니다. 값이 없을 경우 0으로 설정합니다.
+  
+		  // 이미 좋아요를 클릭했다면
+		  if (userData.likes && userData.likes[userId]) {
+			// 좋아요를 취소합니다.
+			await updateDoc(userDocRef, {
+			  good: currentGood - 1, // 현재 좋아요 수에서 1을 뺀 값을 업데이트합니다.
+			  [`likes.${userId}`]: false, // 해당 사용자의 좋아요 상태를 false로 설정합니다.
 			});
+			document.querySelector("#good-plus").classList.remove("on"); // 좋아요가 취소되었으므로 'on' 클래스를 제거합니다.
+		  } else {
+			// 좋아요를 추가합니다.
+			await updateDoc(userDocRef, {
+			  good: currentGood + 1, // 현재 좋아요 수에 1을 더한 값을 업데이트합니다.
+			  [`likes.${userId}`]: true, // 해당 사용자의 좋아요 상태를 true로 설정합니다.
+			});
+			document.querySelector("#good-plus").classList.add("on"); // 좋아요가 추가되었으므로 'on' 클래스를 추가합니다.
+		  }
 		}
-		commentsList();
+	  }else{
+		  return;
+	  }
+	  commentsList();
 	});
-};
+  };
 
 //첫댓글 달때 데이터베이스에 정보 넣기 함수
 async function addNewComment(commentValue, starWidth, score, userId, userName, currentDateTime) {
