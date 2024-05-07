@@ -117,10 +117,6 @@ import {
   orderBy,
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-
-getRecommandMovieList(movieId).then((list) => {
-	console.log(list.results);
-})
 // Firebase 구성 정보 설정
 const firebaseConfig = {
   apiKey: "AIzaSyBrbPk7mVllZBlcd4NBxrmnkTRUZ0xkxYA",
