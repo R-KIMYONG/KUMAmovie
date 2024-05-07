@@ -896,15 +896,15 @@ header {
 	margin-left: 10px;
   }
   
-  #comments-title {
+  #comments-title{
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	font-size: 28px;
-	color: #ff0000;
-	font-weight: bold;
   }
+  #comments-title h3{	font-size: 28px;
+	color: #ff0000;
+	font-weight: bold;margin-top:0px;}
   #comments-title .comments-show-more > button {
 	border: 0px;
 	background: none;
