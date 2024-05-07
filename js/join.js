@@ -1,7 +1,9 @@
 function join() {
 	const signupButton = document.getElementsByClassName("signup-btn")[0];
 
-	signupButton.addEventListener("click", () => {
+	signupButton.addEventListener("click", (event) => {
+		event.preventDefault(); //폼 제출 동작 방지
+
 		const name = document.getElementsByClassName("name")[0].value;
 		const id = document.getElementsByClassName("id")[0].value;
 		const password = document.getElementsByClassName("password")[0].value;
@@ -34,6 +36,8 @@ function join() {
 		localStorage.setItem(newKey, JSON.stringify(newUser));
 
 		console.log(`새 사용자 정보가 ${newKey}에 저장되었습니다.`);
+
+		location.reload();
 	});
 
 	//탈퇴
@@ -56,7 +60,6 @@ function join() {
 				console.log("해당 ID의 사용자를 찾을 수 없습니다");
 			}
 		}
-		// location.reload();
 	});
 }
 window.onload = join;
