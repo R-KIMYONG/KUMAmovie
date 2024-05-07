@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* 디테일 부분*/
 #details {
     width: 100%;
@@ -105,3 +106,35 @@
     margin-top: 5px; /* 이미지와 이름 사이 간격 */
     color: #ffffff;
 }
+
+.recommendations > .header {
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 10px;
+}
+.recommendations > .content {
+  display: flex;
+  width: 100%;
+}
+.recommendations > .content > .recommend-movie {
+  overflow: hidden;
+  text-align: center;
+  box-sizing: border-box;
+  margin: auto;
+}
+.recommendations > .content > .recommend-movie > .poster {
+  max-width: 300px;
+}
+.recommendations > .content > .recommend-movie > .poster > img {
+  width: 100%;
+}
+.recommendations > .content > .recommend-movie > .info > .title {
+  text-overflow: ellipsis;
+}
+.recommendations > .content > .recommend-movie > .info > .vote > .avg:before {
+  content: "★";
+}
+.recommendations > .content > .recommend-movie > .info > .vote > .cnt {
+  color: grey;
+  font-size: 0.7rem;
+}/*# sourceMappingURL=detail.css.map */

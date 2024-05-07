@@ -73,6 +73,82 @@
 				<div id="cast-list" class="container"></div>
 			</div>
 
+	        <!-- start 김용 -->
+			<div id="gap"></div>
+			<div id="comments">
+			  <!-- 내가남은댓글이 맨위에서 보임 -->
+			  <div class="my-comments-box"></div>
+			  <!-- 영화제목과 총댓글수보이는부분 -->
+			  <div id="comments-title">
+				<div class="comments-total">
+				  <h3 class="movie-title"></h3>
+				  <h3>평균 : <span class="avaerage-score"></span></h3>
+				  <h3>Comments : <span class="comments-length"></span></h3>
+				</div>
+				<div class="comments-show-more">
+				  <button id="add-btn">Add Comment</button>
+				</div>
+			  </div>
+	
+			  <!-- 해당영화에 대한 댓글리스트 -->
+			  <ul id="comments-list">
+				<!-- 댓글리스트 담긴곳 -->
+			  </ul>
+	
+			  <!-- 댓글달기 버튼 부분 -->
+			  <div id="add-comments">
+				<div id="send-comments">
+				  <div class="comments-movie-title">
+					<h3>범죄도시4</h3>
+				  </div>
+	
+				  <div class="comments-grade-box">
+					<p>평점</p>
+					<div class="comments-grade">
+					  <img
+						class="white-star"
+						src="./img/star_w.png"
+						alt="white-star"
+					  />
+					  <div class="red-star-show-box">
+						<img
+						  class="red-star"
+						  src="./img/star_r.png"
+						  alt="red-start"
+						/>
+					  </div>
+					</div>
+					<p class="point">0.0</p>
+				  </div>
+	
+				  <textarea
+					id="message"
+					name="message"
+					rows="4"
+					cols="50"
+					placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+					maxlength="200"
+				  ></textarea>
+	
+				  <div class="comments-form-btn">
+					<div class="btn-box">
+					  <button id="send-comments-form">Send</button>
+					  <button id="edit-comments-form">Edit</button>
+					</div>
+					<div class="comment-total-text">
+					  <p><span class="total-comments">0</span>/200</p>
+					</div>
+				  </div>
+				</div>
+				<button class="send-cancel">
+				  <span class="material-symbols-outlined"> close </span>
+				</button>
+			  </div>
+	
+			</div>
+			<!-- end 김용 -->
+
+
 
 			<!-- footer최하단의 sns아이콘들 -->
 			<div id="sns">
@@ -114,7 +190,22 @@
 			<div id="movie-modal"></div>
 		</div>
 	</div>
-	<script src="./js/detail.js"></script>
+
+
+	<div class="recommendations">
+		<h2 class="header">비슷한 영화 추천</h2>
+		<div class="content"></div>
+	</div>
+
+
+
+
+
+
+
+
+	<script type="module" src="./js/detail.js"></script>
+
 </body>
 
 </html>
