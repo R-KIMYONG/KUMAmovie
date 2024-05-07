@@ -1027,6 +1027,7 @@ header {
 	transform: translate(-50%, -50%);
 	transition: 0.5s;
 	display: none;
+	z-index:100;
   }
   #send-comments .comments-movie-title h3 {
 	font-size: 28px;
