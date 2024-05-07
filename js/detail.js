@@ -1,5 +1,5 @@
 const API_KEY = 'e4a84d9378c3db262d591cbe6cd51d64'; // 여기에 TMDB API 키를 입력하세요.
-const MOVIE_ID = '372754'; // 원하는 영화의 ID 입력 필요.
+const MOVIE_ID = '372754'; //일단 고정된 아이디 추후 uml에서 가지고올 예정 
 const baseURL = 'https://api.themoviedb.org/3';
 const imageURL = 'https://image.tmdb.org/t/p/original';
 
@@ -31,12 +31,16 @@ async function fetchCast() {
     });
 }
 
-// 영화 세부 정보 및 포스터 추가
 async function fetchMovieDetails() {
-    // 영화 이미지 정보 가져오기
-    const url = `${baseURL}/movie/${MOVIE_ID}/images?api_key=${API_KEY}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    // 영화 상세 정보를 포함하여 포스터 가져오기
+    const detailsUrl = `${baseURL}/movie/${MOVIE_ID}?api_key=${API_KEY}`;
+    const detailsResponse = await fetch(detailsUrl);
+    const detailsData = await detailsResponse.json();
+
+    // 이미지 정보 가져오기 (포스터 및 배경)
+    const imageUrl = `${baseURL}/movie/${MOVIE_ID}/images?api_key=${API_KEY}`;
+    const imageResponse = await fetch(imageUrl);
+    const imageData = await imageResponse.json();
 
     // 기존에 존재하는 포스터 이미지 요소를 찾아 제거
     const existingPoster = document.querySelector('#movie-poster');
@@ -44,38 +48,47 @@ async function fetchMovieDetails() {
         existingPoster.remove();
     }
 
-    // 영화 포스터 설정
     const rightSideElement = document.querySelector('.right_side');
-    if (data.posters && data.posters.length > 0) {
-        const posterImage = data.posters[0]; // 첫 번째 포스터 이미지
-        const posterURL = `${imageURL}${posterImage.file_path}`;
 
+    // 영화 포스터 설정
+    if (detailsData.poster_path) {
+        const posterURL = `${imageURL}${detailsData.poster_path}`;
         const posterImgElement = document.createElement('img');
         posterImgElement.src = posterURL;
         posterImgElement.alt = 'Movie Poster';
-
-        // id 속성 추가하여 CSS 규칙이 적용되도록 함
         posterImgElement.id = 'movie-poster';
 
         rightSideElement.appendChild(posterImgElement);
+
+        // 영화 제목 추가
+        const titleElement = document.createElement('div');
+        titleElement.textContent = detailsData.title;
+        titleElement.className = 'movie-title';
+
+        rightSideElement.appendChild(titleElement);
+        // 영화 평점 추가
+        const ratingElement = document.createElement('div');
+        ratingElement.textContent = `평점: ${detailsData.vote_average} / 10`;
+        ratingElement.className = 'movie-rating';
+        rightSideElement.appendChild(ratingElement);
     } else {
         console.log('적합한 포스터 이미지를 찾을 수 없습니다.');
     }
 
-
-
     // 배경 이미지 설정
-    if (data.backdrops && data.backdrops.length > 1) {
-        const secondImage = data.backdrops[1]; // 두 번째 이미지
+    if (imageData.backdrops && imageData.backdrops.length > 0) {
+        const secondImage = imageData.backdrops[1]; // 두 번째 배경 이미지 사용
         const backgroundURL = `${imageURL}${secondImage.file_path}`;
 
         // #details 요소의 배경 이미지로 설정
         const detailsElement = document.getElementById('details');
         detailsElement.style.backgroundImage = `url('${backgroundURL}')`;
+        detailsElement.style.backgroundSize = 'cover';  // 배경 이미지를 커버로 설정
     } else {
         console.log('적합한 배경 이미지를 찾을 수 없습니다.');
     }
 }
+
 
 // 페이지 로드 시 실행되는 함수들
 document.addEventListener('DOMContentLoaded', () => {
