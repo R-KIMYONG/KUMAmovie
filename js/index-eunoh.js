@@ -153,8 +153,8 @@ const handleCardClick = (e) => {
 
 // 페이지네이션 바뀔 때마다 상단부분(비쥬얼부분) 바꾸고(평점높은 영화로), 파라미터로 받은 데이터 배열 그대로 반환
 const changeTopVisual = (data) => {
-	// 평점이 가장 높은 영화 선택(data 배열 자체가 이미 평점정렬되서 넘어오므로 0 번 인덱스 선택)
-	const topMovie = data[0];
+	// 평점이 가장 높은 영화 선택(data 배열 자체가 이미 평점정렬되서 넘어오므로 0 번 인덱스 선택) / 카루셀 자동넘김의 경우 그냥 data (객체)
+	const topMovie = data.length ? data[0] : data;
 
 	visualTitle.textContent = topMovie.original_title; //비주얼 영화제목을 평점높은영화거로
 	movieContent.textContent = topMovie.overview; //위에 하는 작업과 동일한데 영화 줄거리가져옴
@@ -376,7 +376,7 @@ const carouselInterval = (curr = null) => {
 		// 유튜브 재생을 위해 유튜브 버튼의 id 를 변경시킵니다.
 		btnContent.id = counter;
 		// 상단 비쥬얼 부분을 바꿔줍니다.
-		changeTopVisual(accMovies[counter]);
+		changeTopVisual(accMovies[0][counter]);
 		// 여기는 일단 5개만 캐러셀 돌게 하려고 4보다 작을때만 증가시키도록 했습니다.
 		counter < 4 ? counter ++ : counter = 0;
 		// 전역변수와 내부변수 counter 일치 시켜줍니다.
