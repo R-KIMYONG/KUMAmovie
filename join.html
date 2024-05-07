@@ -3,28 +3,44 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>회원가입 폼</title>
-		<
-
 		<link rel="stylesheet" href="css/join.css" />
+		<link rel="stylesheet" href="css/modal.css" />
 	</head>
 	<body>
 		<div class="signup-form">
 			<h2>회원가입</h2>
-			<form>
-				<label for="name">이름</label>
+			<form class="signup-wrapper">
+				<label>이름</label>
 				<input type="text" class="name" placeholder="이름을 입력하세요" required />
 
-				<label for="email">이메일</label>
+				<label>이메일</label>
 				<input type="email" class="email" placeholder="이메일을 입력하세요" required />
 
-				<label for="password">비밀번호</label>
+				<label>비밀번호</label>
 				<input type="password" class="password" placeholder="비밀번호를 입력하세요" required />
 
-				<label for="confirm_password">비밀번호 확인</label>
+				<label>비밀번호 확인</label>
 				<input type="password" class="confirm_password" placeholder="비밀번호를 다시 입력하세요" required />
 
-				<button type="submit">가입하기</button>
+				<button type="submit" class="signup-btn">가입하기</button>
 			</form>
+
+			<div class="agree-form">
+				<input type="checkbox" class="checkbox" />
+				<label>이용약관에 동의합니다.</label>
+				<a href="#" onclick="openTermsModal(); return false;">약관 보기</a>
+			</div>
 		</div>
+
+		<div id="terms-modal" class="modal">
+			<div class="modal-content">
+				<span class="close" onclick="closeTermsModal()">&times;</span>
+				<h3>이용약관</h3>
+				<p>회원가입에 동의하십니까?</p>
+			</div>
+		</div>
+
+		<script src="./js/join.js"></script>
+		<script src="./js/modal.js"></script>
 	</body>
 </html>

@@ -13,7 +13,35 @@ body {
 	/* text-align: center; */
 }
 
-.signup-form input {
+.signup-form h2 {
+	text-align: center;
+}
+
+.signup-form .name {
+	width: 95%;
+	padding: 10px;
+	margin: 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.signup-form .email {
+	width: 95%;
+	padding: 10px;
+	margin: 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.signup-form .password {
+	width: 95%;
+	padding: 10px;
+	margin: 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.signup-form .confirm_password {
 	width: 95%;
 	padding: 10px;
 	margin: 15px 0;
@@ -27,7 +55,7 @@ body {
 
 .signup-form button {
 	width: 95%;
-	padding: 12px;
+	padding: 10px;
 	margin-top: 10px;
 	border: none;
 	border-radius: 10px;
@@ -40,4 +68,13 @@ body {
 
 .signup-form button:hover {
 	background-color: #45a049;
+}
+
+.agree-form .checkbox {
+	margin-top: 10px;
+	display: inline-block;
+	cursor: pointer;
+	height: 20px;
+	left: 0;
+	width: 20px;
 }
