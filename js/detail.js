@@ -114,6 +114,7 @@ import {
 	updateDoc,
 	deleteDoc,
 	doc,
+	getDoc,
 	orderBy
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
