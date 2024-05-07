@@ -1,398 +1,524 @@
-"use strict";
+import { options } from "./options.js";
+import { setSearchParams } from "./setSearchParams.js";
 
-// 영화정보 API
-const options = {
-	method: "GET",
-	headers: {
-		accept: "application/json",
-		Authorization:
-			"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmN2Q0ZmVkNjFhOWJlYzIwMzMzOGM4ZDQ0YjI4N2Q4OSIsInN1YiI6IjY2Mjg3NTc2MTc2YTk0MDE2NjgyMDlkMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.o_kqyGpLPOWQA3Ye2wXP63XwItH3ceGKBySBV7CtrRs"
+//비쥬얼에 나오는 영화의 제목 위치
+const visualTitle = document.querySelector("#visual .content .intro .title");
+//비쥬얼에 나오는 영화의 소개 위치
+const movieContent = document.querySelector("#visual .content .intro .movie-content");
+//비쥬얼에 나오는 영화의 포스터 위치
+const poster = document.querySelector("#visual .content .poster"); //평점높은 영화를 비주얼에 배치
+const visual = document.querySelector("#visual"); //비쥬얼 배경화면을 변경하기위해 찾음
+const videoContainer = document.getElementById("videoContainer"); //여기는 트레일러영상을 담은 박스임
+const iframe = document.querySelector("iframe");
+const btnContent = document.querySelector(".btn-content"); // 유튜브 버튼
+const searchIcon = document.querySelector(".search-icon"); //검색 버튼임
+const searchInput = document.querySelector("#search-movie"); //검색창을 선택한거임
+const searchOption = document.getElementById("search-option"); //검색옵션 선택임
+const showMoreBtn = document.querySelector(".show-more"); // 더보기 버튼
+const pageUl = document.querySelector("#category>nav>ul"); // 페이지네이션 담을 ul
+const carouselBefore = document.querySelector('#carousel-before'); // 캐러셀 이전버튼
+const carouselNext = document.querySelector('#carousel-next'); // 캐러셀 이후버튼'
+const searchLine = document.querySelector(".search-line");
+const movieArrUL = document.querySelector("#movie-array ul");
+// 페이지네이션에서 선택된 페이지 넘버
+let selectedPageNum = 0;
+// 페이지네이션 무한 증가를 위해 누적되는 넘버(1부터 시작해야합니다)
+let cumulativeNum = 1;
+// 아래 두 개는 첫 fetch 때 tmdb의 전체 영화 총량을 혹시몰라서 저장해놓으려고 만들었습니다.
+let total_pages = 0;
+let total_results = 0;
+// 무한? 페이지네이션 될 때(계속 fetch 받을때 마다) 누적되는 영화정보 어레이입니다(ex : 최초 array(20) * 5, 두번째 array(20) * 10 ...) 
+let accMovies = [];
+// 페이지네이션을 위해 다음과 같이 쌓이는 배열 입니다. [[1,2,3,4,5], [6,7,8,9,10], [11,12,13,14,15] ...]
+let pagination = [];
+// 임시방편인데요.. 페이지네이션 < > 버튼에서 뒤로 갔다가 다시 앞으로 갈 때는 fetch 를 막기 위한 flag 변수 입니다.
+let beforeNextFlag = '';
+// 캐러셀이 넘어갈 때 혹은 페이지네이션을 클릭해서 페이지가 변할 때, 현재 캐러셀 인덱스를 참조하기 위한 변수 입니다.
+let currCarouselIndex = 0;
+// setInterval 을 중지 재개 하기 위한 변수입니다.
+let intervalNum;
+// 페이지네이션 컨트롤을 위한 변수
+let currPagination;
+
+
+const videoSrc = [
+	"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn", //1번영상
+	"https://www.youtube.com/embed/UaVTIH8mujA?si=_kHWDc96Esbq0xb-", //2번영상
+	"https://www.youtube.com/embed/9O1Iy9od7-A?si=iHQOHJqlyQ1ZiLmi", //3번영상 
+	"https://www.youtube.com/embed/mxphAlJID9U?si=jUSmhcrYYA1LGsej", //4번영상
+	"https://www.youtube.com/embed/TEN-2uTi2c0?si=3uTwAyRz26VjOBg2", //5번영상
+	// "https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn" //6번영상
+];
+
+//menu 모달 in out
+const menuModal = () => {
+	const modal = document.querySelector("#menu-modal"); //모달을 찾음
+	const menuBtn = document.querySelector("#menu"); //메뉴버튼을 찾음
+	const closeBtn = document.querySelector("#close-modal"); //닫기 버튼을 찾음
+	menuBtn.addEventListener("click", () => {
+		modal.style.right = "0px";
+	});
+	closeBtn.addEventListener("click", () => {
+		modal.style.right = "-350px";
+	});
+};
+
+// 영화 모달 생성용
+const cardModal = (item) => {
+	const cardModalBox = document.getElementById("movie-modal");
+	const template = `
+		<div class="movie-poster">
+			<img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.id}">
+		</div>
+		<div class="title">
+			<p>영화 id : ${item.id}</p>
+			<p>${item.original_title}</p>
+			<p>평점 : ${item.vote_average}점</p>
+			<p>요약 : ${item.overview}</p>
+		</div>
+		<button class='movie-modal-close'>
+			<h3>닫기</h3>
+			<span class="material-symbols-outlined">
+				close
+			</span>
+		</button>`;
+	cardModalBox.innerHTML = template; // 기존 내용 제거 후 새로운 내용 삽입
+	document.querySelector(".movie-modal-close").addEventListener("click", (e) => {
+		cardModalBox.style.top = "-850px";
+	});
+};
+
+// 제목, 평점 별 검색어 가공
+const searchKeyword = (item) => {
+	const mySelect = searchOption.value;
+	if (mySelect === "제목") {
+		return item.toString().toLowerCase();
+	} else if (mySelect === "평점") {
+		return parseFloat(item);
+	}
+}
+
+// 영화 카드 생성
+const renderCardUi = (movieData) => {
+	if (typeof movieData === "object") {
+		movieArrUL.innerHTML = "";
+		movieData.forEach((item, i) => {
+			const rating = Math.round(item.vote_average);
+			let template = `
+				<li class='${item.id}'>
+					<div class="movie-poster">
+						<img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.id}">
+					</div>
+					<div class="title">
+						<p>${item.original_title}</p>
+						<div class="start-wrapper">
+							<div class="star material-symbols-outlined">${rating === 1 ? 'star_half' : rating >= 2 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 3 ? 'star_half' : rating >= 4 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 5 ? 'star_half' : rating >= 6 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 7 ? 'star_half' : rating >= 8 ? 'star' : ''}</div>
+							<div class="star material-symbols-outlined">${rating === 9 ? 'star_half' : rating >= 10 ? 'star' : ''}</div>
+							<!-- <p>평점 : ${rating}</p> -->
+						</div>
+					</div>
+				</li>`;
+				movieArrUL.insertAdjacentHTML("beforeend", template);
+
+			const liList = document.querySelectorAll("#movie-array ul li");
+
+			//한줄에 4개의 li를 배치 하기위해 css에 부여된 margin-right를 없애기
+			for (let i = 3; i < liList.length; i += 4) {
+				liList[i].style.marginRight = "0px";
+			}
+		});
+
+		return movieData;
+	} else {
+		movieArrUL.innerHTML = "";
+		movieArrUL.innerHTML = `<h3 style="color:#fff;font-size:40px;">${movieData}</h3>`;
 	}
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-	//HTML 로딩되면 API받아온다.
+// 카드 클릭 시 실행
+const handleCardClick = (e) => {
+	const clickedCard = e.target;
+	if (e.target.matches("#movie-array ul")) return;
 
-	let serchInput = document.querySelector("#search-movie"); //검색 인풋을 찾아
-	serchInput.focus(); //페이지 로딩되면 검색란에 포커스되게 하기
+	const clickedCardId = accMovies[selectedPageNum].filter((item) => {
+		return item.id == clickedCard.closest("li").classList.value;
+	});
 
-	let cardUi = function (data) {
-		//menu 모달 in out
-		let menuModal = () => {
-			let modal = document.querySelector("#menu-modal"); //모달을 찾음
-			let menuBtn = document.querySelector("#menu"); //메뉴버튼을 찾음
-			let closeBtn = document.querySelector("#close-modal"); //닫기 버튼을 찾음
-			menuBtn.addEventListener("click", () => {
-				modal.style.right = "0px";
-			});
-			closeBtn.addEventListener("click", () => {
-				modal.style.right = "-350px";
-			});
-		};
-		menuModal();
+	const a = setSearchParams(clickedCardId[0].id);
 
-		//visual에 트레일러버튼 클릭 시 나타나는 모달기능과 각API정보를 UI에 할당함
-		let visual = () => {
-			// 평점 기준으로 영화 데이터 정렬
-			// console.log(data.sort((a, b) => b.vote_average - a.vote_average))
-			// 평점이 가장 높은 영화 선택
-			let topMovie = data[0];
-			//비쥬얼에 나오는 영화의 제목 위치
-			let visualTitle = document.querySelector("#visual .content .intro .title");
-			//비쥬얼에 나오는 영화의 소개 위치
-			let movieContent = document.querySelector("#visual .content .intro .movie-content");
-			//비쥬얼에 나오는 영화의 포스터 위치
-			let poster = document.querySelector("#visual .content .poster"); //평점높은 영화를 비주얼에 배치
-			let visual = document.querySelector("#visual"); //비쥬얼 배경화면을 변경하기위해 찾음
-			let videoContainer = document.getElementById("videoContainer"); //여기는 트레일러영상을 담은 박스임
-			let page = document.querySelectorAll(".red-line ul li"); //page수를 다 찾음
+	window.location.href = a;
+	// cardModal(...movieModalData);
+	// document.getElementById("movie-modal").style.top = "0px";
+}
 
-			let videoSrc = [
-				"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn", //1번영상
-				"https://www.youtube.com/embed/R8KZ9WOTU78?si=NIczp7MdTaEzFYAa", //2번영상
-				"https://www.youtube.com/embed/KudedLV0tP0?si=F5iM5PTGhi3158gz", //3번영상
-				"https://www.youtube.com/embed/_dY0SVxnHjQ?si=gZGj8Gb4I4FmIoNb", //4번영상
-				"https://www.youtube.com/embed/sw07I2OH4Ho?si=i219LhEgp47J531H`", //5번영상
-				"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn" //6번영상
-			];
-			let iframe = document.querySelector("iframe");
+// 페이지네이션 바뀔 때마다 상단부분(비쥬얼부분) 바꾸고(평점높은 영화로), 파라미터로 받은 데이터 배열 그대로 반환
+const changeTopVisual = (data) => {
+	// 평점이 가장 높은 영화 선택(data 배열 자체가 이미 평점정렬되서 넘어오므로 0 번 인덱스 선택) / 카루셀 자동넘김의 경우 그냥 data (객체)
+	const topMovie = data.length ? data[0] : data;
 
-			// page.forEach((item, index) => {
-			// 	if (item.classList.contains("on")) {
-			// 		document.querySelector(".traller-btn").addEventListener("click", (event) => {
-			// 			videoContainer.style.display = "block";
-			// 			iframe.src = "";
-			// 			iframe.src = videoSrc[index];
-			// 			// searchTrailer();
-			// 		});
-			// 		//트레일러 영상 끄기 버튼
-			// 		document.querySelector(".closevideo").addEventListener("click", () => {
-			// 			videoContainer.style.display = "none"; //영상을 감싼 div숨기기
-			// 			iframe.src = "";
-			// 		});
-			// 	}
-			// });
+	visualTitle.textContent = topMovie.original_title; //비주얼 영화제목을 평점높은영화거로
+	movieContent.textContent = topMovie.overview; //위에 하는 작업과 동일한데 영화 줄거리가져옴
+	poster.innerHTML = `<img src="https://image.tmdb.org/t/p/w500${topMovie.poster_path}" alt="${topMovie.id}">`; //비쥬얼 포스트를 평점높은 영화걸로 바꿈
+	visual.style.backgroundImage = `url('https://image.tmdb.org/t/p/w500${topMovie.backdrop_path}')`; //여기는 배경화면을 바꿈
 
-			//위에 있는 이벤트와 동일한 기능이나 위방법엔 메모리할당량 초과 발생우려로 하기 이벤트로 업데이트함
-			let showTrailer = () => {
-				document.querySelector(".btn-content").addEventListener("click", (event) => {
-					//.red-line ul 하위요소중 제일 가까운 li를 찾아
-					// class on이 붙어있는 li를 또 찾아 그의 id를반환한다.
-					let closestLiWithClassOn = document.querySelector(".red-line ul .on");
-					// console.log(closestLiWithClassOn)
-					if (closestLiWithClassOn) {
-						let id = closestLiWithClassOn.id;
-						videoContainer.style.display = "block";
-						iframe.src = "";
-						iframe.src = videoSrc[id - 1];
-					} else {
-						alert("영상을 찾아볼 수 없습니다.");
-					}
+	return data;
+};
 
-					document.querySelector(".closevideo").addEventListener("click", () => {
-						videoContainer.style.display = "none"; //영상을 감싼 div숨기기
-						iframe.src = "";
-					});
-				});
-			};
-			showTrailer();
-			visualTitle.textContent = topMovie.original_title; //비주얼 영화제목을 평점높은영화거로
-			movieContent.textContent = topMovie.overview; //위에 하는 작업과 동일한데 영화 줄거리가져옴
-			// poster.innerHTML=''
-			poster.innerHTML = `<img src="https://image.tmdb.org/t/p/w500${topMovie.poster_path}" alt="${topMovie.id}">`; //비쥬얼 포스트를 평점높은 영화걸로 바꿈
-			visual.style.backgroundImage = `url('https://image.tmdb.org/t/p/w500${topMovie.backdrop_path}')`; //여기는 배경화면을 바꿈
+// 더보기 버튼 핸들러
+const handleShowMore = () => {
+	searchInput.focus();
+	const data = changeTopVisual(accMovies[selectedPageNum]);
+	renderCardUi(data);
+}
 
-			// const apiKey = 'AIzaSyCedUvtVcmBnLuEPua10hM9bCrlRp2Pkhg'
-			// const query = encodeURIComponent(visualTitle.textContent + ' trailer');
+// 검색버튼 핸들러
+const handleSearch = () => {
+	const Keyword = searchKeyword(searchInput.value); //유저가 검색창에 입력한 검색어 (만약에 검색어 앞 또는 뒤에 빈칸이 있으면 없앤다)
 
-			// // 유튜브에 검색 요청을 보내고 트레일러 영상을 가져오는 함수 API제한된 영상도 있고 사용할당량때문에 일시 제거함 할당량 문제 해결되면 다시 적용함 이전에 일단 수동으로 각영상링크 가져와서 효과 살펴봄
-			// let searchTrailer = async () => {
-			//     // 검색 API 엔드포인트
-			//     const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&q=${query}`;
-
-			//     // API 요청 보내기
-			//     fetch(apiUrl)
-			//         .then(response => response.json())
-			//         .then(data => {
-			//             // 검색 결과에서 첫 번째 영상의 ID 추출
-			//             const videoId = data.items[0].id.videoId;
-			//             // iframe을 생성하여 해당 영상을 재생
-			//             playTrailer(videoId);
-			//         })
-			//         .catch(error => {
-			//             console.error('유튜브 검색 요청 실패:', error);
-			//         });
-			// }
-
-			// // 트레일러 영상을 재생하는 함수
-			// function playTrailer(videoId) {
-			//     const iframe = document.querySelector('iframe');
-			//     iframe.src = `https://www.youtube.com/embed/${videoId}`;
-			//     iframe.title = 'YouTube video player';
-			//     iframe.allowFullscreen = true;
-			// }
-
-			// 검색어를 이용하여 트레일러 검색 실행
-		};
-		visual();
-
-		//show more버튼 클릭하면 .slice(0,4씩올라가야한다
-		let showMore = () => {
-			let showmoreBtn = document.querySelector(".show-more");
-
-			showmoreBtn.addEventListener("click", () => {
-				rerenderCardui(data);
-				serchInput.focus();
-			});
-		};
-		showMore();
-
-		//영화검색기능 추가히기
-		let searchMovie = () => {
-			let searchIcon = document.querySelector(".search-icon"); //검색 버튼임
-			let searchInput = document.querySelector("#search-movie"); //검색창을 선택한거임
-			const searchOption = document.getElementById("search-option"); //검색옵션 선택임
-
-			function searchKeyword(item) {
-				let myselect = searchOption.value;
-				if (myselect === "제목") {
-					return item.toString().toLowerCase();
-				} else if (myselect === "평점") {
-					return parseFloat(item);
-				}
-			}
-			searchIcon.addEventListener("click", () => {
-				let keyWord = searchKeyword(searchInput.value); //유저가 검색창에 입력한 검색어 (만약에 검색어 앞 또는 뒤에 빈칸이 있으면 없앤다)
-				let newarr = [];
-				if (typeof keyWord === "string" && keyWord !== "") {
-					newarr = [...data].filter((item) => item.original_title.toLowerCase().includes(keyWord.trim()));
-				} else if (typeof keyWord === "number" && keyWord !== "") {
-					newarr = [...data].filter((item) => parseInt(item.vote_average) === keyWord);
-				}
-				if (newarr.length !== 0) {
-					rerenderCardui(newarr);
-				} else {
-					rerenderCardui(`${searchOption.value} ${searchInput.value}에 대한 검색결과가 없습니다.😅`);
-				}
-			});
-			searchInput.addEventListener("keypress", (e) => {
-				if (e.keyCode === 13) {
-					searchIcon.click();
-				}
-			});
-		};
-		searchMovie();
-
-		//페이지마다 다른 영화내용을 추가함
-		let rerenderCardui = (movieData) => {
-			// 카드UI를 다시 불러와라!
-			if (typeof movieData === "object") {
-				document.querySelector("#movie-array ul").innerHTML = "";
-				movieData.forEach((item, i) => {
-					//순서대로 하나하나씩 배치해라!
-					let templet = `<li class='${movieData[i].id}'>
-                    <div class="movie-poster">
-                        <img src="https://image.tmdb.org/t/p/w500${movieData[i].poster_path}" alt="${movieData[i].id}">
-                    </div>
-                    <div class="title">
-                        <p>${movieData[i].original_title}</p>
-                        <p>평점 : ${movieData[i].vote_average}</p>
-                    </div>
-                    </li>`;
-					document.querySelector("#movie-array>ul").insertAdjacentHTML("beforeend", templet);
-					let liList = document.querySelectorAll("#movie-array ul li");
-
-					//한줄에 4개의 li를 배치 하기위해 css에 부여된 margin-right를 없애기
-					for (let i = 3; i < liList.length; i += 4) {
-						liList[i].style.marginRight = "0px";
-					}
-				});
-			} else {
-				document.querySelector("#movie-array ul").innerHTML = "";
-				document.querySelector(
-					"#movie-array ul"
-				).innerHTML = `<h3 style="color:#fff;font-size:40px;">${movieData}</h3>`;
-			}
-
-			let cardModal = (item) => {
-				let cardModalBox = document.getElementById("movie-modal");
-				let templet = `<div class="movie-poster">
-                    <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.id}">
-                </div>
-                <div class="title">
-                    <p>영화 id : ${item.id}</p>
-                    <p>${item.original_title}</p>
-                    <p>평점 : ${item.vote_average}점</p>
-                    <p>요약 : ${item.overview}</p>
-                </div>
-                <button class='movie-modal-close'>
-                    <h3>닫기</h3>
-                    <span class="material-symbols-outlined">
-                        close
-                    </span>
-                </button>`;
-				cardModalBox.innerHTML = templet; // 기존 내용 제거 후 새로운 내용 삽입
-				document.querySelector(".movie-modal-close").addEventListener("click", (e) => {
-					cardModalBox.style.top = "-850px";
-				});
-			};
-			// document.querySelectorAll("#movie-array ul li").forEach((item, index) => {
-			// 	item.addEventListener("click", (e) => {
-			// 		document.getElementById("movie-modal").style.top = "0px";
-			// 		// 클릭된 li 요소의 데이터를 얻기 위해 클릭 이벤트 리스너에서 cardModal() 함수 호출
-			// 		cardModal(movieData[index]); // 클릭된 요소의 데이터를 전달하여 모달에 보여주기
-			// 	});
-			// });
-
-			//위코드에서는 이벤트 버블링문제와 모든 li에 eventlistener를 부여해서 메모리 과부하문제로 아래 코드로 업데이트함
-			document.querySelector("#movie-array ul").addEventListener("click", (e) => {
-				let clickedCard = e.target;
-				if (e.target.matches("#movie-array ul")) {
-					return;
-				}
-				let movieModalData = movieData.filter((item) => {
-					return item.id == clickedCard.closest("li").classList.value;
-				});
-				cardModal(...movieModalData);
-				document.getElementById("movie-modal").style.top = "0px";
-			});
-		};
-
-		rerenderCardui(data.slice(0, 4));
-	};
-	//===========================
-
-	let pageDataMap = new Map();
-	let allPromises = [];
-	// 페이지 요청을 위한 반복문
-	for (let page = 1; page <= 5; page++) {
-		// 각 페이지 요청에 대한 프로미스 생성
-		let promise = fetch(`https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${page}`, options)
-			.then((response) => response.json())
-			.then((response) => {
-				// 받아온 데이터를 Map에 페이지 번호를 키로 사용하여 저장
-				pageDataMap.set(page, response.results);
-			})
-			.catch((error) => console.error("Error:", error));
-
-		// 총 5페이지의 영화 데이터이니까 하나하나 로드완료되면 promise로 던짐
-		allPromises.push(promise);
+	let newArr = [];
+	if (typeof Keyword === "string" && Keyword !== "") {
+		newArr = accMovies[selectedPageNum].filter((item) => item.original_title.toLowerCase().includes(Keyword.trim()));
+	} else if (typeof Keyword === "number" && Keyword !== "") {
+		newArr = accMovies[selectedPageNum].filter((item) => parseInt(item.vote_average) === Keyword);
 	}
 
-	// 모든 페이지의 데이터를 받아온 후에 실행되는 코드 (allPromises는 기다릴데이터임 5페이지니 다완료되면 밑에 코드 실행해줌)
-	Promise.all(allPromises).then(() => {
-		// 페이지 데이터를 활용하여 원하는 작업 수행
-		let page = Object.fromEntries(pageDataMap.entries()); //각페이지를 하나의 객체에 저장함(순환하기위해)
+	if (newArr.length !== 0) {
+		renderCardUi(newArr);
+	} else {
+		renderCardUi(`${searchOption.value} ${searchInput.value}에 대한 검색결과가 없습니다.😅`);
+	}
+}
 
-		let totalPage = Object.keys(page).length; //총페이지수 (코드 확장성위해 일단받아놓음)
-		// console.log(page[1])//각 페이지의 데이터 나옴
-		let allMovie = []; //전체 영화의 데이터를 저장할곳
-		for (let i = 1; i <= totalPage; i++) {
-			//전체 영화 페이지위해 1~5페이지의 영화를 하나의 array에 저장함
-			//인기 영화순으로 배열에 저장함
-			allMovie.push(
-				...page[`${i}`].sort((a, b) => {
-					return b.vote_average - a.vote_average;
-				})
-			);
+// 페이지네이션, 처음에 한번 호출되고 < > 클릭으로 페이지네이션 바뀔때마다 호출
+const makePagination = (paginationArr, pageNum) => {
+	// 매번 비우고 새로 그림
+	pageUl.innerHTML = '';
+
+	// 넘어오는 pageNum 에서 1을 빼거나 더해야 인덱스로 사용해서 배열에 접근 가능
+	let beforePointer = pageNum - 1;
+	let nextPointer = pageNum + 1;
+
+	// 여긴 좀 비효율입니다만,.. 이전 이후 버튼도 그냥 새로 만듭니다 
+	const before = document.createElement('li');
+	before.setAttribute('class', 'before');
+	before.style.width = 'fit-content';
+	before.innerText = "<";
+	before.setAttribute('data-pointer', beforePointer);
+
+	const next = document.createElement('li');
+	next.setAttribute('class', 'next');
+	next.style.width = 'fit-content';
+	next.innerText = '>';
+	next.setAttribute('data-pointer', nextPointer);
+
+	// 페이지네이션 배열을 활용하여 li 를 만듭니다.
+	const result = paginationArr.map((e, i) => {
+		const temp = `<li class=${e} id=${i}>${e}</li>`;
+		return temp
+	}).join('');
+
+	// 레이아웃시프트를 방지하기 위해 페이지네이션 각 li를 div에 넣고 스타일을 고정합니다.
+	const div = document.createElement('div');
+	div.style.display = "flex";
+	div.style.flexDirection = 'row';
+	div.style.gap = '1.6rem';
+	div.innerHTML = result;
+
+	// #category nav ul 에 적용합니다.
+	pageUl.insertAdjacentElement('beforeend', before);
+	pageUl.insertAdjacentElement('beforeend', div);
+	pageUl.insertAdjacentElement('beforeend', next);
+}
+
+// > 누를때 마다 계속 fetch 수행, < 한번이라도 중간에 눌렀으면 fetch수행 안함
+const fetchNextPages = async () => {
+	const baseUrl = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US';
+
+	// fetch 시 마다 5개의 프로미즈를 배열에 담을 것입니다. 페이지네이션이 5 증가할 때 마다 for 조건이 바뀌어야 해서 +5 해줍니다.
+	const nextNum = cumulativeNum + 5;
+	// promise 5개를 담을 배열입니다.
+	const fetchPromises = [];
+
+	// 누적숫자 부터 시작하여 +5 까지 반복합니다.
+	for (let page = cumulativeNum; page < nextNum; page++) {
+		const promise = fetch(`${baseUrl}&page=${page}`, options)
+			.then(response => {
+				// 그럴일은 아마도 없겠지만... 전체 영화 목록에서 마지막까지 간다면, 5로 딱 안떨어질 경우에 대비해보려고 했습니다.. promise 가 없다면 null을 저장합니다.
+				if(response !== null && response !== undefined){
+					return response.json();
+				}else{
+					return null;
+				}
+			});
+
+		// null 이 반환되었다면 배열에 push 하지 않습니다.
+		if(promise !== null && promise !== undefined) fetchPromises.push(promise);
+	}
+
+	// 페이지네이션에 사용할 번호 배열을 생성하고 전체 페이지네이션 배열에 push 합니다.
+	const currPageNumbers = Array.from({ length: fetchPromises.length }, (_, i) => i + cumulativeNum);
+	pagination.push(currPageNumbers);
+
+	// 모든 작업이 끝났으므로 누적번호를 + 5한 값으로 저장합니다.
+	cumulativeNum = nextNum;
+
+	try {
+		// 모든 페이지 요청을 promise.all 로 await 합니다.
+		const results = await Promise.all(fetchPromises);
+		
+		// 총 페이지 수를 전역 변수에 저장합니다.
+		total_pages = results[0].total_pages;
+		total_results = results[0].total_results;
+
+		// 모든 결과에서 영화 데이터만 추출하여 하나의 배열로 결합합니다.
+		const allMovies = results.map(result => result.results);
+
+		// 결합된 배열을 평점순 정렬합니다.
+		allMovies.forEach(e => e.sort((a, b) => b.vote_average - a.vote_average));
+
+		// accMovies 누적 영화 배열에 ... 으로 풀어서 push 합니다.
+		accMovies.push(...allMovies);
+
+		return allMovies;
+
+	} catch (error) {
+		console.error('Error fetching pages:', error);
+		return [];  // 에러 발생 시 빈 배열 반환
+	}
+};
+
+// 페이지네이션 아래 붉은 라인 클릭한 항목에 맞게 class on 부여
+const redLineControl = (number = null) => {
+	const redLine = document.querySelectorAll(".red-line>ul>li");
+	// 그냥 on 을 모두 제거하고
+	redLine.forEach(e => e.classList.remove('on'));
+	// 최초혹은 페이지네이션 넘겼을 경우
+	if(number === 0){
+		redLine[0].classList.add("on");
+	// 파라미터가 없지 않다면 on을 부여합니다. 
+	}else if(number !== null){
+		redLine[number].classList.add('on');
+	}
+}
+
+// 페이지네이션 클릭시 발동
+const handlePagination = async (event) => {
+	// 주변 클릭시 에러 나는것 방지합니다.
+	if(event.target.tagName === "DIV" || event.target.tagName === "UL") return;
+
+	const currSelectedClassList = event.target.classList.value;
+	const redLineId = event.target.id;
+
+	// 이전 < 클릭시
+	if(currSelectedClassList === 'before'){
+		// data-pointer 의 값을 가져와서 number로 변환합니다.
+		const dataSet = Number(event.target.dataset.pointer);
+		// 이전으로 갈수 없다면 
+		if(dataSet === -1){
+			return;
+		}else{
+			// 페이지네이션 배열에 해당하는 값을 넘겨줍니다.
+			makePagination(pagination[dataSet], dataSet);
+			// 하단 붉은 라인 변경 함수 호출
+			redLineControl(0);
+			clearInterval(intervalNum);
+
+			currPagination = currPagination - 5;
+
+			// 상단 비쥬얼 부분을 바꿔줍니다
+			const currPageData = changeTopVisual(accMovies[currPagination]);
+			renderCardUi(currPageData);
+			redLineControl(0);
 		}
+		// 이전을 클릭했으므로 fetch 방지용 변수에 before 를 할당합니다.
+		beforeNextFlag = 'before';
+	// 다음 > 클릭시
+	}else if(currSelectedClassList === 'next'){
+		const dataSet = Number(event.target.dataset.pointer);
 
-		//로드된 API의 페이지수만큼 페이지 생김
-		for (let key in page) {
-			let pageLi = `
-      <li class='${totalPage + 1 - key}'>${totalPage + 1 - key}</li>
-      `;
-			let redLine = `<li id='${totalPage + 1 - key}'></li>`;
-			let pageUl = document.querySelector("#category>nav>ul");
-			let underRedLine = document.querySelector(".red-line>ul");
+		if(dataSet > pagination.length){
+			return;
+		// 이전으로를 클릭한 바로 뒤라면 다시 fetch를 하지 않습니다.
+		}else if(beforeNextFlag === 'before'){
+			// clearInterval 은 캐러셀 자동 전환을 위한 setInterval 을 중지하는 것입니다.
+			clearInterval(intervalNum);
+			makePagination(pagination[dataSet], dataSet);
 
-			pageUl.insertAdjacentHTML("afterbegin", pageLi);
-			underRedLine.insertAdjacentHTML("afterbegin", redLine);
+			currPagination = currPagination + 5;
+
+			redLineControl(0);
+			const currPageData = changeTopVisual(accMovies[currPagination]);
+			renderCardUi(currPageData);
+		}else {
+
+			const data = await fetchNextPages();
+
+			currPagination = accMovies.length - data.length;
+
+			// 6번이상으로 넘어가면 일단 정지 타이머도 적용 안합니다..
+			// 그리고 캐러셀 <> 버튼과 유튜브 버튼도 일단 숨깁니다.
+			carouselBefore.style.visibility = "hidden";
+			carouselNext.style.visibility = "hidden";
+			btnContent.parentElement.style.visibility = "hidden";
+
+			redLineControl(0);
+			const currPageData = changeTopVisual(accMovies[currPagination]);
+			renderCardUi(currPageData);
+
+			clearInterval(intervalNum);
+			// next > 클릭 일때만 fetch 를 수행합니다.
+			
+			makePagination(pagination[dataSet], dataSet);
+
 		}
-		let firstRedLine = document.querySelectorAll(".red-line>ul>li");
-		firstRedLine[0].classList.add("on");
+		// 다음을 클릭했으므로 
+		beforeNextFlag = 'next';
+	// 페이지네이션 번호 클릭시 
+	}else{			
+		selectedPageNum = currSelectedClassList - 1;
+		clearInterval(intervalNum);
+		// 상단 비쥬얼 부분을 바꿔줍니다
+		const currPageData = changeTopVisual(accMovies[selectedPageNum]);
+		renderCardUi(currPageData);
+		redLineControl(redLineId);
+	}
+}
 
-		// 마지막 페이지수를 만듬
-		let lastRedLine = document.querySelectorAll(".red-line>ul>li");
-		lastRedLine[lastRedLine.length - 1].id = `${lastRedLine.length}`;
+// 캐러셀 자동 넘어가기 
+const carouselInterval = (curr = null) => {
+	// 파라미터로 받은 값이 있다면 해당 값으로 counter 변수를 설정합니다.
+	let counter = curr !== null ? curr : 0;
+	currCarouselIndex = counter;
 
-		//각페이지 빨간색 밑줄효과와 페이지 로드되거나 전환될때 검색창에 포커스
-		let category = () => {
-			//1. #category>nav>ul>li를 호버하면
-			//2. .red-line>ul>li가 100px로된다.
-			// let categoryList = document.querySelectorAll("#category nav ul li");
-			// let categoryUnderline = document.querySelectorAll(".red-line ul li");
+	// 3.5초마다 발동
+	intervalNum = setInterval(() => {
+		// 유튜브 재생을 위해 유튜브 버튼의 id 를 변경시킵니다.
+		btnContent.id = counter;
+		// 상단 비쥬얼 부분을 바꿔줍니다.
+		changeTopVisual(accMovies[0][counter]);
+		// 여기는 일단 5개만 캐러셀 돌게 하려고 4보다 작을때만 증가시키도록 했습니다.
+		counter < 4 ? counter ++ : counter = 0;
+		// 전역변수와 내부변수 counter 일치 시켜줍니다.
+		currCarouselIndex = counter;
+	}, 3500); 
 
-			// categoryList.forEach((item, index) => {
-			// 	item.addEventListener("click", () => {
-			// 		let under = document.querySelectorAll(".red-line ul li")[index];
-			// 		// let firstRedLine = document.querySelectorAll(".red-line ul li")[0];
-			// 		// firstRedLine.classList.add('on');
-			// 		categoryUnderline.forEach((el) => {
-			// 			el.classList.remove("on");
-			// 			under.classList.add("on");
-			// 		});
-			// 	});
-			// });
+}
 
-			//메모리 과부하 방지차원에서 위코드를 아래코드로 업데이트함
-			document.querySelector("#category>nav ul").addEventListener("click", (event) => {
-				if (event.target.matches("#category nav ul")) return;
-				let allRedLineLi = document.querySelectorAll(".red-line ul li");
-				// console.log(allRedLineLi)
-				let test = [...allRedLineLi].find((li) => {
-					return li.id == event.target.classList.value;
-				});
-				console.log(event.target.classList.value);
-				allRedLineLi.forEach((item) => {
-					item.classList.remove("on");
-				});
-				test.classList.add("on");
-				// console.log(...test);
-				// console.log(event.target.classList.vlaue);
-			});
+// 상단 캐러셀 좌우 버튼 클릭시
+const handleCarousel = (e) => {
+	const to = e.target.innerText;
+	
+	// 이전이면
+	if(to === 'navigate_before' && currCarouselIndex >= 0){
+		// 현재 인덱스 감소
+		if(currCarouselIndex > 0) currCarouselIndex --;
+		// 인터벌 제거(자동 넘기기 제거)
+		clearInterval(intervalNum);
+		// 상단 비쥬얼 부분 바꾸기
+		changeTopVisual(accMovies[0][currCarouselIndex]);
+		// 유튜브 버튼을 위해 id 할당
+		btnContent.id = currCarouselIndex;
+		// 인터벌 재시작
+		carouselInterval(currCarouselIndex);
+	// 다음이면
+	}else if(to === 'navigate_next' && currCarouselIndex < 5){
+		// 현재 인덱스 증가
+		if(currCarouselIndex < 4) currCarouselIndex ++;
+		clearInterval(intervalNum);
+		changeTopVisual(accMovies[0][currCarouselIndex]);
+		btnContent.id = currCarouselIndex;
+		carouselInterval(currCarouselIndex);
+	}
+}
 
-			// 영화 검색창 포커스하면 빨간색 밑줄 생김 아닐때 없어짐
-			let searchInput = document.getElementById("search-movie");
-			//마우스커서가 검색창 포커스되면~
-			searchInput.addEventListener("focus", () => {
-				document.querySelector(".search-line").classList.add("on");
-			});
-			//마우스커서가 검색창 포커스안되면~
-			searchInput.addEventListener("blur", () => {
-				document.querySelector(".search-line").classList.remove("on");
-			});
-		};
-		category();
+// 유튜브 버튼 클릭시 
+const handleYoutubeClick = (_, intervalNum) => {
+	// 인터벌 정지
+	clearInterval(intervalNum);
+	// 유튜브 버튼 id 값을 변수에 저장
+	const id = Number(btnContent.id);
 
-		//첫화면 로드 시 보이는 영화카드들
-		//allMovie.slice(0, 20) 성능개선하기위해 page['1']을 택함 slice는 새로운배열생성하니까 메모리 더 많이 차지함
-		cardUi(page["1"]);
+	if (typeof id === 'number') {
+		// const id = closestLiWithClassOn.id;
+		videoContainer.style.display = "block";
+		iframe.src = "";
+		iframe.src = videoSrc[id];
+	} else {
+		alert("영상을 찾아볼 수 없습니다.");
+	}
 
-		// let categoryPage = document.querySelectorAll("#category>nav>ul>li");
-		// for (let i = 0; i < categoryPage.length; i++) {
-		// 	//페이지 수를 순환함
-		// 	categoryPage[i].addEventListener("click", (e) => {
-		// 		serchInput.focus();
-		// 		if (i === categoryPage.length - 1) {
-		// 			cardUi(allMovie); //All클릭하면 다시 전체 영화 로드함
-		// 		} else {
-		// 			cardUi(page[i + 1]); //다른페이지를 클릭하면 해당 페이지의 데이터만 출력
-		// 			// console.log(2)//test
-		// 		}
-		// 	});
-		// }
-
-		//불필요하게 메모리점용으로 위 코드를 아래코드로 업데이트함
-		document.querySelector("#category>nav ul").addEventListener("click", (event) => {
-			if (event.target.matches("#category>nav ul")) return;
-			let pageNum = document.querySelector(".red-line ul .on");
-
-			if (pageNum.id == 6) {
-				cardUi(allMovie);
-			} else {
-				cardUi(page[`${pageNum.id}`]);
-			}
-		});
+	document.querySelector(".closevideo").addEventListener("click", () => {
+		videoContainer.style.display = "none"; //영상을 감싼 div숨기기
+		iframe.src = "";
+		// 유튜브 영상 종료시 인터벌 재개
+		carouselInterval(currCarouselIndex);
 	});
-});
+}
+
+/** ========================== init ============================== */
+const init = async () => {
+	searchInput.focus(); //페이지 로딩되면 검색란에 포커스되게 하기
+
+	// 우측 메뉴 모달 부착
+	menuModal();
+	
+	// 최초 fetch
+	await fetchNextPages();
+	// 최초 페이지네이션 생성
+	makePagination(pagination[0], 0);
+
+	// 최초 하단 붉은 라인 생성
+	for (let i = 0; i < 5; i++) {
+		const redLine = document.createElement('li');
+		redLine.setAttribute('id', i + 1);
+		const underRedLine = document.querySelector(".red-line>ul");
+		underRedLine.append(redLine);
+	}
+
+	// 붉은 라인이 1번에 최초 설정되도록
+	redLineControl(0);
+
+	// 상단 비쥬얼부분 최초 적용
+	changeTopVisual(accMovies[0]);
+
+	// 캐러셀 인터벌 시작
+	carouselInterval();
+	
+	// 카드 부착
+	renderCardUi(accMovies[0].slice(0, 4));
+
+	// 카드 클릭시 디테일로 이동
+	movieArrUL.addEventListener("click", handleCardClick);
+
+	// youtube 버튼 핸들링
+	btnContent.addEventListener("click", (e) => handleYoutubeClick(e, intervalNum));
+
+	// carousel 버튼 핸들링
+	carouselBefore.addEventListener('click', handleCarousel);
+	carouselNext.addEventListener('click', handleCarousel);
+
+	// 영화 검색창 포커스하면 빨간색 밑줄 생김 아닐때 없어짐
+	// 마우스커서가 검색창 포커스되면~
+	searchInput.addEventListener("focus", () => searchLine.classList.add("on"));
+
+	// 마우스커서가 검색창 포커스안되면~
+	searchInput.addEventListener("blur", () => searchLine.classList.remove("on"));
+		
+	//불필요하게 메모리점용으로 위 코드를 아래코드로 업데이트함
+	pageUl.addEventListener("click", handlePagination);
+
+	// 더보기 버튼 클릭시
+	showMoreBtn.addEventListener("click", handleShowMore);
+
+	// 아이콘 눌러서 검색할 때
+	searchIcon.addEventListener("click", handleSearch);
+	
+	// 엔터키로 검색할 떄
+	searchInput.addEventListener("keypress", (e) => e.keyCode === 13 && searchIcon.click());
+}
+
+// init!
+document.addEventListener("DOMContentLoaded", init);
