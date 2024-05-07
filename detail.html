@@ -50,20 +50,29 @@
 				</div>
 			</header>
 
-			<!-- 비쥬얼부분 -->
-			<div id="visual">
-				<div class="content">
-					<div class="intro">
-						<p class="title"></p>
-						<p class="movie-content"></p>
-
+			<div id="details">
+				<div id="content_blur">
+					<div class="content">
+						<div class="textbox">
+							<p class="title"></p>
+							<p class="genres"></p>
+							<p class="overview"></p>
+							<p class="release_date"></p>
+							<p class="vote_average"></p>
+						</div>
 					</div>
-					<div class="poster"></div>
 				</div>
 
-				<!-- visual배경화면 너무밝은 이미지면 이안에있는 텍스트 보이지않아서 추가함 -->
-				<div id="black-cover"></div>
+				<div class="right_side">
+					<img id="movie-poster" src="" alt="Movie Poster">
+				</div>
 			</div>
+
+			<!-- 출연진 정보가 동적 추가 -->
+			<div id="cast">
+				<div id="cast-list" class="container"></div>
+			</div>
+
 	        <!-- start 김용 -->
 			<div id="gap"></div>
 			<div id="comments">
@@ -140,6 +149,7 @@
 			<!-- end 김용 -->
 
 
+
 			<!-- footer최하단의 sns아이콘들 -->
 			<div id="sns">
 				<ul>
@@ -181,6 +191,7 @@
 		</div>
 	</div>
 
+
 	<div class="recommendations">
 		<h2 class="header">비슷한 영화 추천</h2>
 		<div class="content"></div>
@@ -192,8 +203,9 @@
 
 
 
-	<!-- <script src="./js/index.js"></script> -->
+
 	<script type="module" src="./js/detail.js"></script>
+
 </body>
 
 </html>
