@@ -19,7 +19,8 @@ function join() {
 		}
 
 		// 키 생성
-		const newKey = `joinInfo${userCount + 1}`;
+		// const newKey = `joinInfo${userCount + 1}`;
+		const newKey = `joinInfo_${id}`; // 덮어쓰기 방지로 키를 id로 바꿈
 
 		// 정보 생성
 		const newUser = {
@@ -49,11 +50,13 @@ function join() {
 				if (user.id === quitId) {
 					localStorage.removeItem(key);
 					console.log(`사용자 ${key}가 탈퇴되었습니다`);
-					break;
+					location.reload();
 				}
+			} else {
+				console.log("해당 ID의 사용자를 찾을 수 없습니다");
 			}
 		}
-		location.reload();
+		// location.reload();
 	});
 }
 window.onload = join;
