@@ -54,7 +54,7 @@ body {
 }
 
 .signup-form button {
-	width: 95%;
+	width: 100%;
 	padding: 10px;
 	margin-top: 10px;
 	border: none;
@@ -77,4 +77,41 @@ body {
 	height: 20px;
 	left: 0;
 	width: 20px;
+}
+
+.quit-form {
+	margin-top: 20px;
+	border-top: 1px solid #ccc;
+	padding-top: 20px;
+	text-align: center;
+}
+
+.quit-form h3 {
+	color: #ff0000;
+}
+
+.quit-form p {
+	color: #fff; /* 일반 텍스트 색상 */
+}
+
+.quit-form input {
+	width: 80%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.quit-form button {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 10px;
+	background-color: #ff0000; /* 붉은색 버튼 */
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.quit-form button:hover {
+	background-color: #cc0000; /* 버튼 호버 효과 */
 }

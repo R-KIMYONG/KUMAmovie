@@ -34,6 +34,26 @@ function join() {
 
 		console.log(`새 사용자 정보가 ${newKey}에 저장되었습니다.`);
 	});
-}
 
+	//탈퇴
+	const quitButton = document.getElementsByClassName("quit-btn")[0];
+
+	quitButton.addEventListener("click", () => {
+		const quitId = document.getElementsByClassName("quit-id")[0].value;
+
+		//같은 ID 찾고 삭제
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key.startsWith("joinInfo")) {
+				const user = JSON.parse(localStorage.getItem(key));
+				if (user.id === quitId) {
+					localStorage.removeItem(key);
+					console.log(`사용자 ${key}가 탈퇴되었습니다`);
+					break;
+				}
+			}
+		}
+		location.reload();
+	});
+}
 window.onload = join;
