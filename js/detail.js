@@ -1,20 +1,9 @@
-//================= 오은 테스트 =====================
-import { setLocalStorage, getLocalStorage } from "./localstorageGetSet.js";
-
-// 쿼리스트링에서 영화 id 값 찾아오는 함수
-export function getMovieId() {
-	const url = new URL(window.location.href);
-	const MOVIE_ID = Number(url.searchParams.get("id"));
-
-	return MOVIE_ID;
-}
-
-const MOVIE_ID = getMovieId();
-// ================ 오은 테스트 끝 ====================
+// ===========오은 : 아래 MOVIE_ID 를 주석 해제하시면 됩니다============ //
+// import { MOVIE_ID } from "./getMovieId.js";
 
 //=================세영 start=====================
 const API_KEY = "e4a84d9378c3db262d591cbe6cd51d64"; // 여기에 TMDB API 키를 입력하세요.
-// const MOVIE_ID = "372754"; //일단 고정된 아이디 추후 uml에서 가지고올 예정
+const MOVIE_ID = "372754"; //일단 고정된 아이디 추후 uml에서 가지고올 예정
 const baseURL = "https://api.themoviedb.org/3";
 const imageURL = "https://image.tmdb.org/t/p/original";
 
