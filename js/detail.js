@@ -1,5 +1,6 @@
 import { setLocalStorage, getLocalStorage } from "./localstorageGetSet.js";
 import { basicReviews, basicUsers } from "./basicData.js";
+import { handleLoginLogout, changeTopLoginStatus, drawLoginState } from "./signInSignOut.js";
 
 const API_KEY = 'e4a84d9378c3db262d591cbe6cd51d64'; // 여기에 TMDB API 키를 입력하세요.
 // const MOVIE_ID = '372754'; // 원하는 영화의 ID 입력 필요.
@@ -8,13 +9,12 @@ const imageURL = 'https://image.tmdb.org/t/p/original';
 
 const loginBtn = document.querySelector('.loginout'); // 로그인 버튼
 const joinBtn = document.querySelector('.join'); // 회원가입 버튼
-const reviewWrap = document.querySelector('.review-wrapper'); // 리뷰부분 래퍼
 const reviewArea = document.querySelector('.reviews'); // 개별 리뷰들이 부착될 div
 const reviewForm = document.querySelector('.review-form'); // 리뷰 작성 form
 const userReview = document.querySelector('.user-review'); // 리뷰 input
 
 // 쿼리스트링에서 영화 id 값 찾아오는 함수
-function getMovieId () {
+export function getMovieId () {
     const url = new URL(window.location.href);
     const MOVIE_ID = Number(url.searchParams.get("id"));
 
@@ -136,7 +136,7 @@ function makeMovieHtml(movie) {
 }
 
 // 리뷰 html 만들어서 렌더링
-const drawReviews = (reviews, MOVIE_ID, id = null) => {
+export const drawReviews = (reviews, MOVIE_ID, id = null) => {
     if(!reviews) return;
     const filtered = reviews.filter(e => e.movieId === MOVIE_ID);
 
@@ -154,37 +154,6 @@ const drawReviews = (reviews, MOVIE_ID, id = null) => {
 
     reviewArea.innerHTML = '';
     reviewArea.insertAdjacentHTML('beforeend', mapped);
-}
-
-// 로그인 중인지 아닌지에 따라 화면에 보이는 텍스트 변경하는 함수
-const drawLoginState = (isLogin) => {
-    const children = reviewWrap.children
-
-    if(isLogin !== null && isLogin.isLogin){
-        children[2].innerText = `${isLogin.id}님 환영합니다.`;
-        children[3].innerText = 'logout';
-        children[4].style.visibility = 'hidden';
-        children[5].style.display = 'block';
-    }else{
-        children[2].innerText = '로그인이 필요합니다';
-        children[3].innerText = 'login';
-        children[4].style.visibility = 'visible';
-    }
-}
-
-// 로그인 로그아웃 버튼 핸들러
-const handleLoginLogout = (_, MOVIE_ID) => {
-    const isLogin = getLocalStorage('islogin');
-    if(isLogin.isLogin){
-        const loginInfo = { isLogin : false, id : null }
-        setLocalStorage('islogin', JSON.stringify(loginInfo));
-        const isLogin = getLocalStorage('islogin');
-        const reviews = getLocalStorage('reviews');
-        drawLoginState(isLogin);
-        drawReviews(reviews, MOVIE_ID);
-    }else{
-        window.location.href = '/login.html'
-    }
 }
 
 // 회원가입 버튼 핸들러
@@ -280,13 +249,14 @@ const init = () => {
     setLocalStorage('movieid', MOVIE_ID);
     fetchCast(MOVIE_ID);
     fetchMovieDetails(MOVIE_ID);
+    changeTopLoginStatus();
 
     loginBtn.addEventListener('click', (e) => handleLoginLogout(e, MOVIE_ID));
     joinBtn.addEventListener('click', handleJoin);
     reviewForm.addEventListener('submit', (e) => handleReviewSubmit(e, isLogIn, MOVIE_ID));
 
     drawLoginState(isLogIn);
-    isLogIn ? drawReviews(reviews, MOVIE_ID, isLogIn.id) : drawReviews(reviews, MOVIE_ID);
+    isLogIn.isLogin ? drawReviews(reviews, MOVIE_ID, isLogIn.id) : drawReviews(reviews, MOVIE_ID);
 
     getRecommandMovieList(MOVIE_ID).then((list) => {
         console.log(list);

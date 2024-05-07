@@ -126,7 +126,7 @@
 .reviews{
     position: relative;
     display: flex;
-    width: 600px;
+    width: 1000px;
     flex-direction: column;
     gap: 0.5rem;
     padding: 20px 0;
