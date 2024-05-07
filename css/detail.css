@@ -119,7 +119,8 @@
 
 .review-wrapper h2{
     position: relative;
-    font-size: 2rem;
+    font-size: 1.4rem;
+    font-weight: bold;
     padding : 10px 0;
     box-sizing: border-box;
 }
