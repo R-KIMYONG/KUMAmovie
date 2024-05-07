@@ -44,3 +44,10 @@ body {
 .signup-form button:hover {
 	background-color: #45a049;
 }
+
+.agree-form{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 0.6rem;
+}

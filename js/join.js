@@ -6,6 +6,7 @@ const email = document.querySelector('.email');
 const password = document.querySelector('.password');
 const confirmPw = document.querySelector('.confirm_password');
 const form = document.querySelector('form');
+const agreeCheckbox = document.getElementById("checkbox");
 
 const currId = getLocalStorage('movieid');
 
@@ -46,7 +47,10 @@ const handleSubmit = (e) => {
         console.log(inputPassword)
         alert('비밀번호는 4~10자, 영문, 숫자, 특수문자가 반드시 포함되어야 합니다');
         return;
-    } else{
+    }else if(!agreeCheckbox.checked){
+		alert("이용약관에 동의해야 합니다.");
+		return;
+	}else{
         let dataArray = [];
 
         const pack = {

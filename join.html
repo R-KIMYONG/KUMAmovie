@@ -5,6 +5,8 @@
 		<title>회원가입 폼</title>
 
 		<link rel="stylesheet" href="css/join.css" />
+		<link rel="stylesheet" href="css/modal.css" />
+
 	</head>
 	<body>
 		<div class="signup-form">
@@ -24,8 +26,23 @@
 
 				<button type="submit">가입하기</button>
 			</form>
+
+			<div class="agree-form">
+				<input type="checkbox" class="checkbox" id="checkbox"/>
+				<label>이용약관에 동의합니다.</label>
+				<a href="#" class="open_terms">약관 보기</a>
+			</div>
+		</div>
+
+		<div id="terms-modal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<h3>이용약관</h3>
+				<p>회원가입에 동의하십니까?</p>
+			</div>
 		</div>
 
 		<script src="./js/join.js" type="module"></script>
+		<script src="./js/modal.js" type="module"></script>
 	</body>
 </html>
