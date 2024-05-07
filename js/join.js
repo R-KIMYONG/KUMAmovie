@@ -1,28 +1,39 @@
 function join() {
-	const getname = document.getElementsByClassName("name")[0];
-	const getemail = document.getElementsByClassName("email")[0];
-	const getpw = document.getElementsByClassName("password")[0];
-	const checkpw = document.getElementsByClassName("confirm_password")[0];
 	const signupButton = document.getElementsByClassName("signup-btn")[0];
 
 	signupButton.addEventListener("click", () => {
-		// event.preventDefault();
-		// console.log(getname.value);
-		// console.log(getemail.value);
-		// console.log(getpw.value);
-		// console.log(checkpw.value);
-		// localStorage.setItem("name", getname);
-		// localStorage.setItem("email", getemail);
-		// localStorage.setItem("password", getpw);
-		// localStorage.setItem("confirm_password", checkpw);
+		const name = document.getElementsByClassName("name")[0].value;
+		const id = document.getElementsByClassName("id")[0].value;
+		const password = document.getElementsByClassName("password")[0].value;
+		const confirmPassword = document.getElementsByClassName("confirm_password")[0].value;
 
-		let joinInfo = {
-			name: getname.value,
-			email: getemail.value,
-			password: getpw.value,
-			confirm_password: checkpw.value
+		// 기존 데이터의 수를 확인하여 새로운 키 생성
+		let userCount = 0;
+
+		// localStorge의 모든 키를 반복하며 사용자 정보의 수 세기
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key.startsWith("joinInfo")) {
+				userCount++;
+			}
+		}
+
+		// 키 생성
+		const newKey = `joinInfo${userCount + 1}`;
+
+		// 정보 생성
+		const newUser = {
+			name,
+			id,
+			password,
+			confirm_password: confirmPassword
 		};
-		localStorage.setItem("joinInfo", JSON.stringify(joinInfo));
+
+		// 정보저장
+		localStorage.setItem(newKey, JSON.stringify(newUser));
+
+		console.log(`새 사용자 정보가 ${newKey}에 저장되었습니다.`);
 	});
 }
+
 window.onload = join;
