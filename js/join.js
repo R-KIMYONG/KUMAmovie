@@ -10,16 +10,16 @@ function join() {
 		const confirmPassword = document.getElementsByClassName("confirm_password")[0].value;
 
 		if (!name || !id || !password || !confirmPassword) {
-			alert("빈칸없이 입력해주세요");
+			alert("빈칸없이 입력해주세요.");
 			return;
 		}
 
 		const agreeCheckbox = document.getElementsByClassName("checkbox")[0].checked;
 
-		// 체크박스가 체크되지 않았을 때 경고 메시지 표시
+		// 체크박스가 체크되지 않았을 때
 		if (!agreeCheckbox) {
 			alert("이용약관에 동의해야 회원가입이 가능합니다.");
-			return; // 제출 중지
+			return;
 		}
 
 		// 기존 데이터의 수를 확인하여 새로운 키 생성
@@ -72,7 +72,7 @@ function join() {
 				const user = JSON.parse(localStorage.getItem(key));
 				if (user.id === quitId) {
 					localStorage.removeItem(key);
-					console.log(`사용자 ${key}가 탈퇴되었습니다`);
+					// console.log(`사용자 ${key}가 탈퇴되었습니다`);
 					alert(`${user.id}가 탈퇴되었습니다`);
 					location.reload();
 					break;
