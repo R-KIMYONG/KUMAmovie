@@ -78,7 +78,7 @@ function join() {
 					break;
 				}
 			} else {
-				console.log("해당 ID의 사용자를 찾을 수 없습니다");
+				// console.log("해당 ID의 사용자를 찾을 수 없습니다");
 				alert("해당 ID의 사용자를 찾을 수 없습니다");
 			}
 		}
