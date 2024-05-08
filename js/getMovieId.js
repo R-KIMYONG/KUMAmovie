@@ -6,4 +6,4 @@ export function getMovieId() {
 	return MOVIE_ID;
 }
 
-export const MOVIE_ID = getMovieId();
+export const currMovieId = getMovieId();

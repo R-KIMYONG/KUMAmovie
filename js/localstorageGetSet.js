@@ -1,7 +1,7 @@
 export const setLocalStorage = (where, value = 'test') => {
     const get = getLocalStorage(where);
 
-    if(!get && value === 'test') {
+    if(!get || value === 'test') {
         localStorage.setItem(where, value);
     }else {
         localStorage.setItem(where, value);

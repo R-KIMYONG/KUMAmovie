@@ -1,3 +1,5 @@
+import { setLocalStorage, getLocalStorage } from "./localstorageGetSet.js";
+
 function join() {
 	const signupButton = document.getElementsByClassName("signup-btn")[0];
 
@@ -40,7 +42,7 @@ function join() {
 
 		// 키 생성
 		// const newKey = `joinInfo${userCount + 1}`;
-		const newKey = `joinInfo_${id}`; // 덮어쓰기 방지로 키를 id로 바꿈
+		// const newKey = `joinInfo_${id}`; // 덮어쓰기 방지로 키를 id로 바꿈
 
 		// 정보 생성
 		const newUser = {
@@ -50,13 +52,37 @@ function join() {
 			confirm_password: confirmPassword
 		};
 
+		//===============오은수정 및 추가====================//
+		let arr = [];
+		const loggedInIds = getLocalStorage('joinInfo');
+		const loginInfo = { isLogin : true, id: id };
+		setLocalStorage('islogin', JSON.stringify(loginInfo));
+
+		if(loggedInIds){
+			const filtered = loggedInIds.filter(e => e.id === id);
+			if(filtered.length > 0) {
+				alert('아이디 중복입니다!');
+				return;
+			}
+			arr = [...loggedInIds, newUser];
+			setLocalStorage('joinInfo', JSON.stringify(arr));
+		}else{
+			arr = [newUser];
+			setLocalStorage('joinInfo', JSON.stringify(arr));
+		}
+
 		// 정보저장
-		localStorage.setItem(newKey, JSON.stringify(newUser));
+		// localStorage.setItem(newKey, JSON.stringify(newUser));
 		alert("회원가입이 완료되었습니다.");
 
-		console.log(`새 사용자 정보가 ${newKey}에 저장되었습니다.`);
+		// console.log(`새 사용자 정보가 ${newKey}에 저장되었습니다.`);
+		console.log(`새 사용자 정보가 joinInfo에 저장되었습니다.`);
 
-		location.reload();
+
+		// location.reload();
+		window.location.href = '/';
+		//===============오은끝====================//
+
 	});
 
 	//탈퇴

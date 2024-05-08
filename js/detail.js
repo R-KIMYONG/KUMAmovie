@@ -1,7 +1,8 @@
+// ===========오은============ //
 import { setSearchParams } from "./setSearchParams.js";
-
-// ===========오은 : 아래 MOVIE_ID 를 주석 해제하시면 됩니다============ //
-//import { MOVIE_ID } from "./getMovieId.js";
+import { setLocalStorage, getLocalStorage } from "./localstorageGetSet.js";
+import { currMovieId } from "./getMovieId.js";
+setLocalStorage('movieid', currMovieId);
 
 //=================세영 start=====================
 const movie = document.querySelector(".movie");
@@ -231,7 +232,17 @@ const getCurrentDateTime = () => {
 	// YYYY-MM-DD HH:mm:ss 형식으로 반환
 	return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 };
-let userLogin = true; //로그인했는지 안했는지 판단함
+let userLogin = false; //로그인했는지 안했는지 판단함
+
+
+//==================오은=====================//
+const isLoggedIn = getLocalStorage('islogin');
+if(isLoggedIn){
+	if(isLoggedIn.isLogin) userLogin = true;
+}
+//==================오은끝=====================//
+
+
 let userName = "parkparkparkpark yong"; //로그인한 유저의 이름
 let userId = "right2345"; //로그인한 유저의 id
 let currentDateTime = getCurrentDateTime(); //현재시간을 변수에 넣음
@@ -377,10 +388,21 @@ const editBtn = () => {
 		if (event.target.classList.contains("edit-my-comments-btn") || event.target.closest(".edit-my-comments-btn")) {
 			// 'edit-my-comments-btn' 클래스를 가진 버튼을 클릭했거나 해당 버튼의 하위 요소를 클릭한 경우
 			// 코드 실행
-			document.querySelector("#add-comments").style.display = "block"; //댓글달기 UI 다시 나타나
-			document.querySelector("#message").focus(); //댓글쓰기에 커서깜빡이게 하고~
-			document.querySelector("#send-comments-form").style.display = "none"; //send버튼과Edit버튼을 겹쳐놔서 send를 숨기기
-			document.querySelector("#edit-comments-form").style.display = "block"; //edit버튼만 보이게 하기
+
+
+			// ============== 오은 수정 ====================//
+			if(userLogin){
+				document.querySelector("#add-comments").style.display = "block"; //댓글달기 UI 다시 나타나
+				document.querySelector("#message").focus(); //댓글쓰기에 커서깜빡이게 하고~
+				document.querySelector("#send-comments-form").style.display = "none"; //send버튼과Edit버튼을 겹쳐놔서 send를 숨기기
+				document.querySelector("#edit-comments-form").style.display = "block"; //edit버튼만 보이게 하기
+			}else{
+				alert('로그인 하세요!');
+				window.location.href = './login.html';
+				return
+			}
+			// ============== 오은 수정 끝 ====================//
+			
 		} else {
 			return; // 수정 버튼을 클릭하지 않은 경우 함수 종료
 		}
@@ -451,13 +473,21 @@ const delBtn = () => {
 //댓글추가 UI 나오게하는 버튼기능임 로그인안되있으면 댓글달기 불가
 const addComments = () => {
 	document.querySelector("#add-btn").addEventListener("click", () => {
+
 		if (userLogin) {
 			document.querySelector("#add-comments").style.display = "block";
 			document.querySelector("#message").focus();
 			document.querySelector("#send-comments-form").style.display = "block";
 			document.querySelector("#edit-comments-form").style.display = "none";
 		} else {
-			return alert("로그인후 댓글 남길 수 있습니다.");
+			// return alert("로그인후 댓글 남길 수 있습니다.");
+
+
+			// =====================오은======================//
+			alert("로그인후 댓글 남길 수 있습니다.");
+			window.location.href = './login.html'
+			// =====================오은 end======================//
+
 		}
 	});
 	// 현재 입력한 댓글의 글자수를 실시간으로 업데이트해서 보여줌 댓글달기UI 우측하단.

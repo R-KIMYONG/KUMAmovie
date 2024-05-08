@@ -26,23 +26,23 @@
 					<h2>KUMA MOVIE</h2>
 					<form id="login-form">
 						<!-- 글자수 제한(id:15 , pw:20) -->
-						<input required maxlength="15" type="text" id="id" placeholder="ID를 입력하세요" />
-						<input required maxlength="20" type="password" id="pwd" placeholder="Password를 입력하세요" />
+						<input required maxlength="15" type="text" id="id" placeholder="ID를 입력하세요" name="userId"/>
+						<input required maxlength="20" type="password" id="pwd" placeholder="Password를 입력하세요" name="userPw"/>
 						<p class="remember-check">
 							<input type="checkbox" id="remember-check1" />
 							<label for="remember-check1">아이디 저장하기</label>
 							<input type="checkbox" id="remember-check2" />
 							<label for="remember-check2"> 자동 로그인</label>
 						</p>
-						<button type="button" onclick="login();">Login</button>
+						<button type="submit">Login</button>
 						<!-- 회원가입 페이지 이동 -->
 						<div class="info-user">
-							<a href="join.html"> 회원가입 </a>
+							<a href="./join.html"> 회원가입 </a>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
-		<script src="./js/login.js"></script>
+		<script src="./js/login.js" type="module"></script>
 	</body>
 </html>
