@@ -63,7 +63,7 @@ html {
 	color: #303030;
 }
 
-#login-form > input[type="submit"]{
+#login-form > button{
 	width: 50%;
 	height: 50px;
 	color: #fff;
@@ -99,4 +99,5 @@ html {
 .info-user {
 	font-size: 12px;
 	color:white;
+	margin-top: 15px;
 }
