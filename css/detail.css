@@ -162,6 +162,7 @@
 	text-align: center;
 	box-sizing: border-box;
 	margin: 0 3px;
+	cursor: pointer;
 }
 .recommendations > .content > .recommend-movie > .poster {
 	max-width: 300px;
