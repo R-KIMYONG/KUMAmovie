@@ -389,7 +389,7 @@ const handlePagination = async (event) => {
 }
 
 const hideOrRevealYoutubeButton = (idx) => {
-	if(idx >= 4) {
+	if(idx >= 5) {
 		btnContent.parentElement.style.visibility = "hidden";
 	}else{
 		btnContent.parentElement.style.visibility = "visible";
