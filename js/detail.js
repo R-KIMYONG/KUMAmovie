@@ -587,7 +587,7 @@ const commentsList = async () => {
 	}, 0);
 	averageScore.textContent = `${((thisMovieScore + Number(movieInfo[1])) / (totalComments.length + 1)).toFixed(1)}`;
 	totalLength.textContent = `${totalComments.length > 300 ? "300+" : totalComments.length}`;
-	let movieTitle = document.querySelector("#comments-title .comments-total .movie-title");
+	let movieTitle = document.querySelector("#comments-title .comments-total .commtents-movie-title");
 	movieTitle.textContent = `${movieInfo[0]}`; //모든 댓글 위에 있는 영화제목
 	let sendModalMovieTitle = document.querySelector("#send-comments .comments-movie-title h3");
 	sendModalMovieTitle.textContent = movieTitle.textContent;
