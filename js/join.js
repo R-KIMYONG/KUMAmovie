@@ -55,7 +55,7 @@ function join() {
 		//===============오은수정 및 추가====================//
 		let arr = [];
 		const loggedInIds = getLocalStorage('joinInfo');
-		const loginInfo = { isLogin : true, id: id };
+		const loginInfo = { isLogin : true, id: id, name : name };
 		setLocalStorage('islogin', JSON.stringify(loginInfo));
 
 		if(loggedInIds){

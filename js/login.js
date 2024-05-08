@@ -23,7 +23,7 @@ const handleSubmit = (e) => {
 
                 window.location.href = a;
 
-                const loginInfo = { isLogin : true, id: inputId };
+                const loginInfo = { isLogin : true, id: inputId, name : filtered[0].name};
                 setLocalStorage('islogin', JSON.stringify(loginInfo));
             }else{
                 alert('아이디 비밀번호 확인하세요!');
