@@ -26,6 +26,7 @@
 }
 
 #movie-poster {
+	margin-top: 40px;
 	width: 250px;
 	height: 350px;
 	border-radius: 20px;
@@ -39,6 +40,32 @@
 	to {
 		right: 0; /* End at its final position */
 	}
+}
+
+.textbox{
+	margin-left: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	height: 750px;
+	width: 900px;
+	font-size: 22px;
+	margin-top: 200px;
+	text-shadow: -1px -1px 0 #ffffff,  
+               1px -1px 0 #ffffff,
+               -1px 1px 0 #ffffff,
+               1px 1px 0 #ffffff; /* 검은색 태두리 */
+}
+
+.genres{
+	align-items: center;
+	margin-top: 20px;
+}
+
+.release_date{
+	align-items: center;
+	margin-top: 20px;
 }
 
 .poster-container {
@@ -65,13 +92,26 @@
 	margin-top: 20px;
 }
 
+.image-style {
+	width: 300px;
+	margin: 10px;
+	margin-top: 70px;
+	border-radius: 25px;
+	box-shadow: 0 0 8px #0000004f;
+  }
+  #movieImages {
+	display: flex; /* Flexbox를 사용하여 항목들을 가로로 배열 */
+	overflow-x: auto; /* 가로 스크롤 활성화 */
+	white-space: nowrap; /* 모든 항목을 한 줄에 표시 */
+  }
+  
+
 #content_blur {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	border-radius: 25px 25px 0 0;
 	backdrop-filter: blur(5px);
 	background-color: #0000004d;
 	z-index: 1;
