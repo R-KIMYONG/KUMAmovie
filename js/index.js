@@ -45,8 +45,11 @@ let lastTime = 0;
 const interval = 3500; // 3.5초
 // rAF cancel 을 위해 rAF를 담을 변수
 let animationFrameId;
-
+// 캐러셀 인덱스 계산용, 중첩 배열이라서.. [[],[],[], ...] 이런식으로
 let carouselIndexControl = 0;
+// 마지막 클릭 시간을 추적할 변수
+let lastClickTime = 0;
+
 
 
 const videoSrc = [
@@ -410,13 +413,7 @@ const sumAllData = (data) => {
 }
 
 // 캐러셀 자동 넘어가기 request animation frame 사용하여 개선
-// timestamp 가 멈췄을 때 (cancel)
-// 다음 클릭하면 그때 에러남...
 const carouselAnimate = (timestamp) => {
-
-	// console.log(timestamp)
-
-
 	// timestamp 는 rAF가 넘겨주는 경과된 시간(밀리초)
 	// 만약 lastTime 이 null 또는 undefined 면 lastTime 을 rAF 가 시작된 시점의 timestamp와 일치시킴
     if (!lastTime) lastTime = timestamp;
@@ -444,11 +441,18 @@ const carouselAnimate = (timestamp) => {
 // 상단 캐러셀 좌우 버튼 클릭시
 const handleCarousel = (e) => {
 	const to = e.target.innerText;
+	const now = Date.now();
+
+	// 이전 클릭으로부터의 시간 차이 계산
+    const timeSinceLastClick = now - lastClickTime;
+
+	console.log(timeSinceLastClick)
+
+	// 인터벌 제거(자동 넘기기 제거)
+	cancelAnimationFrame(animationFrameId);
 
 	// 이전이면
-	if(to === 'navigate_before' ){
-		// 인터벌 제거(자동 넘기기 제거)
-		cancelAnimationFrame(animationFrameId);
+	if(to === 'navigate_before'){
 		// 현재 인덱스 감소, 순환구조
 		currCarouselIndex = (currCarouselIndex - 1 + 20) % 20;
 		hideOrRevealYoutubeButton(currCarouselIndex);
@@ -457,24 +461,26 @@ const handleCarousel = (e) => {
 		// 유튜브 버튼을 위해 id 할당
 		btnContent.id = currCarouselIndex;
 		// 인터벌 재시작
-		requestAnimationFrame(carouselAnimate)
-		// setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		if(timeSinceLastClick > 3000) setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		// 마지막 클릭 시간 업데이트
+		lastClickTime = now;
 	// 다음이면
-	}else if(to === 'navigate_next' ){
-		cancelAnimationFrame(animationFrameId);
+	}else if(to === 'navigate_next'){
 		currCarouselIndex = (currCarouselIndex + 1) % 20;
 		hideOrRevealYoutubeButton(currCarouselIndex);
 		if(carouselIndexControl >= accMovies.length) carouselIndexControl = 0;
 		changeTopVisual(accMovies[currCarouselIndex === 19 ? carouselIndexControl += 1 : carouselIndexControl][currCarouselIndex]);
 		btnContent.id = currCarouselIndex;
 		// 인터벌 재시작
-		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		if(timeSinceLastClick > 3000) setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		// 마지막 클릭 시간 업데이트
+		lastClickTime = now;
 	}
-
+	
 }
 
 // 유튜브 버튼 클릭시 
-const handleYoutubeClick = (_, intervalNum) => {
+const handleYoutubeClick = () => {
 	// 인터벌 정지
 	cancelAnimationFrame(animationFrameId);
 
@@ -534,7 +540,7 @@ const init = async () => {
 	movieArrUL.addEventListener("click", handleCardClick);
 
 	// youtube 버튼 핸들링
-	btnContent.addEventListener("click", (e) => handleYoutubeClick(e, intervalNum));
+	btnContent.addEventListener("click", handleYoutubeClick);
 
 	// carousel 버튼 핸들링
 	carouselBefore.addEventListener('click', handleCarousel);
