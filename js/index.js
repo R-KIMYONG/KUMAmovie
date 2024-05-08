@@ -149,11 +149,9 @@ const handleCardClick = (e) => {
 		return item.id == clickedCard.closest("li").classList.value;
 	});
 
+	// 영화 디테일 페이지로 이동~
 	const a = setSearchParams(clickedCardId[0].id);
-
 	window.location.href = a;
-	// cardModal(...movieModalData);
-	// document.getElementById("movie-modal").style.top = "0px";
 }
 
 // 페이지네이션 바뀔 때마다 상단부분(비쥬얼부분) 바꾸고(평점높은 영화로), 파라미터로 받은 데이터 배열 그대로 반환
@@ -390,6 +388,14 @@ const handlePagination = async (event) => {
 	}
 }
 
+const hideOrRevealYoutubeButton = (idx) => {
+	if(idx >= 4) {
+		btnContent.parentElement.style.visibility = "hidden";
+	}else{
+		btnContent.parentElement.style.visibility = "visible";
+	}
+}
+
 // 캐러셀 자동 넘어가기 request animation frame 사용하여 개선
 const carouselAnimate = (timestamp) => {
     if (!lastTime) lastTime = timestamp;
@@ -397,6 +403,7 @@ const carouselAnimate = (timestamp) => {
 
     if (elapsed > interval) { // 3.5초가 지났는지 확인
         currCarouselIndex = (currCarouselIndex + 1) % accMovies[0].length;
+		hideOrRevealYoutubeButton(currCarouselIndex);
         changeTopVisual(accMovies[0][currCarouselIndex]);
         btnContent.id = currCarouselIndex;
         lastTime = timestamp;
@@ -433,6 +440,7 @@ const handleCarousel = (e) => {
 		cancelAnimationFrame(animationFrameId);
 		// 현재 인덱스 감소
 		currCarouselIndex = (currCarouselIndex - 1 + accMovies[0].length) % accMovies[0].length;
+		hideOrRevealYoutubeButton(currCarouselIndex);
 		// 상단 비쥬얼 부분 바꾸기
 		changeTopVisual(accMovies[0][currCarouselIndex]);
 		// 유튜브 버튼을 위해 id 할당
@@ -443,6 +451,7 @@ const handleCarousel = (e) => {
 	}else if(to === 'navigate_next' ){
 		cancelAnimationFrame(animationFrameId);
 		currCarouselIndex = (currCarouselIndex + 1) % accMovies[0].length;
+		hideOrRevealYoutubeButton(currCarouselIndex);
 		changeTopVisual(accMovies[0][currCarouselIndex]);
 		btnContent.id = currCarouselIndex;
 		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
