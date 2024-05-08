@@ -15,7 +15,7 @@
 	left: 0px;
 	top: 0px;
 	border-radius: 25px 25px 0px 0px;
-	z-index: 99;
+	z-index: 1;
 }
 
 /* 헤더 가장왼쪽에 있는 로고 부분임 */
