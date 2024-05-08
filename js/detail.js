@@ -1,11 +1,13 @@
+import { setSearchParams } from "./setSearchParams.js";
+
 // ===========오은 : 아래 MOVIE_ID 를 주석 해제하시면 됩니다============ //
- //import { MOVIE_ID } from "./getMovieId.js";
+//import { MOVIE_ID } from "./getMovieId.js";
 
 //=================세영 start=====================
-const movie =document.querySelector(".movie");
+const movie = document.querySelector(".movie");
 
 const searchParams = new URLSearchParams(window.location.search);
-const MOVIE_ID =searchParams.get("id");
+const MOVIE_ID = searchParams.get("id");
 
 const API_KEY = "e4a84d9378c3db262d591cbe6cd51d64"; // 여기에 TMDB API 키를 입력하세요.
 const baseURL = "https://api.themoviedb.org/3";
@@ -53,37 +55,35 @@ async function fetchMovieDetails() {
 
 	// 기존에 존재하는 포스터 이미지 요소를 찾아 제거
 	const existingPoster = document.querySelector("#movie-poster");
-  const existingTitle = document.querySelector(".movie-title");
-  const existingRating = document.querySelector(".movie-rating");
+	const existingTitle = document.querySelector(".movie-title");
+	const existingRating = document.querySelector(".movie-rating");
 
-  if (existingTitle) {
-      existingTitle.remove();
-  }
+	if (existingTitle) {
+		existingTitle.remove();
+	}
 
-  if (existingRating) {
-      existingRating.remove();
-  }
+	if (existingRating) {
+		existingRating.remove();
+	}
 	if (existingPoster) {
 		existingPoster.remove();
 	}
 
 	const rightSideElement = document.querySelector(".right_side");
-  const contentBox = document.querySelector("#details .textbox");
+	const contentBox = document.querySelector("#details .textbox");
 
+	// 영화 장르 설정
+	const genresElement = contentBox.querySelector(".genres");
+	genresElement.textContent = `장르: ${detailsData.genres.map((genre) => genre.name).join(", ")}`;
 
-  // 영화 장르 설정
-  const genresElement = contentBox.querySelector(".genres");
-  genresElement.textContent = `장르: ${detailsData.genres.map(genre => genre.name).join(', ')}`;
+	// 영화 개요 설정
+	const overviewElement = contentBox.querySelector(".overview");
+	overviewElement.textContent = detailsData.overview;
 
-  // 영화 개요 설정
-  const overviewElement = contentBox.querySelector(".overview");
-  overviewElement.textContent = detailsData.overview;
+	// 영화 개봉일 설정
+	const releaseDateElement = contentBox.querySelector(".release_date");
+	releaseDateElement.textContent = `개봉일: ${detailsData.release_date}`;
 
-  // 영화 개봉일 설정
-  const releaseDateElement = contentBox.querySelector(".release_date");
-  releaseDateElement.textContent = `개봉일: ${detailsData.release_date}`;
-  
-  
 	// 영화 포스터 설정
 	if (detailsData.poster_path) {
 		const posterURL = `${imageURL}${detailsData.poster_path}`;
@@ -111,8 +111,6 @@ async function fetchMovieDetails() {
 		console.log("적합한 포스터 이미지를 찾을 수 없습니다.");
 	}
 
-
-
 	// 배경 이미지 설정
 	if (imageData.backdrops && imageData.backdrops.length > 0) {
 		const secondImage = imageData.backdrops[1]; // 두 번째 배경 이미지 사용
@@ -122,34 +120,31 @@ async function fetchMovieDetails() {
 		const detailsElement = document.getElementById("details");
 		detailsElement.style.backgroundImage = `url('${backgroundURL}')`;
 		detailsElement.style.backgroundSize = "cover"; // 배경 이미지를 커버로 설정
-
-
 	} else {
 		console.log("적합한 배경 이미지를 찾을 수 없습니다.");
 	}
- 
 }
 
 async function fetchMovieImages(movieId) {
-  const url = `https://api.themoviedb.org/3/movie/${movieId}/images?api_key=${API_KEY}`;
-  const response = await fetch(url);
-  const data = await response.json();
+	const url = `https://api.themoviedb.org/3/movie/${movieId}/images?api_key=${API_KEY}`;
+	const response = await fetch(url);
+	const data = await response.json();
 
-  const images = data.backdrops; // 백드롭 이미지 배열
+	const images = data.backdrops; // 백드롭 이미지 배열
 
-  // 이미지를 최대 4장까지만 표시
-  for (let i = 0; i < Math.min(images.length, 5); i++) {
-      const imageUrl = `https://image.tmdb.org/t/p/w500${images[i].file_path}`;
-      displayImage(imageUrl);
-  }
+	// 이미지를 최대 4장까지만 표시
+	for (let i = 0; i < Math.min(images.length, 5); i++) {
+		const imageUrl = `https://image.tmdb.org/t/p/w500${images[i].file_path}`;
+		displayImage(imageUrl);
+	}
 }
 
 function displayImage(imageUrl) {
-  const imageContainer = document.getElementById('movieImages');
-  const img = document.createElement('img');
-  img.src = imageUrl;
-  img.className = 'image-style';
-  imageContainer.appendChild(img);
+	const imageContainer = document.getElementById("movieImages");
+	const img = document.createElement("img");
+	img.src = imageUrl;
+	img.className = "image-style";
+	imageContainer.appendChild(img);
 }
 
 fetchMovieImages(MOVIE_ID);
@@ -159,8 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	fetchCast();
 	fetchMovieDetails();
 });
-
-
 
 //=================세영 end=====================
 
@@ -604,6 +597,13 @@ getRecommandMovieList(MOVIE_ID).then((list) => {
 		.map((movie) => makeMovieHtml(movie))
 		.join("");
 	document.querySelector(".recommendations > .content").innerHTML = html;
+
+	// 클릭 시 페이지 이동할 수 있도록
+	document.querySelectorAll(".recommendations > .content > .recommend-movie").forEach((movieElement) => {
+		movieElement.addEventListener("click", () => {
+			location.href = `/movie/detail?id=${movie.getAttribute("movie-id")}`;
+		});
+	});
 });
 
 async function getRecommandMovieList(movieId) {
