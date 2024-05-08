@@ -20,8 +20,17 @@
 <body>
 	<div id="main">
 		<div id="movie">
+			<div class="mainlogo">
+				<!-- 로고부분 -->
+				<h1 id="logo">
+					<a href="index.html">
+						<img src="./img/logo.png" alt="logo" />
+					</a>
+				</h1>
+			</div>
 			<div id="login-box">
-				<h2>KUMA MOVIE</h2>
+				<h2>KUMA MOVIE 
+					<p>LOGIN</p></h2>
 				<form id="login-form">
 					<!-- 글자수 제한(id:15 , pw:20) -->
 					<input required maxlength="15" type="text" id="id" placeholder="ID를 입력하세요">
@@ -34,7 +43,7 @@
 					</p>
 					<button type="button" onclick="login();">Login</button> 
 					<!-- 회원가입 페이지 이동 -->
-					<div class="info-user">회원가입</div>
+					<div class="info-user"><a href="join.html">회원가입 하러가기</a></div>
 				</form>
 			</div>
 		</div>

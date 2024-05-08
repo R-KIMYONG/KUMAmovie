@@ -18,7 +18,7 @@ html {
 	width: 100%;
 	overflow: hidden;
 	position: relative;
-	padding: 40px 0px;
+	padding: 100px 0px;
 	box-sizing: border-box;
 }
 
@@ -35,6 +35,20 @@ html {
 	align-items : center;
 }
 
+.mainlogo {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: absolute;
+	padding: 35px 40px;
+	box-sizing: border-box;
+	left: 0px;
+	top: 0px;
+	border-radius: 25px 25px 0px 0px;
+	z-index: 99;
+}
+
 /* login css 여기서부터! */
 #login-box {
     width: 700px;
@@ -44,9 +58,9 @@ html {
 }
 
 #login-box > h2 {
-	font-size: 90px;
+	font-size: 70px;
 	color: aliceblue;
-	margin-bottom: 60px;
+	margin-bottom: 30px;
 }
 
 #login-form > input {
@@ -97,7 +111,8 @@ html {
 }
 
 .info-user {
-	font-size: 12px;
+	font-size: 15px;
 	color:white;
 	margin-top: 15px;
+	/* background-color: wheat; */
 }
