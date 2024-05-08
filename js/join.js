@@ -70,6 +70,8 @@ function join() {
 			return;
 		}
 
+		let userFound = false; // 사용자 찾았는지 여부 확인
+
 		//같은 ID 찾고 삭제
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
@@ -80,12 +82,13 @@ function join() {
 					// console.log(`사용자 ${key}가 탈퇴되었습니다`);
 					alert(`${user.name} 사용자가 탈퇴되었습니다`);
 					location.reload();
+					userFound = true;
 					break;
 				}
-			} else {
-				// console.log("해당 ID의 사용자를 찾을 수 없습니다");
-				alert("해당 ID의 사용자를 찾을 수 없습니다");
 			}
+		}
+		if (!userFound) {
+			alert("해당 ID의 사용자를 찾을 수 없습니다.");
 		}
 	});
 }
