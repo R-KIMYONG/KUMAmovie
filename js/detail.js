@@ -114,7 +114,6 @@ import {
 	addDoc,
 	getDocs,
 	query,
-	where,
 	updateDoc,
 	deleteDoc,
 	doc,
@@ -122,7 +121,7 @@ import {
 	getDoc,
 	setDoc
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
+import { options } from "./options.js";
 // Firebase 구성 정보 설정
 const firebaseConfig = {
 	apiKey: "AIzaSyBrbPk7mVllZBlcd4NBxrmnkTRUZ0xkxYA",
@@ -133,13 +132,29 @@ const firebaseConfig = {
 	appId: "1:189326101065:web:c7d7977f3eb36528630d98"
 };
 
+let movieInfomation = [];
+async function fetchMovieCredits(movieId) {
+	try {
+		const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=en-US`, options);
+		const data = await response.json();
+		movieInfomation[0] = data.original_title;
+		movieInfomation[1] = data.vote_average;
+
+		return movieInfomation;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+let movieInfo = await fetchMovieCredits(MOVIE_ID);
+
 // Firebase 인스턴스 초기화
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 //영화ID로 불로온 댓글정보들
 let commentData = [];
-let querySnapshot = await getDocs(query(collection(db, "userComments"), orderBy("time", "desc"))); //이부분에서 userComments를 영화 id로 바꿔야됨
+let querySnapshot = await getDocs(query(collection(db, `${MOVIE_ID}`), orderBy("time", "desc"))); //이부분에서 userComments를 영화 id로 바꿔야됨
 querySnapshot.forEach(async (doc) => {
 	try {
 		commentData.push(doc.data());
@@ -161,7 +176,6 @@ const getCurrentDateTime = () => {
 	// YYYY-MM-DD HH:mm:ss 형식으로 반환
 	return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 };
-
 let userLogin = true; //로그인했는지 안했는지 판단함
 let userName = "parkparkparkpark yong"; //로그인한 유저의 이름
 let userId = "right2345"; //로그인한 유저의 id
@@ -193,14 +207,14 @@ myCommentStar.addEventListener("mouseenter", (event) => {
 });
 
 const goodBtn = () => {
-	let commentList = document.querySelector("#comments-list"); 
+	let commentList = document.querySelector("#comments-list");
 	commentList.addEventListener("click", async (event) => {
 		if (event.target == commentList) return;
 		let target = event.target;
 		if (target.closest(".comments-good") || target.classList.contains("comments-good")) {
 			let liClass = target.closest("li").classList.value;
 
-			const userDocRef = doc(db, "userComments", `${liClass}`);
+			const userDocRef = doc(db, `${MOVIE_ID}`, `${liClass}`);
 			const userDocSnapshot = await getDoc(userDocRef);
 			//   console.log(userDocSnapshot);
 			if (userDocSnapshot.exists()) {
@@ -232,12 +246,11 @@ const goodBtn = () => {
 		commentsList();
 	});
 };
-
 //첫댓글 달때 데이터베이스에 정보 넣기 함수
 async function addNewComment(commentValue, starWidth, score, userId, userName, currentDateTime) {
 	try {
 		// 새로운 댓글 데이터 추가
-		await addDoc(collection(db, "userComments"), {
+		await addDoc(collection(db, `${MOVIE_ID}`), {
 			//받아온 영화id를 userComments대신 넣는다.그러면 그 영화에 대한 댓글만 보인다. 초기데이터 폼임
 			id: userId,
 			name: userName,
@@ -251,7 +264,6 @@ async function addNewComment(commentValue, starWidth, score, userId, userName, c
 		console.error("댓글 추가 중 오류가 발생했습니다:", error);
 	}
 }
-
 const createComment = () => {
 	let sendComment = document.querySelector("#send-comments-form"); //댓글달기UI에서 send 버튼을 가리킴
 	sendComment.addEventListener("click", async () => {
@@ -302,7 +314,6 @@ const createComment = () => {
 	});
 };
 createComment();
-
 //댓글 편집 버튼을 클릭하면 댓글 수정하는 화면나옴
 const editBtn = () => {
 	let editBtn = document.querySelector(".my-comments-box");
@@ -339,7 +350,7 @@ const editComment = () => {
 		document.querySelector("#add-comments").style.display = "none";
 		let mycommentsID = document.querySelector(".my-control").id;
 		// console.log(mycommentsID)
-		let docRef = doc(db, "userComments", `${mycommentsID}`);
+		let docRef = doc(db, `${MOVIE_ID}`, `${mycommentsID}`);
 		let querySnapshot = await getDoc(docRef);
 		if (querySnapshot.exists()) {
 			// 문서가 존재하는 경우에만 업데이트를 수행합니다.
@@ -367,12 +378,13 @@ const delBtn = () => {
 			try {
 				// 해당 사용자 ID를 가진 댓글들을 조회합니다.
 				let subDivId = document.querySelector(".my-comments-box>div").id;
-				commentsList();
-				const docRef = doc(db, "userComments", `${subDivId}`);
+
+				const docRef = doc(db, `${MOVIE_ID}`, `${subDivId}`);
 				await deleteDoc(docRef);
-				// console.log(document.querySelector(`#${subDivId}`))
+				commentsList();
 				document.querySelector(".my-comments-box").style.height = "0px";
 				document.querySelector("#add-comments").style.display = "none";
+				document.querySelector(`.${subDivId}`).remove();
 			} catch (error) {
 				console.error("댓글 삭제 중 오류 발생:", error);
 			}
@@ -406,9 +418,7 @@ addComments();
 
 //댓글리스트를 랜더링함
 const commentsList = async () => {
-	//백업 const querySnapshot = await getDocs(query(collection(db, "userComments")));
-	//await getDocs(query(collection(db, "comments").orderBy("timestamp", "desc")));
-	const querySnapshot = await getDocs(query(collection(db, "userComments"), orderBy("time", "desc")));
+	const querySnapshot = await getDocs(query(collection(db, `${MOVIE_ID}`), orderBy("time", "desc")));
 	// 댓글 목록을 배열에 저장
 	let totalComments = [];
 	let commentsTemplate = "";
@@ -508,20 +518,15 @@ const commentsList = async () => {
 		delBtn();
 	});
 
-	//${item.likes ==undefined? 'off':item.likes[userId]?'on':'off'}
-
 	let totalLength = document.querySelector("#comments-title .comments-total .comments-length");
 	let averageScore = document.querySelector("#comments-title .comments-total .avaerage-score");
-
-	//❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️평균점수는 기존평균점수 더해서 다시 구해야함
-	averageScore.textContent = `${(
-		totalComments.reduce((a, b) => {
-			return a + b;
-		}, 0) / totalComments.length
-	).toFixed(1)}`;
+	let thisMovieScore = totalComments.reduce((a, b) => {
+		return a + b;
+	}, 0);
+	averageScore.textContent = `${((thisMovieScore + Number(movieInfo[1])) / (totalComments.length + 1)).toFixed(1)}`;
 	totalLength.textContent = `${totalComments.length > 300 ? "300+" : totalComments.length}`;
 	let movieTitle = document.querySelector("#comments-title .comments-total .movie-title");
-	movieTitle.textContent = "범죄도시4"; //모든 댓글 위에 있는 영화제목
+	movieTitle.textContent = `${movieInfo[0]}`; //모든 댓글 위에 있는 영화제목
 	let sendModalMovieTitle = document.querySelector("#send-comments .comments-movie-title h3");
 	sendModalMovieTitle.textContent = movieTitle.textContent;
 };
