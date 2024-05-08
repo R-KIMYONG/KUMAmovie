@@ -2,13 +2,32 @@
 <html lang="ko">
 	<head>
 		<meta charset="UTF-8" />
-		<title> JOIN </title>
+		<title> KUMA MOVIE </title>
 		<link rel="stylesheet" href="css/join.css" />
 		<link rel="stylesheet" href="css/modal.css" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+		/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+		<link rel="icon" href="./img/favicon.png" />
 	</head>
 	<body>
+		<div class="mainlogo">
+				<!-- 로고부분 -->
+				<h1 id="logo">
+					<a href="index.html">
+						<img src="./img/logo.png" alt="logo" />
+					</a>
+				</h1>
+			</div>
+		
 		<div class="signup-form">
-			<h2>회원가입</h2>
+			<h2> KUMA MOVIE JOIN </h2>
 			<form class="signup-wrapper">
 				<label>이름</label>
 				<input type="text" class="name" placeholder="이름을 입력하세요" required />
@@ -29,6 +48,11 @@
 				<input type="checkbox" class="checkbox" required />
 				<label>이용약관에 동의합니다.</label>
 				<a href="#" onclick="openTermsModal(); return false;"> 약관 보기 </a>
+			</div>
+
+			<div class = "gotologin">
+				<label> 이미 회원이신가요? </label>
+				<a href="index.html" > 로그인 하러가기 </a>
 			</div>
 		</div>
 
