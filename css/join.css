@@ -1,3 +1,8 @@
+* {
+	font-family: "Roboto", sans-serif;
+	font-weight: 500;
+	font-style: normal;
+}
 body {
 	background-color: #2f2f2f;
 }
