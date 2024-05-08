@@ -46,6 +46,9 @@ const interval = 3500; // 3.5초
 // rAF cancel 을 위해 rAF를 담을 변수
 let animationFrameId;
 
+let carouselIndexControl = 0;
+
+
 const videoSrc = [
 	"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn", //1번영상
 	"https://www.youtube.com/embed/UaVTIH8mujA?si=_kHWDc96Esbq0xb-", //2번영상
@@ -407,7 +410,13 @@ const sumAllData = (data) => {
 }
 
 // 캐러셀 자동 넘어가기 request animation frame 사용하여 개선
+// timestamp 가 멈췄을 때 (cancel)
+// 다음 클릭하면 그때 에러남...
 const carouselAnimate = (timestamp) => {
+
+	// console.log(timestamp)
+
+
 	// timestamp 는 rAF가 넘겨주는 경과된 시간(밀리초)
 	// 만약 lastTime 이 null 또는 undefined 면 lastTime 을 rAF 가 시작된 시점의 timestamp와 일치시킴
     if (!lastTime) lastTime = timestamp;
@@ -431,7 +440,7 @@ const carouselAnimate = (timestamp) => {
 
     animationFrameId = requestAnimationFrame(carouselAnimate);
 }
-let carouselIndexControl = 0;
+
 // 상단 캐러셀 좌우 버튼 클릭시
 const handleCarousel = (e) => {
 	const to = e.target.innerText;
@@ -448,7 +457,8 @@ const handleCarousel = (e) => {
 		// 유튜브 버튼을 위해 id 할당
 		btnContent.id = currCarouselIndex;
 		// 인터벌 재시작
-		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		requestAnimationFrame(carouselAnimate)
+		// setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
 	// 다음이면
 	}else if(to === 'navigate_next' ){
 		cancelAnimationFrame(animationFrameId);
@@ -457,6 +467,7 @@ const handleCarousel = (e) => {
 		if(carouselIndexControl >= accMovies.length) carouselIndexControl = 0;
 		changeTopVisual(accMovies[currCarouselIndex === 19 ? carouselIndexControl += 1 : carouselIndexControl][currCarouselIndex]);
 		btnContent.id = currCarouselIndex;
+		// 인터벌 재시작
 		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
 	}
 
