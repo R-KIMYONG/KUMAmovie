@@ -14,6 +14,11 @@ function join() {
 			return;
 		}
 
+		if (password !== confirmPassword) {
+			alert("비밀번호가 다릅니다. 다시 입력해주세요.");
+			return;
+		}
+
 		const agreeCheckbox = document.getElementsByClassName("checkbox")[0].checked;
 
 		// 체크박스가 체크되지 않았을 때
@@ -73,7 +78,7 @@ function join() {
 				if (user.id === quitId) {
 					localStorage.removeItem(key);
 					// console.log(`사용자 ${key}가 탈퇴되었습니다`);
-					alert(`${user.id}가 탈퇴되었습니다`);
+					alert(`${user.name} 사용자가 탈퇴되었습니다`);
 					location.reload();
 					break;
 				}
