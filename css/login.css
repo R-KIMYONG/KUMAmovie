@@ -30,17 +30,17 @@ html {
 	border-radius: 25px;
 	position: relative;
 	overflow: hidden;
-	display : flex;
+	display: flex;
 	justify-content: center;
-	align-items : center;
+	align-items: center;
 }
 
 /* login css 여기서부터! */
 #login-box {
-    width: 700px;
-    height: 500px;
-    text-align: center;
-    padding: 30px;
+	width: 700px;
+	height: 500px;
+	text-align: center;
+	padding: 30px;
 }
 
 #login-box > h2 {
@@ -59,11 +59,11 @@ html {
 	background-color: #f8f8f8;
 }
 
-#login-form > input ::placeholder{
+#login-form > input ::placeholder {
 	color: #303030;
 }
 
-#login-form > button{
+#login-form > button {
 	width: 50%;
 	height: 50px;
 	color: #fff;
@@ -73,14 +73,14 @@ html {
 }
 
 /* 기존 체크박스 숨기기 */
-#login-form input[type="checkbox"]{
+#login-form input[type="checkbox"] {
 	display: none;
 }
 
 .remember-check {
 	color: #f8f8f8;
 }
-#login-form input[type="checkbox"] + label{
+#login-form input[type="checkbox"] + label {
 	margin-left: 30px;
 	margin-right: 30px;
 	cursor: pointer;
@@ -90,14 +90,17 @@ html {
 	background-size: contain;
 }
 
-#login-form input[type=checkbox]:checked + label {
-    background-image: url(../img/login/checker-on.svg);
+#login-form input[type="checkbox"]:checked + label {
+	background-image: url(../img/login/checker-on.svg);
 	background-repeat: no-repeat;
 	background-size: contain;
 }
 
 .info-user {
 	font-size: 12px;
-	color:white;
+	color: white;
 	margin-top: 15px;
+}
+.info-user a {
+	color: white;
 }

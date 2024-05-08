@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+		/>
+		<link rel="icon" href="./img/favicon.png" />
+		<link rel="stylesheet" href="./css/login.css" />
+		<title>KUMA Movie</title>
+	</head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link
-		href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap"
-		rel="stylesheet" />
-	<link rel="stylesheet"
-		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-	<link rel="icon" href="./img/favicon.png" />
-	<link rel="stylesheet" href="./css/login.css" />
-	<title>KUMA Movie</title>
-</head>
-
-<body>
-	<div id="main">
-		<div id="movie">
-			<div id="login-box">
-				<h2>KUMA MOVIE</h2>
-				<form id="login-form">
-					<!-- 글자수 제한(id:15 , pw:20) -->
-					<input required maxlength="15" type="text" id="id" placeholder="ID를 입력하세요">
-					<input required maxlength="20" type="password" id="pwd" placeholder="Password를 입력하세요">
-					<p class="remember-check">
-					<input type="checkbox" id="remember-check1" >
-					<label for="remember-check1">아이디 저장하기</label>
-					<input type="checkbox" id="remember-check2">
-					<label for="remember-check2"> 자동 로그인</label>
-					</p>
-					<button type="button" onclick="login();">Login</button> 
-					<!-- 회원가입 페이지 이동 -->
-					<div class="info-user">회원가입</div>
-				</form>
+	<body>
+		<div id="main">
+			<div id="movie">
+				<div id="login-box">
+					<h2>KUMA MOVIE</h2>
+					<form id="login-form">
+						<!-- 글자수 제한(id:15 , pw:20) -->
+						<input required maxlength="15" type="text" id="id" placeholder="ID를 입력하세요" />
+						<input required maxlength="20" type="password" id="pwd" placeholder="Password를 입력하세요" />
+						<p class="remember-check">
+							<input type="checkbox" id="remember-check1" />
+							<label for="remember-check1">아이디 저장하기</label>
+							<input type="checkbox" id="remember-check2" />
+							<label for="remember-check2"> 자동 로그인</label>
+						</p>
+						<button type="button" onclick="login();">Login</button>
+						<!-- 회원가입 페이지 이동 -->
+						<div class="info-user">
+							<a href="join.html"> 회원가입 </a>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
-	</div>
-	<script src="./js/login.js"></script>
-</body>
+		<script src="./js/login.js"></script>
+	</body>
+</html>
