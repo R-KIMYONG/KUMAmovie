@@ -39,7 +39,9 @@ let currCarouselIndex = 0;
 let intervalNum;
 // 페이지네이션 컨트롤을 위한 변수
 let currPagination;
-
+let lastTime = 0;
+const interval = 3500; // 3.5초
+let animationFrameId;
 
 const videoSrc = [
 	"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn", //1번영상
@@ -324,7 +326,7 @@ const handlePagination = async (event) => {
 			makePagination(pagination[dataSet], dataSet);
 			// 하단 붉은 라인 변경 함수 호출
 			redLineControl(0);
-			clearInterval(intervalNum);
+			cancelAnimationFrame(animationFrameId);
 
 			currPagination = currPagination - 5;
 
@@ -343,8 +345,8 @@ const handlePagination = async (event) => {
 			return;
 		// 이전으로를 클릭한 바로 뒤라면 다시 fetch를 하지 않습니다.
 		}else if(beforeNextFlag === 'before'){
-			// clearInterval 은 캐러셀 자동 전환을 위한 setInterval 을 중지하는 것입니다.
-			clearInterval(intervalNum);
+			cancelAnimationFrame(animationFrameId);
+
 			makePagination(pagination[dataSet], dataSet);
 
 			currPagination = currPagination + 5;
@@ -368,9 +370,9 @@ const handlePagination = async (event) => {
 			const currPageData = changeTopVisual(accMovies[currPagination]);
 			renderCardUi(currPageData);
 
-			clearInterval(intervalNum);
+			cancelAnimationFrame(animationFrameId);
+
 			// next > 클릭 일때만 fetch 를 수행합니다.
-			
 			makePagination(pagination[dataSet], dataSet);
 
 		}
@@ -379,12 +381,28 @@ const handlePagination = async (event) => {
 	// 페이지네이션 번호 클릭시 
 	}else{			
 		selectedPageNum = currSelectedClassList - 1;
-		clearInterval(intervalNum);
+		cancelAnimationFrame(animationFrameId);
+
 		// 상단 비쥬얼 부분을 바꿔줍니다
 		const currPageData = changeTopVisual(accMovies[selectedPageNum]);
 		renderCardUi(currPageData);
 		redLineControl(redLineId);
 	}
+}
+
+// 캐러셀 자동 넘어가기 request animation frame 사용하여 개선
+const carouselAnimate = (timestamp) => {
+    if (!lastTime) lastTime = timestamp;
+    const elapsed = timestamp - lastTime;
+
+    if (elapsed > interval) { // 3.5초가 지났는지 확인
+        currCarouselIndex = (currCarouselIndex + 1) % accMovies[0].length;
+        changeTopVisual(accMovies[0][currCarouselIndex]);
+        btnContent.id = currCarouselIndex;
+        lastTime = timestamp;
+    }
+
+    animationFrameId = requestAnimationFrame(carouselAnimate);
 }
 
 // 캐러셀 자동 넘어가기 
@@ -404,40 +422,38 @@ const carouselInterval = (curr = null) => {
 		// 전역변수와 내부변수 counter 일치 시켜줍니다.
 		currCarouselIndex = counter;
 	}, 3500); 
-
 }
 
 // 상단 캐러셀 좌우 버튼 클릭시
 const handleCarousel = (e) => {
 	const to = e.target.innerText;
-	
 	// 이전이면
-	if(to === 'navigate_before' && currCarouselIndex >= 0){
-		// 현재 인덱스 감소
-		if(currCarouselIndex > 0) currCarouselIndex --;
+	if(to === 'navigate_before' ){
 		// 인터벌 제거(자동 넘기기 제거)
-		clearInterval(intervalNum);
+		cancelAnimationFrame(animationFrameId);
+		// 현재 인덱스 감소
+		currCarouselIndex = (currCarouselIndex - 1 + accMovies[0].length) % accMovies[0].length;
 		// 상단 비쥬얼 부분 바꾸기
 		changeTopVisual(accMovies[0][currCarouselIndex]);
 		// 유튜브 버튼을 위해 id 할당
 		btnContent.id = currCarouselIndex;
 		// 인터벌 재시작
-		carouselInterval(currCarouselIndex);
+		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
 	// 다음이면
-	}else if(to === 'navigate_next' && currCarouselIndex < 5){
-		// 현재 인덱스 증가
-		if(currCarouselIndex < 4) currCarouselIndex ++;
-		clearInterval(intervalNum);
+	}else if(to === 'navigate_next' ){
+		cancelAnimationFrame(animationFrameId);
+		currCarouselIndex = (currCarouselIndex + 1) % accMovies[0].length;
 		changeTopVisual(accMovies[0][currCarouselIndex]);
 		btnContent.id = currCarouselIndex;
-		carouselInterval(currCarouselIndex);
+		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
 	}
 }
 
 // 유튜브 버튼 클릭시 
 const handleYoutubeClick = (_, intervalNum) => {
 	// 인터벌 정지
-	clearInterval(intervalNum);
+	cancelAnimationFrame(animationFrameId);
+
 	// 유튜브 버튼 id 값을 변수에 저장
 	const id = Number(btnContent.id);
 
@@ -454,7 +470,7 @@ const handleYoutubeClick = (_, intervalNum) => {
 		videoContainer.style.display = "none"; //영상을 감싼 div숨기기
 		iframe.src = "";
 		// 유튜브 영상 종료시 인터벌 재개
-		carouselInterval(currCarouselIndex);
+		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
 	});
 }
 
@@ -485,7 +501,7 @@ const init = async () => {
 	changeTopVisual(accMovies[0]);
 
 	// 캐러셀 인터벌 시작
-	carouselInterval();
+	requestAnimationFrame(carouselAnimate);
 	
 	// 카드 부착
 	renderCardUi(accMovies[0].slice(0, 4));
