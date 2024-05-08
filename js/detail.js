@@ -596,7 +596,7 @@ getRecommandMovieList(MOVIE_ID).then((list) => {
 	// 클릭 시 페이지 이동할 수 있도록
 	document.querySelectorAll(".recommendations > .content > .recommend-movie").forEach((movieElement) => {
 		movieElement.addEventListener("click", () => {
-			location.href = `/movie/detail?id=${movie.getAttribute("movie-id")}`;
+			location.href = setSearchParams(movieElement.getAttribute("movie-id"));
 		});
 	});
 });
