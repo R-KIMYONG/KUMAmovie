@@ -3,6 +3,30 @@
 	font-weight: 500;
 	font-style: normal;
 }
+
+.mainlogo {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: absolute;
+	padding: 35px 40px;
+	box-sizing: border-box;
+	left: 0px;
+	top: 0px;
+	border-radius: 25px 25px 0px 0px;
+	z-index: 99;
+}
+
+/* 헤더 가장왼쪽에 있는 로고 부분임 */
+.logo a {
+	display: block;
+}
+
+.logo img {
+	display: block;
+}
+
 body {
 	background-color: #2f2f2f;
 }
@@ -122,4 +146,10 @@ body {
 
 .quit-form button:hover {
 	background-color: #45a049;
+}
+
+.gotologin {
+	text-align: center;
+	font-size: 15px;
+	margin-top: 15px;
 }
