@@ -7,9 +7,18 @@ function login() {
     const inputPwd = document.getElementById("checkPw").value;
     const loginButton = document.getElementById("login-btn");
 
+
+    if(localStorage.length === 0) {
+        if(confirm('아이디를 찾을 수 없습니다. 회원가입하시겠습니까?')){
+            window.location.href = './join.html';
+        }else{
+            return;
+        }
+    }
     // 2. 로컬스토리지에서 joinInfo 값을 가져온다.
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
+
         if (key.startsWith("joinInfo")) {
             const currentMember = JSON.parse(localStorage.getItem(key));
             console.log(currentMember);
@@ -33,6 +42,12 @@ function login() {
                     alert("ID 또는 Password를 확인해주세요.");
                     break;
                 }
+            }
+        }else{
+            if(confirm('아이디를 찾을 수 없습니다. 회원가입하시겠습니까?')){
+                window.location.href = './join.html';
+            }else{
+                return;
             }
         }
     }
