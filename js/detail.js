@@ -232,8 +232,10 @@ const getCurrentDateTime = () => {
 	return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 };
 let userLogin = true; //로그인했는지 안했는지 판단함
-let userName = "parkparkparkpark yong"; //로그인한 유저의 이름
-let userId = "right2345"; //로그인한 유저의 id
+const userName = localStorage.getItem("loginUsername");
+const userId = localStorage.getItem("loginUserid");
+// let userName = "parkparkparkpark yong"; //로그인한 유저의 이름
+// let userId = "right2345"; //로그인한 유저의 id
 let currentDateTime = getCurrentDateTime(); //현재시간을 변수에 넣음
 
 let myCommentStar = document.querySelector("#add-comments .comments-grade"); //공통으로 쓰이는 부분임 댓글 별점 조절하는부분의 부모요소임
@@ -393,6 +395,10 @@ const editComment = () => {
 
 	editComment.addEventListener("click", async (event) => {
 		let commentValue = document.querySelector("#message").value.trim(); // 쓴글
+		const score = document.querySelector(".point").textContent; // 평점
+		const showBox = document.querySelector(".red-star-show-box");
+		const loggedInUserId = localStorage.getItem("loginUserid");
+
 		if (!commentValue) {
 			alert("수정할 댓글 내용을 작성해주세요!");
 			return;
@@ -401,13 +407,21 @@ const editComment = () => {
 			alert("평점을 남겨주세요!");
 			return;
 		}
+
 		//조건문 통과되면 아래는 수정된 댓글을 업데이트하는 부분임
 		document.querySelector("#add-comments").style.display = "none";
-		let mycommentsID = document.querySelector(".my-control").id;
+		let mycommentsID = document.querySelector(".my-control").loginUserid;
 		// console.log(mycommentsID)
 		let docRef = doc(db, `${MOVIE_ID}`, `${mycommentsID}`);
 		let querySnapshot = await getDoc(docRef);
 		if (querySnapshot.exists()) {
+			const commentData = docSnapshot.data();
+
+			// 수정 권한 확인
+			if (commentData.id !== loggedInUserId) {
+				alert("리뷰를 수정할 권한이 없습니다."); // 수정 권한 없음
+				return;
+			}
 			// 문서가 존재하는 경우에만 업데이트를 수행합니다.
 			// 업데이트할 데이터를 설정합니다.
 			let updateData = {
