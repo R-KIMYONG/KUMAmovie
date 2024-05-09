@@ -39,9 +39,18 @@ let currCarouselIndex = 0;
 let intervalNum;
 // 페이지네이션 컨트롤을 위한 변수
 let currPagination;
+// 카루셀 마지막 넘어간 시간 측정용 변수
 let lastTime = 0;
+// 카루셀 인터벌
 const interval = 3500; // 3.5초
+// rAF cancel 을 위해 rAF를 담을 변수
 let animationFrameId;
+// 캐러셀 인덱스 계산용, 중첩 배열이라서.. [[],[],[], ...] 이런식으로
+let carouselIndexControl = 0;
+// 마지막 클릭 시간을 추적할 변수
+let lastClickTime = 0;
+
+
 
 const videoSrc = [
 	"https://www.youtube.com/embed/PLl99DlL6b4?si=Tm0yn-2_WldvhrTn", //1번영상
@@ -360,8 +369,8 @@ const handlePagination = async (event) => {
 
 			// 6번이상으로 넘어가면 일단 정지 타이머도 적용 안합니다..
 			// 그리고 캐러셀 <> 버튼과 유튜브 버튼도 일단 숨깁니다.
-			carouselBefore.style.visibility = "hidden";
-			carouselNext.style.visibility = "hidden";
+			// carouselBefore.style.visibility = "hidden";
+			// carouselNext.style.visibility = "hidden";
 			btnContent.parentElement.style.visibility = "hidden";
 
 			redLineControl(0);
@@ -388,6 +397,7 @@ const handlePagination = async (event) => {
 	}
 }
 
+// 유튜브 버튼을 인덱스 5이상이면 숨기고, 아니면 나타나게 하는 함수
 const hideOrRevealYoutubeButton = (idx) => {
 	if(idx >= 5) {
 		btnContent.parentElement.style.visibility = "hidden";
@@ -396,70 +406,81 @@ const hideOrRevealYoutubeButton = (idx) => {
 	}
 }
 
+// 배열 내부 배열의 length를 모두 더하기 
+const sumAllData = (data) => {
+	const reduced = data.reduce((acc, curr) => acc + curr.length, 0);
+	return reduced;
+}
+
 // 캐러셀 자동 넘어가기 request animation frame 사용하여 개선
 const carouselAnimate = (timestamp) => {
+	// timestamp 는 rAF가 넘겨주는 경과된 시간(밀리초)
+	// 만약 lastTime 이 null 또는 undefined 면 lastTime 을 rAF 가 시작된 시점의 timestamp와 일치시킴
     if (!lastTime) lastTime = timestamp;
+	// 경과 시간을 측정 
     const elapsed = timestamp - lastTime;
 
-    if (elapsed > interval) { // 3.5초가 지났는지 확인
-        currCarouselIndex = (currCarouselIndex + 1) % accMovies[0].length;
+	// 경과 시간이 인터벌 변수 값(3.5초) 보다 크면(지났으면)
+    if (elapsed > interval) { 
+		// 현재 누적된 모든 영화의 수 구하기
+		// 모듈로 연산 : 먼저 다음으로 넘어가기 위해 1을 더하고, sum으로 나머지 연산 하여 0이 되면 다시 돌아감
+        currCarouselIndex = (currCarouselIndex + 1) % 20;
+		// 유튜브버튼 인덱스 5이상이면 숨기기
 		hideOrRevealYoutubeButton(currCarouselIndex);
+		// 상단 섹션 다시 그리기
         changeTopVisual(accMovies[0][currCarouselIndex]);
+		// 유튜브 버튼에 아이디를 현재 카루셀 인덱스로 부여
         btnContent.id = currCarouselIndex;
+		// cancel 될 때를 대비하여 다음 간격의 기준점을 설정???
         lastTime = timestamp;
     }
 
     animationFrameId = requestAnimationFrame(carouselAnimate);
 }
 
-// 캐러셀 자동 넘어가기 
-const carouselInterval = (curr = null) => {
-	// 파라미터로 받은 값이 있다면 해당 값으로 counter 변수를 설정합니다.
-	let counter = curr !== null ? curr : 0;
-	currCarouselIndex = counter;
-
-	// 3.5초마다 발동
-	intervalNum = setInterval(() => {
-		// 유튜브 재생을 위해 유튜브 버튼의 id 를 변경시킵니다.
-		btnContent.id = counter;
-		// 상단 비쥬얼 부분을 바꿔줍니다.
-		changeTopVisual(accMovies[0][counter]);
-		// 여기는 일단 5개만 캐러셀 돌게 하려고 4보다 작을때만 증가시키도록 했습니다.
-		counter < 4 ? counter ++ : counter = 0;
-		// 전역변수와 내부변수 counter 일치 시켜줍니다.
-		currCarouselIndex = counter;
-	}, 3500); 
-}
-
 // 상단 캐러셀 좌우 버튼 클릭시
 const handleCarousel = (e) => {
 	const to = e.target.innerText;
+	const now = Date.now();
+
+	// 이전 클릭으로부터의 시간 차이 계산
+    const timeSinceLastClick = now - lastClickTime;
+
+	console.log(timeSinceLastClick)
+
+	// 인터벌 제거(자동 넘기기 제거)
+	cancelAnimationFrame(animationFrameId);
+
 	// 이전이면
-	if(to === 'navigate_before' ){
-		// 인터벌 제거(자동 넘기기 제거)
-		cancelAnimationFrame(animationFrameId);
-		// 현재 인덱스 감소
-		currCarouselIndex = (currCarouselIndex - 1 + accMovies[0].length) % accMovies[0].length;
+	if(to === 'navigate_before'){
+		// 현재 인덱스 감소, 순환구조
+		currCarouselIndex = (currCarouselIndex - 1 + 20) % 20;
 		hideOrRevealYoutubeButton(currCarouselIndex);
 		// 상단 비쥬얼 부분 바꾸기
-		changeTopVisual(accMovies[0][currCarouselIndex]);
+		changeTopVisual(accMovies[currCarouselIndex === 0 && carouselIndexControl > 0 ? carouselIndexControl -= 1 : carouselIndexControl][currCarouselIndex]);
 		// 유튜브 버튼을 위해 id 할당
 		btnContent.id = currCarouselIndex;
 		// 인터벌 재시작
-		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		if(timeSinceLastClick > 3000) setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		// 마지막 클릭 시간 업데이트
+		lastClickTime = now;
 	// 다음이면
-	}else if(to === 'navigate_next' ){
-		cancelAnimationFrame(animationFrameId);
-		currCarouselIndex = (currCarouselIndex + 1) % accMovies[0].length;
+	}else if(to === 'navigate_next'){
+		currCarouselIndex = (currCarouselIndex + 1) % 20;
 		hideOrRevealYoutubeButton(currCarouselIndex);
-		changeTopVisual(accMovies[0][currCarouselIndex]);
+		if(carouselIndexControl >= accMovies.length) carouselIndexControl = 0;
+		changeTopVisual(accMovies[currCarouselIndex === 19 ? carouselIndexControl += 1 : carouselIndexControl][currCarouselIndex]);
 		btnContent.id = currCarouselIndex;
-		setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		// 인터벌 재시작
+		if(timeSinceLastClick > 3000) setTimeout(() => requestAnimationFrame(carouselAnimate), 5000);
+		// 마지막 클릭 시간 업데이트
+		lastClickTime = now;
 	}
+	
 }
 
 // 유튜브 버튼 클릭시 
-const handleYoutubeClick = (_, intervalNum) => {
+const handleYoutubeClick = () => {
 	// 인터벌 정지
 	cancelAnimationFrame(animationFrameId);
 
@@ -519,7 +540,7 @@ const init = async () => {
 	movieArrUL.addEventListener("click", handleCardClick);
 
 	// youtube 버튼 핸들링
-	btnContent.addEventListener("click", (e) => handleYoutubeClick(e, intervalNum));
+	btnContent.addEventListener("click", handleYoutubeClick);
 
 	// carousel 버튼 핸들링
 	carouselBefore.addEventListener('click', handleCarousel);
@@ -547,3 +568,23 @@ const init = async () => {
 
 // init!
 document.addEventListener("DOMContentLoaded", init);
+
+
+// 캐러셀 자동 넘어가기 
+// const carouselInterval = (curr = null) => {
+// 	// 파라미터로 받은 값이 있다면 해당 값으로 counter 변수를 설정합니다.
+// 	let counter = curr !== null ? curr : 0;
+// 	currCarouselIndex = counter;
+
+// 	// 3.5초마다 발동
+// 	intervalNum = setInterval(() => {
+// 		// 유튜브 재생을 위해 유튜브 버튼의 id 를 변경시킵니다.
+// 		btnContent.id = counter;
+// 		// 상단 비쥬얼 부분을 바꿔줍니다.
+// 		changeTopVisual(accMovies[0][counter]);
+// 		// 여기는 일단 5개만 캐러셀 돌게 하려고 4보다 작을때만 증가시키도록 했습니다.
+// 		counter < 4 ? counter ++ : counter = 0;
+// 		// 전역변수와 내부변수 counter 일치 시켜줍니다.
+// 		currCarouselIndex = counter;
+// 	}, 3500); 
+// }
