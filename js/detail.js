@@ -232,7 +232,9 @@ const getCurrentDateTime = () => {
 	return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 };
 let userLogin = true; //로그인했는지 안했는지 판단함
-let userName = "parkparkparkpark yong"; //로그인한 유저의 이름
+// let userName = "parkparkparkpark yong"; 
+let userName = localStorage.getItem("userId"); //로그인한 유저의 이름 -> 로컬스토리지에서 저장된 id값 불러옴
+console.log(userName);
 let userId = "right2345"; //로그인한 유저의 id
 let currentDateTime = getCurrentDateTime(); //현재시간을 변수에 넣음
 
