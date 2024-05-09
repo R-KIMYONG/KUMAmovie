@@ -56,7 +56,8 @@ function join() {
 
 		console.log(`새 사용자 정보가 ${newKey}에 저장되었습니다.`);
 
-		location.reload();
+		// location.reload();
+		window.location.href = '/'
 	});
 
 	//탈퇴
