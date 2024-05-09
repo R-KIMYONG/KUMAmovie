@@ -455,13 +455,15 @@ const delBtn = () => {
 //댓글추가 UI 나오게하는 버튼기능임 로그인안되있으면 댓글달기 불가
 const addComments = () => {
 	document.querySelector("#add-btn").addEventListener("click", () => {
-		if (userLogin) {
+		if (userId) {
 			document.querySelector("#add-comments").style.display = "block";
 			document.querySelector("#message").focus();
 			document.querySelector("#send-comments-form").style.display = "block";
 			document.querySelector("#edit-comments-form").style.display = "none";
 		} else {
-			return alert("로그인후 댓글 남길 수 있습니다.");
+			alert("로그인후 댓글 남길 수 있습니다.");
+			window.location.href = './login.html';
+			return 
 		}
 	});
 	// 현재 입력한 댓글의 글자수를 실시간으로 업데이트해서 보여줌 댓글달기UI 우측하단.
