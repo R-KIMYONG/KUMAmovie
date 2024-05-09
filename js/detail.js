@@ -233,9 +233,11 @@ const getCurrentDateTime = () => {
 };
 let userLogin = true; //로그인했는지 안했는지 판단함
 // let userName = "parkparkparkpark yong"; 
-let userName = localStorage.getItem("userId"); //로그인한 유저의 이름 -> 로컬스토리지에서 저장된 id값 불러옴
+let userName = localStorage.getItem("loginUsername"); //로그인한 유저의 이름 -> 로컬스토리지에서 저장된 name 불러옴
 console.log(userName);
-let userId = "right2345"; //로그인한 유저의 id
+//let userId = "right2345"; 
+let userId = localStorage.getItem("userId"); //로그인한 유저의 id -> 로컬스토리지에서 저장된 id 불러옴
+console.log(userId);
 let currentDateTime = getCurrentDateTime(); //현재시간을 변수에 넣음
 
 let myCommentStar = document.querySelector("#add-comments .comments-grade"); //공통으로 쓰이는 부분임 댓글 별점 조절하는부분의 부모요소임

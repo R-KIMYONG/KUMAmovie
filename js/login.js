@@ -1,5 +1,5 @@
 "use strict";
-// 회원가입 정보 -> key : joinInfo_aa , key :	{"name":"이가현","id":"aa","password":"11","confirm_password":"11"}
+// 회원가입 정보 -> key : joinInfo_aa , key :	{"name":"이가현","id":"aa","password":"1111","confirm_password":"1111"}
 
 function login() {
     // 1. id, pw를 사용자에게 입력받는다.
@@ -21,8 +21,9 @@ function login() {
                 if (inputId === currentMember.id && inputPwd === currentMember.password) {
                     // 4-1. 일치하는 것을 찾으면 로그인 성공
                     alert("로그인 되었습니다!");
-                    const userId = inputId; //아이디 로컬스토리지에 저장시키기
+                    const userId = inputId; //아이디 로컬스토리지에 저장
                     localStorage.setItem("userId", userId);
+                    localStorage.setItem("loginUsername", currentMember.name); //이름 로컬스토리지에 저장
                     userLogin = true;
                     location.href = "index.html"; //로그인시 메인페이지로 이동시키기
                     break;
