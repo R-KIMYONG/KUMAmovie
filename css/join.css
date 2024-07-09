@@ -1,0 +1,154 @@
+* {
+	font-family: "Roboto", sans-serif;
+	font-weight: 500;
+	font-style: normal;
+}
+
+.mainlogo {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: absolute;
+	padding: 35px 40px;
+	box-sizing: border-box;
+	left: 0px;
+	top: 0px;
+	border-radius: 25px 25px 0px 0px;
+	z-index: 1;
+}
+
+.logo a {
+	display: block;
+}
+
+.logo img {
+	display: block;
+}
+
+body {
+	background-color: #2f2f2f;
+}
+
+.signup-form {
+	max-width: 500px;
+	margin: 100px auto;
+	padding: 30px;
+	border: 1px solid #ddd;
+	border-radius: 15px;
+	background-color: #c4c4c4;
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+	/* text-align: center; */
+}
+
+.signup-form h2 {
+	text-align: center;
+	font-weight: bold;
+}
+
+.signup-form .name {
+	width: 95%;
+	padding: 10px;
+	margin: 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.signup-form .id {
+	width: 95%;
+	padding: 10px;
+	margin: 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.signup-form .password {
+	width: 95%;
+	padding: 10px;
+	margin: 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.signup-form .confirm_password {
+	width: 95%;
+	padding: 10px;
+	margin: 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.signup-form label {
+	font-weight: bold;
+}
+
+.signup-form button {
+	width: 100%;
+	padding: 10px;
+	margin-top: 10px;
+	border: none;
+	border-radius: 10px;
+	background-color: red;
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.signup-form button:hover {
+	background-color: #45a049;
+}
+
+.agree-form .checkbox {
+	margin-top: 10px;
+	display: inline-block;
+	cursor: pointer;
+	height: 20px;
+	left: 0;
+	width: 20px;
+}
+
+.quit-form {
+	margin-top: 20px;
+	border-top: 1px solid #ccc;
+	padding-top: 15px;
+	text-align: center;
+	padding-bottom: 15px;
+}
+
+.quit-form h3 {
+	color: #ff0000;
+}
+
+.quit-form p {
+	color: #fff;
+}
+
+.quit-form input {
+	width: 80%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.quit-form button {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 10px;
+	background-color: #ff0000;
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin-left: 10px;
+}
+
+.quit-form button:hover {
+	background-color: #45a049;
+}
+
+.gotologin {
+	text-align: center;
+	font-size: 15px;
+	margin-top: 15px;
+}

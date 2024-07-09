@@ -1,32 +1,606 @@
 @charset "UTF-8";
+/* 디테일 부분*/
+#details {
+	width: 100%;
+	height: 750px;
+	border-radius: 25px 25px 0 0;
+	background-size: cover;
+	background-position: left top;
+	position: relative;
+	z-index: 1;
+	transition: 0.5s;
+}
+.right_side {
+	position: absolute;
+	right: 0; /* 우측면에 붙도록 위치 설정 */
+	top: 0; /* 상단에서부터 시작 */
+	bottom: 0; /* 하단까지 채움 */
+	width: 450px;
+	display: flex;
+	justify-content: center; /* 포스터 이미지를 가운데 정렬 */
+	align-items: center;
+	background-color: rgb(17, 17, 17); /* 배경색 흰색 설정 */
+	z-index: 2; /* 필요시 순서 조정을 위해 z-index 사용 */
+	box-shadow: 0 0 10px #000;
+	animation: slideIn 0.7s forwards;
+}
+
+#movie-poster {
+	margin-top: 40px;
+	width: 250px;
+	height: 350px;
+	border-radius: 20px;
+	margin-bottom: 10px;
+}
+
+@keyframes slideIn {
+	from {
+		right: -300px; /* Start from outside the screen */
+	}
+	to {
+		right: 0; /* End at its final position */
+	}
+}
+
+.textbox{
+	margin-left: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	height: 750px;
+	width: 900px;
+	font-size: 22px;
+	margin-top: 200px;
+	text-shadow: -1px -1px 0 #ffffff,  
+               1px -1px 0 #ffffff,
+               -1px 1px 0 #ffffff,
+               1px 1px 0 #ffffff; /* 검은색 태두리 */
+}
+
+.genres{
+	align-items: center;
+	margin-top: 20px;
+}
+
+.release_date{
+	align-items: center;
+	margin-top: 20px;
+}
+
+.poster-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.right_side {
+	display: flex;
+	flex-direction: column;
+	align-items: center; /* 중앙 정렬 */
+}
+
+.movie-title {
+	margin-top: 20px;
+	font-size: 24px;
+	color: white;
+	text-align: center;
+}
+
+.movie-rating {
+	font-size: 18px;
+	color: white;
+	margin-top: 20px;
+}
+
+.image-style {
+	width: 300px;
+	margin: 10px;
+	margin-top: 70px;
+	border-radius: 25px;
+	box-shadow: 0 0 8px #0000004f;
+  }
+  #movieImages {
+	display: flex; /* Flexbox를 사용하여 항목들을 가로로 배열 */
+	overflow-x: auto; /* 가로 스크롤 활성화 */
+	white-space: nowrap; /* 모든 항목을 한 줄에 표시 */
+  }
+  
+
+#content_blur {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	backdrop-filter: blur(5px);
+	background-color: #0000004d;
+	z-index: 1;
+}
+
+/* 출연진 소개 부분 */
+#cast .container {
+	margin: 20px 40px 40px 20px;
+	display: flex;
+	justify-content: space-around; /* 가로 정렬 */
+	flex-wrap: wrap; /* 요소들이 너무 많은 경우 다음 줄로 넘김 */
+}
+
+.actor {
+	text-align: center; /* 이름 중앙 정렬 */
+	margin: 10px;
+}
+
+.actor img {
+	border-radius: 50%; /* 이미지 원형으로 */
+	width: 100px; /* 이미지 크기 */
+	height: 100px;
+	object-fit: cover; /* 이미지 비율을 유지하면서 요소에 맞게 채움 */
+	border: 3px solid #fff; /* 바깥쪽 테두리 스타일 */
+	box-shadow: 0 0 8px #000; /* 그림자를 추가하여 테두리처럼 보이게 함 */
+}
+
+.actor-name {
+	margin-top: 5px; /* 이미지와 이름 사이 간격 */
+	color: #ffffff;
+}
+
+.recommendations {
+	margin: 0px 40px;
+	color: white;
+}
 .recommendations > .header {
-  font-size: 1.4rem;
-  font-weight: bold;
-  padding: 10px;
+	font-size: 1.4rem;
+	font-weight: bold;
+	padding: 10px;
 }
 .recommendations > .content {
-  display: flex;
-  width: 100%;
+	display: flex;
+	width: 100%;
 }
 .recommendations > .content > .recommend-movie {
-  overflow: hidden;
-  text-align: center;
-  box-sizing: border-box;
-  margin: auto;
+	overflow: hidden;
+	text-align: center;
+	box-sizing: border-box;
+	margin: 0 3px;
+	cursor: pointer;
 }
 .recommendations > .content > .recommend-movie > .poster {
-  max-width: 300px;
+	max-width: 300px;
 }
 .recommendations > .content > .recommend-movie > .poster > img {
-  width: 100%;
+	width: 100%;
+}
+
+.recommendations > .content > .recommend-movie > .info,
+.recommendations > .content > .recommend-movie > .info > div {
+	padding: 5px 0;
 }
 .recommendations > .content > .recommend-movie > .info > .title {
-  text-overflow: ellipsis;
+	text-overflow: ellipsis;
 }
 .recommendations > .content > .recommend-movie > .info > .vote > .avg:before {
-  content: "★";
+	content: "★";
 }
 .recommendations > .content > .recommend-movie > .info > .vote > .cnt {
-  color: grey;
-  font-size: 0.7rem;
-}/*# sourceMappingURL=detail.css.map */
+	color: grey;
+	font-size: 0.7rem;
+}
+
+/* ==================여기서부터 댓글기능의 스타일임================== */
+#gap {
+	width: 1420px;
+}
+#comments {
+	width: 1340px;
+	color: #fff;
+	font-size: 18px;
+	margin: 0px auto;
+	padding: 40px 0px;
+	box-sizing: border-box;
+}
+
+.my-comments-box {
+	overflow: hidden;
+	transition: 0.3s ease-in-out;
+}
+#comments .my-comments-box .my-control {
+	display: flex;
+	justify-content: space-between;
+	padding: 20px 40px;
+	box-sizing: border-box;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 40px;
+	align-items: center;
+	background: darkred;
+	box-sizing: border-box;
+}
+
+#comments .my-comments {
+	width: 80%;
+}
+#comments .my-comments-box .my-info {
+	display: flex;
+	align-items: center;
+	font-size: 22px;
+}
+#comments .my-comments-box .my-info p:first-child {
+	font-size: 22px;
+	line-height: 25px;
+}
+
+#comments .my-comments-box .my-info .comments-grade {
+	width: 160px;
+	height: 25px;
+	position: relative;
+	margin-left: 20px;
+}
+#comments .my-comments-box .my-info .point {
+	width: 50px;
+	font-size: 22px;
+	line-height: 25px;
+}
+#comments .my-comments-box .my-info p:last-child {
+	margin-left: 20px;
+}
+#comments .my-comments-box .comments-grade > .white-star {
+	display: block;
+	width: 150px;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+#comments .my-info .comments-grade > .red-star-show-box {
+	width: 0px;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	overflow: hidden;
+}
+#comments .my-info .comments-grade > .red-star-show-box .red-star {
+	display: block;
+	width: 150px;
+	height: 100%;
+}
+
+.my-comments-content {
+	margin: 20px 0px;
+	padding: 0px 10px;
+	box-sizing: border-box;
+	text-align: justify;
+}
+.my-comments-content p {
+	font-size: 18px;
+	line-height: 30px;
+	letter-spacing: 1px;
+}
+.my-comments-good {
+	display: flex;
+	align-items: center;
+}
+.my-comments-good > span {
+	margin-right: 10px;
+	font-size: 24px;
+}
+.my-comments-good p {
+	line-height: 24px;
+}
+
+.my-comments-edit-btn {
+	width: 15%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.my-comments-edit-btn > p {
+	padding: 0px 20px;
+	box-sizing: border-box;
+}
+.my-comments-edit-btn .edit-my-comments-btn {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+.my-comments-edit-btn .edit-my-comments-btn span {
+	margin-right: 10px;
+	display: block;
+	font-size: 24px;
+}
+.my-comments-edit-btn .del-my-comments-btn {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+.my-comments-edit-btn .del-my-comments-btn > p {
+	margin-left: 10px;
+}
+
+.my-comments-edit-btn .del-my-comments-btn span {
+	display: block;
+	font-size: 24px;
+}
+
+#comments-title {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#comments-title h3 {
+	font-size: 28px;
+	color: #ff0000;
+	font-weight: bold;
+	margin-top: 0px;
+}
+#comments-title .comments-show-more > button {
+	border: 0px;
+	background: none;
+	color: #ff0000;
+	font-size: 28px;
+	font-weight: bold;
+	margin-left: 20px;
+	cursor: pointer;
+}
+
+#comments-title .comments-total {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#comments-title .comments-total h3 {
+	margin-right: 20px;
+}
+
+#comments-list {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 40px 0px;
+	box-sizing: border-box;
+}
+#comments-list > li {
+	border-top: 1px solid #ccc;
+	padding: 20px 0px;
+	box-sizing: border-box;
+}
+#comments-list > li:last-child {
+	border-bottom: 1px solid #ccc;
+}
+
+#comments-list .user-info {
+	display: flex;
+	align-items: center;
+}
+#comments-list .user-info .user-name {
+	font-size: 22px;
+}
+#comments-list .user-info > p:last-child {
+	font-size: 22px;
+	line-height: 25px;
+	margin-left: 20px;
+}
+
+#comments-list .comments-content {
+	margin: 20px 0px;
+	padding: 0px 10px;
+	box-sizing: border-box;
+	text-align: justify;
+}
+#comments-list .comments-content p {
+	font-size: 18px;
+	line-height: 30px;
+	letter-spacing: 1px;
+}
+#comments-list .user-info .comments-grade {
+	width: 160px;
+	height: 25px;
+	margin-left: 20px;
+	position: relative;
+}
+
+#comments-list .user-info .comments-grade > .white-star {
+	display: block;
+	width: 150px;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+#comments-list .user-info .comments-grade > .red-star-show-box {
+	width: 0px;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	overflow: hidden;
+}
+#comments-list .user-info .comments-grade > .red-star-show-box .red-star {
+	display: block;
+	width: 150px;
+	height: 100%;
+}
+
+#comments-list .user-info .point {
+	width: 50px;
+	font-size: 22px;
+	line-height: 25px;
+}
+
+#comments-list .comments-good {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	width: min-content;
+}
+
+#good-plus.on {
+	font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+	color: red;
+}
+
+#comments-list .comments-good > span {
+	margin-right: 10px;
+	font-size: 22px;
+}
+
+/* 여기서부터 댓글 작성 페이지임 */
+#add-comments {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	transition: 0.5s;
+	display: none;
+	z-index: 100;
+}
+#send-comments .comments-movie-title h3 {
+	font-size: 28px;
+}
+#send-comments {
+	background: #000;
+	margin: 0px auto;
+	padding: 40px;
+	box-sizing: border-box;
+	border-radius: 25px;
+	animation: boxshadow infinite ease-in-out 2s;
+	box-shadow: 0px 0px 10px red;
+	position: relative;
+}
+@keyframes boxshadow {
+	0% {
+		box-shadow: 0px 0px 0px rgba(255, 0, 0, 0.312);
+	}
+	50% {
+		box-shadow: 0px 0px 10px rgba(255, 0, 0, 0.262);
+	}
+	100% {
+		box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.312);
+	}
+}
+
+#add-comments .send-cancel {
+	display: block;
+	display: block;
+	font-size: 22px;
+	color: #fff;
+	background: none;
+	border: 0px;
+	cursor: pointer;
+	position: absolute;
+	right: 40px;
+	top: 40px;
+}
+#add-comments .send-cancel span {
+	font-size: 42px;
+	display: block;
+	cursor: pointer;
+	transition: 0.5s;
+}
+#add-comments .send-cancel span:hover {
+	transform: rotate(-90deg);
+  }
+
+#send-comments .comments-grade {
+	width: 160px;
+	height: 25px;
+	position: relative;
+}
+#send-comments .comments-grade .white-star {
+	display: block;
+	width: 150px;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	display: block;
+}
+#send-comments .comments-grade .red-star-show-box {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 0px;
+	height: 25px;
+	overflow: hidden;
+}
+#send-comments .comments-grade .red-star-show-box .red-star {
+	width: 150px;
+	height: 25px;
+	display: block;
+}
+
+#send-comments .comments-grade-box {
+	display: flex;
+	align-items: center;
+	margin: 20px 0px;
+}
+#send-comments .comments-grade-box .comments-grade span {
+	cursor: pointer;
+}
+#send-comments .comments-grade-box p {
+	font-size: 18px;
+	margin-right: 20px;
+	font-size: 22px;
+	line-height: 35px;
+}
+
+#send-comments textarea {
+	width: 100%;
+	height: 200px;
+	resize: none;
+	background: #000;
+	color: #fff;
+	border: none;
+	overflow: hidden;
+	font-size: 18px;
+}
+#send-comments textarea:focus {
+	outline: none;
+}
+#send-comments textarea::placeholder {
+	font-size: 18px;
+}
+
+#send-comments .comments-form-btn {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+#send-comments .comments-form-btn .btn-box {
+	width: 50px;
+	height: 25px;
+	position: relative;
+}
+#send-comments-form {
+	display: block;
+	font-size: 22px;
+	color: #fff;
+	background: none;
+	border: 0px;
+	cursor: pointer;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+#send-comments .comments-form-btn .comment-total-text {
+	font-size: 18px;
+}
+
+#edit-comments-form {
+	display: block;
+	font-size: 22px;
+	color: #fff;
+	background: none;
+	border: 0px;
+	cursor: pointer;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	display: none;
+}
+
+/* ==================여기 까지 댓글기능의 스타일임================== */

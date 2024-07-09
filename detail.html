@@ -33,11 +33,11 @@
 				<!-- 네비게이션바 -->
 				<nav>
 					<ul>
-						<li>MAIN</li>
-						<li>MOVIE</li>
-						<li>NEWS</li>
-						<li>CONTACTS</li>
-						<li>LOGIN</li>
+						<li><a href="./index.html">MAIN</a></li>
+						<li><a href="./detail.html?id=278">MOVIE</a></li>
+						<!-- <li><a href="index.html">NEWS</a></li>
+						<li><a href="index.html">CONTACTS</a></li> -->
+						<li><a class="top_login" href="./login.html">LOGIN</a></li>
 					</ul>
 				</nav>
 
@@ -50,22 +50,96 @@
 				</div>
 			</header>
 
-			<!-- 비쥬얼부분 -->
-			<div id="visual">
-				<div class="content">
-					<div class="intro">
-						<p class="title"></p>
-						<p class="movie-content"></p>
-
+			<div id="details">
+				<div id="content_blur">
+					<div class="content">
+						<div class="textbox">
+							<p class="overview"></p>
+							<p class="genres"></p>
+							<p class="release_date"></p>
+							<div id="movieImages">
+							</div>
+						</div>
 					</div>
-					<div class="poster"></div>
 				</div>
-
-				<!-- visual배경화면 너무밝은 이미지면 이안에있는 텍스트 보이지않아서 추가함 -->
-				<div id="black-cover"></div>
+				<div class="right_side">
+					<img id="movie-poster" src="" alt="Movie Poster">
+				</div>
+				
 			</div>
 
 
+
+			<!-- 출연진 정보가 동적 추가 -->
+			<div id="cast">
+				<div id="cast-list" class="container"></div>
+			</div>
+
+			<!-- start 김용 -->
+			<div id="gap"></div>
+			<div id="comments">
+				<!-- 내가남은댓글이 맨위에서 보임 -->
+				<div class="my-comments-box"></div>
+				<!-- 영화제목과 총댓글수보이는부분 -->
+				<div id="comments-title">
+					<div class="comments-total">
+						<h3 class="commtents-movie-title"></h3>
+						<h3>평균 : <span class="avaerage-score"></span></h3>
+						<h3>Comments : <span class="comments-length"></span></h3>
+					</div>
+					<div class="comments-show-more">
+						<button id="add-btn">Add Comment</button>
+					</div>
+				</div>
+
+				<!-- 해당영화에 대한 댓글리스트 -->
+				<ul id="comments-list">
+					<!-- 댓글리스트 담긴곳 -->
+				</ul>
+
+				<!-- 댓글달기 버튼 부분 -->
+				<div id="add-comments">
+					<div id="send-comments">
+						<div class="comments-movie-title">
+							<h3>범죄도시4</h3>
+						</div>
+
+						<div class="comments-grade-box">
+							<p>평점</p>
+							<div class="comments-grade">
+								<img class="white-star" src="./img/star_w.png" alt="white-star" />
+								<div class="red-star-show-box">
+									<img class="red-star" src="./img/star_r.png" alt="red-start" />
+								</div>
+							</div>
+							<p class="point">0.0</p>
+						</div>
+
+						<textarea id="message" name="message" rows="4" cols="50" placeholder="이 작품에 대한 생각을 자유롭게 표현해주세요"
+							maxlength="200"></textarea>
+
+						<div class="comments-form-btn">
+							<div class="btn-box">
+								<button id="send-comments-form">Send</button>
+								<button id="edit-comments-form">Edit</button>
+							</div>
+							<div class="comment-total-text">
+								<p><span class="total-comments">0</span>/200</p>
+							</div>
+						</div>
+					</div>
+					<button class="send-cancel">
+						<span class="material-symbols-outlined"> close </span>
+					</button>
+				</div>
+
+			</div>
+			<!-- end 김용 -->
+
+			<div class="recommendations">
+				<h2 class="header">비슷한 영화 추천</h2>
+				<div class="content"></div>
+			</div>
 
 			<!-- footer최하단의 sns아이콘들 -->
 			<div id="sns">
@@ -94,11 +168,11 @@
 				<nav class="menu-modal-nav">
 					<h3>MENU</h3>
 					<ul>
-						<li><a href="index.html">MAIN</a></li>
-						<li><a href="index.html">MOVIE</a></li>
-						<li><a href="index.html">NEWS</a></li>
-						<li><a href="index.html">CONTACTS</a></li>
-						<li><a href="index.html">LOGIN</a></li>
+						<li><a href="./index.html">MAIN</a></li>
+						<li><a href="./detail.html?id=278">MOVIE</a></li>
+						<!-- <li><a href="index.html">NEWS</a></li>
+						<li><a href="index.html">CONTACTS</a></li> -->
+						<li><a class="top_login" href="./login.html">LOGIN</a></li>
 					</ul>
 				</nav>
 			</div>
@@ -107,12 +181,8 @@
 			<div id="movie-modal"></div>
 		</div>
 	</div>
-	<div class="recommendations">
-		<h2 class="header">비슷한 영화 추천</h2>
-		<div class="content"></div>
-	</div>
-	<!-- <script src="./js/index.js"></script> -->
-	<script src="./js/detail.js"></script>
+
+	<script src="./js/detail.js" type="module"></script>
 </body>
 
 </html>

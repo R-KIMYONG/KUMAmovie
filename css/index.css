@@ -254,9 +254,9 @@ header {
 	text-decoration: underline;
 }
 
-.material-symbols-outlined {
+/* .material-symbols-outlined {
 	font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
-}
+} */
 
 /* 여기서 부터 비쥬얼임 */
 #visual {
@@ -268,6 +268,10 @@ header {
 	position: relative;
 	z-index: 1;
 	transition: 0.5s;
+	/* eunoh 추가 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 /* 트레일러 영상종료버튼 */
@@ -317,13 +321,20 @@ header {
 
 /* 비쥬얼 내부에 있는 내용들임 */
 #visual .content {
-	position: absolute;
-	right: 40px;
-	bottom: 40px;
+	/* eunoh 수정 */
+	position: relative;
+	bottom: -40px;
 	display: flex;
-	justify-content: space-between;
-	width: 900px;
+	justify-content: center;
 	align-items: center;
+	z-index: 1;
+	gap: 1rem;
+	width: 1100px;
+	/* position: absolute; */
+	/* right: 40px; */
+	/* bottom: 40px; */
+	/* justify-content: space-between; */
+	/* width: 900px; */
 }
 
 /* 비쥬얼 내부 영화소개 부분임 */
@@ -417,6 +428,8 @@ header {
 
 /* 블랙커버부분 */
 #black-cover {
+	/* eunoh 수정 */
+	position: absolute;
 	width: 100%;
 	height: 100%;
 	border-radius: 25px 25px 0px 0px;
@@ -435,7 +448,9 @@ header {
 }
 
 #category nav {
-	width: 300px;
+	/* width: 300px; */
+	/* eunoh 수정 */
+	width: 400px;
 }
 
 #category nav ul {
@@ -448,7 +463,9 @@ header {
 }
 
 #category nav ul li {
-	width: 16.65%;
+	/* width: 16.65%; */
+	/* eunoh 추가 */
+	width: 1.7rem;
 	transition: 0.25s;
 	display: block;
 	cursor: pointer;
@@ -518,17 +535,24 @@ header {
 }
 
 #category .red-line ul {
-	width: 300px;
+	/* width: 300px; */
 	height: 5px;
 	display: flex;
-	justify-content: space-between;
+	/* justify-content: space-between; */
+	/* eunoh 추가 */
+	justify-content: center;
+	gap: 1.3rem;
+	margin: 0 80px;
+	width: 243px;
 }
 
 #category .red-line ul li {
-	width: 16.65%;
+	/* width: 16.65%; */
 	height: 5px;
 	border-radius: 10px;
 	transition: 0.5s;
+	/* eunoh 추가 */
+	width: 13%;
 }
 
 #category .red-line ul li.on {
@@ -762,4 +786,26 @@ header {
 	width: 100%;
 	height: 100%;
 	display: block;
+}
+
+
+/* ================= eunoh : 카루셀 기능 ======================= */
+.material-symbols-outlined {
+	font-variation-settings:
+	'FILL' 0,
+	'wght' 400,
+	'GRAD' 0,
+	'opsz' 24;
+	color: white;
+	font-size: 60px;
+	cursor: pointer;
+}
+
+.star.material-symbols-outlined {
+	font-variation-settings:
+		'FILL' 1,
+		'wght' 400,
+		'GRAD' 0,
+		'opsz' 48;
+	font-size: 24px;
 }

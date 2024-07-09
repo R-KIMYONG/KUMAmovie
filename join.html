@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<title> KUMA MOVIE </title>
+		<link rel="stylesheet" href="css/join.css" />
+		<link rel="stylesheet" href="css/modal.css" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+		/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+		<link rel="icon" href="./img/favicon.png" />
+	</head>
+	<body>
+		<div class="mainlogo">
+				<!-- 로고부분 -->
+				<h1 id="logo">
+					<a href="index.html">
+						<img src="./img/logo.png" alt="logo" />
+					</a>
+				</h1>
+			</div>
+		
+		<div class="signup-form">
+			<h2> KUMA MOVIE JOIN </h2>
+			<form class="signup-wrapper">
+				<label>이름</label>
+				<input type="text" class="name" placeholder="이름을 입력하세요" required />
+
+				<label>아이디</label>
+				<input type="id" class="id" placeholder="id를 입력하세요" required />
+
+				<label>비밀번호</label>
+				<input type="password" class="password" placeholder="비밀번호를 입력하세요" required />
+
+				<label>비밀번호 확인</label>
+				<input type="password" class="confirm_password" placeholder="비밀번호를 다시 입력하세요" required />
+
+				<button type="submit" class="signup-btn">가입하기</button>
+			</form>
+
+			<div class="agree-form">
+				<input type="checkbox" class="checkbox" required />
+				<label>이용약관에 동의합니다.</label>
+				<a href="#" onclick="openTermsModal(); return false;"> 약관 보기 </a>
+			</div>
+
+			<div class = "gotologin">
+				<label> 이미 회원이신가요? </label>
+				<a href="login.html" > 로그인 하러가기 </a>
+			</div>
+		</div>
+
+		<div class="quit-form">
+            <h3>회원 탈퇴하시겠습니까?</h3>
+            <p>탈퇴를 원하신다면 아래에 ID를 입력하세요.</p>
+            <input type="text" class="quit-id" placeholder="탈퇴할 ID를 입력하세요" required />
+            <button class="quit-btn">탈퇴하기</button>
+        </div>
+    </div>
+
+
+		<div id="terms-modal" class="modal">
+			<div class="modal-content">
+				<span class="close" onclick="closeTermsModal()">&times;</span>
+				<h2>이용약관</h2>
+				<h3>제1조 (목적)</h3>
+				<p>이 약관은 웹사이트의 회원가입과 서비스 이용에 관한 조건 및 절차, 회원과 서비스 제공자 간의 권리와 의무, 책임 및 기타 필요한 사항을 규정합니다.</p>
+				
+				<h3>제2조 (회원가입)</h3>
+				<ol> 
+					<li>회원가입은 웹사이트에서 제공하는 가입 양식을 통해 이루어집니다.</li>
+					<li>회원은 개인 정보(이름, 아이디, 비밀번호 등)를 정확하게 제공해야 합니다.</li>
+					<li>이용약관 및 개인정보 보호정책에 동의하지 않는 경우, 회원가입이 제한될 수 있습니다.</li>
+				</ol>
+				
+				<h3>제3조 (서비스 제공)</h3>
+				<ol>
+					<li>웹사이트는 회원에게 다양한 서비스를 제공합니다. 서비스의 내용과 범위는 웹사이트의 정책에 따라 변경될 수 있습니다.</li>
+					<li>서비스 제공을 위한 유지 보수, 기술적 오류, 기타 사유로 인해 서비스가 일시적으로 중단될 수 있습니다.</li>
+				</ol>
+				
+				<h3>제4조 (회원의 권리와 의무)</h3>
+				<ol>
+					<li>회원은 웹사이트의 이용약관, 개인정보 보호정책, 관련 법률을 준수해야 합니다.</li>
+					<li>회원은 웹사이트를 이용하면서 다른 회원 또는 제3자의 권리를 침해하거나 불법 행위를 해서는 안 됩니다.</li>
+					<li>회원은 자신의 계정 및 비밀번호를 안전하게 관리해야 하며, 이를 제3자와 공유해서는 안 됩니다.</li>
+				</ol>
+				
+				<h3>제5조 (개인정보 보호)</h3>
+				<ol>
+					<li>웹사이트는 개인정보 보호정책에 따라 회원의 개인정보를 보호합니다.</li>
+					<li>회원의 개인정보는 회원가입 및 서비스 제공을 위해 사용되며, 법적 요구에 따라 제3자에게 공개될 수 있습니다.</li>
+				</ol>
+				
+				<h3>제6조 (금지된 행위)</h3>
+				<ol>
+					<li>회원은 웹사이트에서 다음과 같은 행위를 해서는 안 됩니다:</li>
+					<ul> 
+						<li>불법적이거나 부적절한 콘텐츠의 게시</li>
+						<li>다른 회원의 개인정보 도용</li>
+						<li>악성 소프트웨어 또는 바이러스의 배포</li>
+						<li>기타 불법적이거나 부적절한 행위</li>
+					</ul>
+					<li>금지된 행위를 한 회원은 서비스 이용이 제한되거나, 법적 조치가 취해질 수 있습니다.</li>
+				</ol>
+				
+		</div>
+
+		<script src="./js/join.js"></script>
+		<script src="./js/modal.js"></script>
+	</body>
+</html>
